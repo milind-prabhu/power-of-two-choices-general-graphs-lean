@@ -28,3 +28,5 @@ checks source/audit coverage, and rejects admitted proofs or nonstandard axioms.
 
 See the [formalization notes](FORMALIZATION.md) for precise theorem statements,
 assumptions, and correspondence with the paper.
+
+This formalization was achieved using **ChatGPT-6 Astra**.
