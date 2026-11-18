@@ -7,9 +7,8 @@ Sahil Singla, and Siddharth M. Sundaram.
 
 ## Explore the proof
 
-View the [interactive Lean proof dependency graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/).
-Click the image below to open it, then select a theorem or lemma to see its Lean
-statement, proof, and dependencies. Use the view menu to explore either main proof.
+Open the [interactive proof graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/).
+Click a theorem or lemma to see its Lean statement, proof, and dependencies.
 
 [![Lean proof dependency graph](blueprint/generated/Graph_Choices_Dependency_Graph.svg)](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/)
 
@@ -22,11 +21,10 @@ bash bootstrap.sh
 bash check.sh
 ```
 
-The project pins Lean 4.24.0 and mathlib 4.24.0. The check builds the proofs,
-checks source/audit coverage, and rejects admitted proofs or nonstandard axioms.
-[Build status](https://github.com/milind-prabhu/power-of-two-choices-general-graphs-lean/actions/workflows/lean.yml).
+Lean **4.24.0** and mathlib are pinned. The check builds the proofs and runs
+the axiom audit. [Build status](https://github.com/milind-prabhu/power-of-two-choices-general-graphs-lean/actions/workflows/lean.yml).
 
-See the [formalization notes](FORMALIZATION.md) for precise theorem statements,
-assumptions, and correspondence with the paper.
+See the [formalization notes](FORMALIZATION.md) for theorem statements, assumptions,
+and scope.
 
 This formalization was achieved using **ChatGPT-6 Astra**.
