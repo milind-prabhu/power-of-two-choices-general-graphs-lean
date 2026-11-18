@@ -1,6 +1,6 @@
 # PFR-style file dependency graph
 
-Open the [hosted viewer](https://milind-prabhu.github.io/graph-choices-lean/),
+Open the [hosted viewer](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/),
 or open **dependency-graph/index.html** locally in a browser.
 Everything needed by the viewer is local; it needs no web server or connection.
 

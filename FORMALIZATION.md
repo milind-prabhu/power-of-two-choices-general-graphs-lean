@@ -11,7 +11,7 @@ The theorem numbering below follows that version.
 
 ## Interactive dependency graph
 
-Open the [hosted dependency graph](https://milind-prabhu.github.io/graph-choices-lean/)
+Open the [hosted dependency graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/)
 or [dependency-graph/index.html](dependency-graph/index.html) locally. It works offline and includes search, pan/zoom, prerequisite
 highlighting, theorem-file focus and linked source pages. The two main theorem
 files have dark green nodes.

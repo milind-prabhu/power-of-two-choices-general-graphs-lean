@@ -7,11 +7,11 @@ Sahil Singla, and Siddharth M. Sundaram.
 
 ## Explore the proof
 
-View the [interactive Lean dependency graph](https://milind-prabhu.github.io/graph-choices-lean/).
+View the [interactive Lean dependency graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/).
 Click the image below to open it, then select a module to see its Lean
 statements, proofs, and imports. Use the view menu to focus on either main theorem.
 
-[![Lean file dependency graph](dependency-graph/dependencies.svg)](https://milind-prabhu.github.io/graph-choices-lean/)
+[![Lean file dependency graph](dependency-graph/dependencies.svg)](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/)
 
 The graph shows file-import dependencies across 101 modules and 578 named proved
 results. See [graph documentation](DEPENDENCIES.md) for details and offline use.
@@ -27,7 +27,7 @@ bash check.sh
 
 The project pins Lean 4.24.0 and mathlib 4.24.0. The check builds the proofs,
 checks source/audit coverage, and rejects admitted proofs or nonstandard axioms.
-[Build status](https://github.com/milind-prabhu/graph-choices-lean/actions/workflows/lean.yml).
+[Build status](https://github.com/milind-prabhu/power-of-two-choices-general-graphs-lean/actions/workflows/lean.yml).
 
 See the [formalization notes](FORMALIZATION.md) for precise theorem statements,
 assumptions, and correspondence with the paper, and [proof status](STATUS.md)
