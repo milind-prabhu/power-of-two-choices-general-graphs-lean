@@ -1,0 +1,50 @@
+{
+  "GraphChoices.exists_preprocessed_split": {
+    "label": "Bipartite preprocessing",
+    "summary": "Splits the original graph into a bipartite graph with a controlled left degree."
+  },
+  "GraphChoices.Peeling.exists_skew_biregular_partition": {
+    "label": "Graph decomposition",
+    "summary": "Partitions the graph into pieces with controlled degrees at doubly exponential scales."
+  },
+  "GraphChoices.Patterns.concrete_component_tail": {
+    "label": "Residual component tail",
+    "summary": "Bounds the probability that Threshold-Greedy leaves a large residual component by 3/Nᶜ."
+  },
+  "GraphChoices.Peeling.exists_rate_competitive_policy": {
+    "label": "Rate-adapted policy",
+    "summary": "Constructs a competitive online policy using thresholds adapted to the arrival rate."
+  },
+  "GraphChoices.Peeling.exists_bipartite_policy_all_horizons": {
+    "label": "All arrival horizons",
+    "summary": "Combines the short, intermediate, and long horizon cases for bipartite graphs."
+  },
+  "GraphChoices.mainTheorem": {
+    "label": "Theorem 1.1\nOnline upper bound",
+    "summary": "Proves an O(log log n) competitive deterministic online policy for every nonempty simple graph and every horizon."
+  },
+  "GraphChoices.LowerBound.goodBatches_maxLoad": {
+    "label": "Greedy load propagation",
+    "summary": "Shows that successful batches force Greedy load to grow through the layered graph."
+  },
+  "GraphChoices.LowerBound.expectedGreedy_lower": {
+    "label": "Expected Greedy load",
+    "summary": "Uses the batch failure probability to obtain a lower bound on expected Greedy load."
+  },
+  "GraphChoices.LowerBound.family_optimum_bound": {
+    "label": "Offline optimum bound",
+    "summary": "Bounds the expected offline optimum of the explicit graph family by 500 log(b + 1)."
+  },
+  "GraphChoices.LowerBound.family_competitive_gap": {
+    "label": "Competitive gap",
+    "summary": "Combines the Greedy load lower bound with the offline optimum upper bound."
+  },
+  "GraphChoices.LowerBound.family_degree_range": {
+    "label": "Degree bounds",
+    "summary": "Places every vertex degree between sqrt(N) and sqrt(N) log(N)³."
+  },
+  "GraphChoices.LowerBound.greedyLowerBound": {
+    "label": "Theorem 1.2\nGreedy lower bound",
+    "summary": "Constructs arbitrarily large simple graphs where fair-tie Greedy has competitive ratio at least log(N)/(30000 (log log(N))²)."
+  }
+}

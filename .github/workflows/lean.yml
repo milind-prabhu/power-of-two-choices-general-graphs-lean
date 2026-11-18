@@ -32,3 +32,5 @@ jobs:
         run: bash bootstrap.sh
       - name: Build and audit theorem axioms
         run: bash check.sh
+      - name: Validate proof graph evidence
+        run: python3 blueprint/check_graph.py

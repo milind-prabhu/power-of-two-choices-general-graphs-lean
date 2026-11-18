@@ -9,18 +9,20 @@ Source paper: Nikhil Bansal, Milind Prabhu, Sahil Singla, Siddharth M. Sundaram,
 [arXiv:2604.04159v1](https://arxiv.org/abs/2604.04159v1), April 5, 2026.
 The theorem numbering below follows that version.
 
-## Interactive dependency graph
+## Interactive proof graph
 
-Open the [hosted dependency graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/)
-or [dependency-graph/index.html](dependency-graph/index.html) locally. It works offline and includes search, pan/zoom, prerequisite
-highlighting, theorem-file focus and linked source pages. The two main theorem
-files have dark green nodes.
+The [interactive proof graph](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/) opens with 12 key declarations and
+10 dependency arrows. Separate views show the ancestors of each main theorem;
+all 799 public source-named declarations are searchable. Hover or focus a node
+for a short summary; click for its compiled statement and Lean proof.
 
-The graph has **101 file nodes and 141 direct project-import edges**. Its
-default reduced view has 137 edges and preserves all import reachability.
-These are file-import dependencies, not theorem-level proof-reference edges.
-SVG, DOT and JSON exports and a regeneration script are included. See
-[DEPENDENCIES.md](DEPENDENCIES.md).
+Arrows come from references in compiled Lean types and proof terms, including
+paths through omitted helpers. They do not merely record file imports.
+See [blueprint documentation](blueprint/README.md) for the extraction method,
+rebuild commands, and verification details.
+
+The original [file-import explorer](https://milind-prabhu.github.io/power-of-two-choices-general-graphs-lean/dependency-graph/) remains available,
+with its 101 modules and 141 direct imports. See [DEPENDENCIES.md](DEPENDENCIES.md).
 
 ## Build and audit
 

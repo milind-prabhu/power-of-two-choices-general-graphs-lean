@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'blueprint/generated/**'
       - 'dependency-graph/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
@@ -32,7 +33,11 @@ jobs:
       - name: Prepare interactive proof graph
         run: |
           mkdir -p _site
-          cp -R dependency-graph/. _site/
+          cp blueprint/generated/Graph_Choices_Blueprint.html _site/index.html
+          mkdir -p _site/dependency-graph
+          cp -R dependency-graph/. _site/dependency-graph/
+          cp -R dependency-graph/sources _site/sources
+          cp dependency-graph/dependencies* _site/
           touch _site/.nojekyll
       - name: Upload site
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4

@@ -1,0 +1,27 @@
+digraph proof {
+graph [rankdir=TB,bgcolor="white",pad="0.22",nodesep="0.24",ranksep="0.55",splines=polyline,outputorder=edgesfirst];
+node [fontname="DejaVu Sans",fontsize=10,style=filled,fillcolor="#b9e5b2",color="#23823c",fontcolor="#133b1e",penwidth=1.3,margin="0.13,0.08"];
+edge [color="#748076",arrowsize=0.65,penwidth=0.8];
+"GraphChoices.LowerBound.expectedGreedy_lower" [id="decl_47",label="Expected Greedy load",shape="ellipse",tooltip="GraphChoices.LowerBound.expectedGreedy_lower — Lean-checked"];
+"GraphChoices.LowerBound.family_competitive_gap" [id="decl_49",label="Competitive gap",shape="ellipse",tooltip="GraphChoices.LowerBound.family_competitive_gap — Lean-checked"];
+"GraphChoices.LowerBound.family_degree_range" [id="decl_50",label="Degree bounds",shape="ellipse",tooltip="GraphChoices.LowerBound.family_degree_range — Lean-checked"];
+"GraphChoices.LowerBound.family_optimum_bound" [id="decl_60",label="Offline optimum bound",shape="ellipse",tooltip="GraphChoices.LowerBound.family_optimum_bound — Lean-checked"];
+"GraphChoices.LowerBound.goodBatches_maxLoad" [id="decl_65",label="Greedy load propagation",shape="ellipse",tooltip="GraphChoices.LowerBound.goodBatches_maxLoad — Lean-checked"];
+"GraphChoices.LowerBound.greedyLowerBound" [id="decl_69",label="Theorem 1.2\nGreedy lower bound",shape="ellipse",tooltip="GraphChoices.LowerBound.greedyLowerBound — Lean-checked",penwidth="2.5",peripheries="2",fillcolor="#8fd18b",fontsize="12"];
+"GraphChoices.Patterns.concrete_component_tail" [id="decl_118",label="Residual component tail",shape="ellipse",tooltip="GraphChoices.Patterns.concrete_component_tail — Lean-checked"];
+"GraphChoices.Peeling.exists_bipartite_policy_all_horizons" [id="decl_252",label="All arrival horizons",shape="ellipse",tooltip="GraphChoices.Peeling.exists_bipartite_policy_all_horizons — Lean-checked"];
+"GraphChoices.Peeling.exists_rate_competitive_policy" [id="decl_265",label="Rate-adapted policy",shape="ellipse",tooltip="GraphChoices.Peeling.exists_rate_competitive_policy — Lean-checked"];
+"GraphChoices.Peeling.exists_skew_biregular_partition" [id="decl_266",label="Graph decomposition",shape="ellipse",tooltip="GraphChoices.Peeling.exists_skew_biregular_partition — Lean-checked"];
+"GraphChoices.exists_preprocessed_split" [id="decl_616",label="Bipartite preprocessing",shape="ellipse",tooltip="GraphChoices.exists_preprocessed_split — Lean-checked"];
+"GraphChoices.mainTheorem" [id="decl_686",label="Theorem 1.1\nOnline upper bound",shape="ellipse",tooltip="GraphChoices.mainTheorem — Lean-checked",penwidth="2.5",peripheries="2",fillcolor="#8fd18b",fontsize="12"];
+"GraphChoices.LowerBound.expectedGreedy_lower" -> "GraphChoices.LowerBound.family_competitive_gap";
+"GraphChoices.LowerBound.family_competitive_gap" -> "GraphChoices.LowerBound.greedyLowerBound";
+"GraphChoices.LowerBound.family_degree_range" -> "GraphChoices.LowerBound.greedyLowerBound";
+"GraphChoices.LowerBound.family_optimum_bound" -> "GraphChoices.LowerBound.family_competitive_gap";
+"GraphChoices.LowerBound.goodBatches_maxLoad" -> "GraphChoices.LowerBound.expectedGreedy_lower";
+"GraphChoices.Patterns.concrete_component_tail" -> "GraphChoices.Peeling.exists_rate_competitive_policy";
+"GraphChoices.Peeling.exists_bipartite_policy_all_horizons" -> "GraphChoices.mainTheorem";
+"GraphChoices.Peeling.exists_rate_competitive_policy" -> "GraphChoices.Peeling.exists_bipartite_policy_all_horizons";
+"GraphChoices.Peeling.exists_skew_biregular_partition" -> "GraphChoices.Peeling.exists_rate_competitive_policy";
+"GraphChoices.exists_preprocessed_split" -> "GraphChoices.mainTheorem";
+}
