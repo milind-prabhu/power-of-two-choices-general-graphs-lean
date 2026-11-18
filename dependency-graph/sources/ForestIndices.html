@@ -1,0 +1,141 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ForestIndices.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ForestIndices.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.LabelledForest</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Preorder indices of a labelled forest and their agreement with the</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> previously counted unlabelled shape representation. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> variable {V : Type*}</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> theorem map_numNodes {W : Type*} (t : Tree V) (f : V → W) : (t.map f).numNodes = t.numNodes := by</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>   induction t with</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   | nil =&gt; rfl</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   | node v l r hl hr =&gt; simp [Tree.map, Tree.numNodes, hl, hr]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> def eraseForest (t : Tree V) : Tree Unit := t.map (fun _ =&gt; ())</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> theorem eraseForest_numNodes (t : Tree V) : (eraseForest t).numNodes = t.numNodes := by</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   induction t with</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   | nil =&gt; rfl</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   | node v l r hl hr =&gt; simp [eraseForest, Tree.map, Tree.numNodes] at *; omega</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> </span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> def forestValue : Tree V → V → ℕ → V</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   | .nil, fallback, _ =&gt; fallback</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   | .node v l r, fallback, i =&gt;</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     if i = 0 then v else if i ≤ l.numNodes then forestValue l fallback (i-1)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     else forestValue r fallback (i-1-l.numNodes)</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> def parentPos : Tree V → ℕ → ℕ → ℕ → ℕ</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   | .nil, p, _, _ =&gt; p</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   | .node _ l r, p, start, i =&gt;</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     if i = 0 then p else if i ≤ l.numNodes then parentPos l (start+1) (start+1) (i-1)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     else parentPos r p (start+1+l.numNodes) (i-1-l.numNodes)</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> </span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> def sidePos : Tree V → Bool → ℕ → Bool</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   | .nil, side, _ =&gt; side</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   | .node _ l r, side, i =&gt;</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     if i = 0 then side else if i ≤ l.numNodes then sidePos l (!side) (i-1)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     else sidePos r side (i-1-l.numNodes)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> theorem forestValue_eq_get (t : Tree V) (fallback : V) (i : ℕ) (hi : i &lt; t.numNodes) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     forestValue t fallback i = (forestLabels t)[i]&#x27;(by rw [forestLabels_length]; exact hi) := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   induction t generalizing i with</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   | nil =&gt; simp at hi</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   | node v l r hl hr =&gt;</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     cases i with</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     | zero =&gt; simp [forestValue, forestLabels]</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     | succ i =&gt;</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>       simp only [forestLabels, List.getElem_cons_succ]</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>       by_cases hil : i+1 ≤ l.numNodes</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>       · rw [List.getElem_append_left (by rw [forestLabels_length]; omega)]</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>         simpa [forestValue, hil] using hl i (by omega)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       · rw [List.getElem_append_right (by rw [forestLabels_length]; omega)]</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>         have hir : i-l.numNodes &lt; r.numNodes := by simp only [Tree.numNodes] at hi; omega</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>         simpa [forestValue, hil, forestLabels_length] using hr (i-l.numNodes) hir</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> </span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> theorem forestParent_eq_parentPos (t : Tree V) (p start : ℕ) (hp : p ≤ start)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     (i : Fin (eraseForest t).numNodes) :</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     (forestParent (eraseForest t) p start hp i).val = parentPos t p start i.val := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   induction t generalizing p start with</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   | nil =&gt; exact Fin.elim0 i</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   | node v l r hl hr =&gt;</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     by_cases hz : i.val = 0</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     · simp [eraseForest, Tree.map, forestParent, parentPos, hz]</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     by_cases hil : i.val ≤ l.numNodes</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     · simp only [eraseForest, Tree.map, forestParent, parentPos, hz, if_false,</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>         map_numNodes, hil, dite_true, dite_false, if_true]</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>       exact hl (start+1) (start+1) le_rfl _</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     · simp only [eraseForest, Tree.map, forestParent, parentPos, hz, if_false,</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>         map_numNodes, hil, dite_true, dite_false]</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>       have hir : i.val-1-(eraseForest l).numNodes &lt; (eraseForest r).numNodes := by</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>         have hbound := i.isLt</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>         simp only [eraseForest_numNodes, Tree.numNodes] at hbound ⊢</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>         omega</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>       have h := hr p (start+1+(eraseForest l).numNodes) (by omega)</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>         ⟨i.val-1-(eraseForest l).numNodes, hir⟩</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>       convert h using 1 &lt;;&gt; simp only [eraseForest_numNodes]</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a> </span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a> theorem forestSide_eq_sidePos (t : Tree V) (side : Bool) (i : Fin (eraseForest t).numNodes) :</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     forestSide (eraseForest t) side i = sidePos t side i.val := by</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   induction t generalizing side with</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   | nil =&gt; exact Fin.elim0 i</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   | node v l r hl hr =&gt;</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     by_cases hz : i.val = 0</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     · simp [eraseForest, Tree.map, forestSide, sidePos, hz]</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     by_cases hil : i.val ≤ l.numNodes</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>     · simp only [eraseForest, Tree.map, forestSide, sidePos, hz, if_false,</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>         map_numNodes, hil, dite_true, dite_false, if_true]</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       exact hl (!side) _</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>     · simp only [eraseForest, Tree.map, forestSide, sidePos, hz, if_false,</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>         map_numNodes, hil, dite_true, dite_false]</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>       exact hr side _</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a> </span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a> /-- Indexed edges and side labels are inherited from the labelled forest&#x27;s</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a> recursive graph edges. The lookup may be embedded in any larger preorder. -/</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> theorem forest_index_spec (G : SimpleGraph V) (color : V → Bool)</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     (hcolor : ∀ u v, G.Adj u v → color u ≠ color v)</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     (t : Tree V) (F : ℕ → V) (fallback : V) (p start : ℕ) (side : Bool)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>     (ht : ForestValid G (F p) t) (hparent : color (F p) = !side)</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     (hvalues : ∀ i &lt; t.numNodes, F (start+i+1) = forestValue t fallback i) :</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>     ∀ i &lt; t.numNodes,</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>       G.Adj (F (start+i+1)) (F (parentPos t p start i)) ∧</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>       color (F (start+i+1)) = sidePos t side i := by</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   induction t generalizing p start side with</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>   | nil =&gt; intro i hi; simp at hi</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>   | node v l r hl hr =&gt;</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     obtain ⟨hpv, hvl, hpr⟩ := ht</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     have hv : F (start+1) = v := by simpa [forestValue] using hvalues 0 (by simp)</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     have hcv : color v = side := by</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>       have hne := hcolor (F p) v hpv</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>       cases side &lt;;&gt; cases hc : color v &lt;;&gt; simp_all</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>     intro i hi</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>     by_cases hz : i = 0</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>     · subst i</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>       simpa [parentPos, sidePos, hv] using And.intro hpv.symm hcv</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     by_cases hil : i ≤ l.numNodes</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>     · have hvals : ∀ j &lt; l.numNodes, F ((start+1)+j+1) = forestValue l fallback j := by</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>         intro j hj</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>         have h := hvalues (j+1) (by simp only [Tree.numNodes]; omega)</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>         have hsplit : forestValue (.node v l r) fallback (j+1) = forestValue l fallback j := by</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>           simp [forestValue, show j+1 ≤ l.numNodes by omega]</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>         rw [hsplit] at h</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>         convert h using 1 &lt;;&gt; congr 1 &lt;;&gt; omega</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>       have hvalid : ForestValid G (F (start+1)) l := by simpa only [hv] using hvl</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>       have hcparent : color (F (start+1)) = !(!side) := by simpa [hv] using hcv</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>       have h := hl (start+1) (start+1) (!side) hvalid hcparent hvals (i-1) (by omega)</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>       have heq : start+1+(i-1)+1 = start+i+1 := by omega</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>       simpa only [parentPos, sidePos, hz, if_false, hil, if_true, heq] using h</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>     · have hvals : ∀ j &lt; r.numNodes, F ((start+1+l.numNodes)+j+1) = forestValue r fallback j := by</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>         intro j hj</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>         have h := hvalues (j+1+l.numNodes) (by simp only [Tree.numNodes]; omega)</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>         have hnot : ¬j+1+l.numNodes ≤ l.numNodes := by omega</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>         have hsplit : forestValue (.node v l r) fallback (j+1+l.numNodes) = forestValue r fallback j := by</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>           rw [forestValue, if_neg (by omega), if_neg hnot]</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>           congr 1</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>           omega</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a>         rw [hsplit] at h</span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a>         convert h using 1 &lt;;&gt; congr 1 &lt;;&gt; omega</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>       have h := hr p (start+1+l.numNodes) side hpr hparent hvals (i-1-l.numNodes)</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a>         (by simp only [Tree.numNodes] at hi; omega)</span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a>       have heq : start+1+l.numNodes+(i-1-l.numNodes)+1 = start+i+1 := by omega</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>       simpa only [parentPos, sidePos, hz, if_false, hil, heq] using h</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a> </span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a> end GraphChoices.Patterns</span></pre></html>

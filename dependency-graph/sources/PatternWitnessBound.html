@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PatternWitnessBound.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PatternWitnessBound.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.InjectedWitnesses</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Finset.Sort</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.Fintype.Sum</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Data.Fintype.Sigma</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> /-! Joint witness bound of the form used in Equations (10)--(12). Tree slots</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> require fixed base edges. Each threshold bucket chooses an unordered set of</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> alpha_j time steps. Only globally injective assignments are retained, so all</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> required occurrences are distinct and the product probability is justified.</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> The graph-to-witness encoding and pattern-embedding count are separate results.</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> -/</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> namespace GraphChoices</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> open Finset</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> variable {E J : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   [Fintype J] [DecidableEq J]</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> </span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> abbrev TimeChoice (T k : ℕ) :=</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   {K : Finset (Fin T) // K ∈ (univ : Finset (Fin T)).powersetCard k}</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> </span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> abbrev TimeWitness (J : Type*) (T m : ℕ) (α : J → ℕ) :=</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   (Fin m → Fin T) × ((j : J) → TimeChoice T (α j))</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> </span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> abbrev WitnessSlot (J : Type*) (m : ℕ) (α : J → ℕ) :=</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   Fin m ⊕ ((j : J) × Fin (α j))</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> noncomputable def witnessTime {T m : ℕ} {α : J → ℕ} (w : TimeWitness J T m α) :</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     WitnessSlot J m α → Fin T</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   | Sum.inl i =&gt; w.1 i</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   | Sum.inr ⟨j,i⟩ =&gt; (w.2 j).val.orderEmbOfFin ((mem_powersetCard.mp (w.2 j).property).2) i</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> def slotAllowed {m : ℕ} {α : J → ℕ} (tree : Fin m → E) (bucket : J → Finset E) :</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     WitnessSlot J m α → Finset E</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   | Sum.inl i =&gt; {tree i}</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   | Sum.inr ⟨j,_⟩ =&gt; bucket j</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> </span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>  theorem timeChoice_card (T k : ℕ) : Fintype.card (TimeChoice T k) = T.choose k := by</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   simp [TimeChoice, Fintype.card_coe, card_powersetCard]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> </span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>  theorem timeWitness_card (T m : ℕ) (α : J → ℕ) :</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     Fintype.card (TimeWitness J T m α) = T^m * ∏ j, T.choose (α j) := by</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   simp [TimeWitness, Fintype.card_prod, Fintype.card_fun, Fintype.card_pi, timeChoice_card]</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>  theorem slot_probability_product {m : ℕ} (α : J → ℕ) (tree : Fin m → E) (bucket : J → Finset E) :</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (∏ s : WitnessSlot J m α, ((slotAllowed tree bucket s).card : ℝ) / Fintype.card E) =</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>       ((1:ℝ) / Fintype.card E)^m * ∏ j, (((bucket j).card : ℝ) / Fintype.card E)^(α j) := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   rw [Fintype.prod_sum_type, Fintype.prod_sigma]</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   simp [slotAllowed, div_pow, prod_div_distrib]</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> noncomputable def patternWitnessEvent (T m : ℕ) (α : J → ℕ)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (tree : Fin m → E) (bucket : J → Finset E) : Finset (Fin T → E) := by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   classical</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   exact univ.biUnion fun w : TimeWitness J T m α =&gt;</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     if Function.Injective (witnessTime w) then requirementsEvent (witnessTime w) (slotAllowed tree bucket) else ∅</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> </span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a> /-- Joint counting and probability bound with exact binomial coefficients. -/</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>  theorem patternWitness_probability_le (T m : ℕ) (α : J → ℕ)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     (tree : Fin m → E) (bucket : J → Finset E) :</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     eventProbability (patternWitnessEvent T m α tree bucket) ≤</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>       ((T:ℝ) / Fintype.card E)^m *</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>         ∏ j, (T.choose (α j) : ℝ) * (((bucket j).card : ℝ) / Fintype.card E)^(α j) := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   classical</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   have hh := injected_witness_union_bound</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     (W := TimeWitness J T m α) (J := WitnessSlot J m α) witnessTime (slotAllowed tree bucket)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   change eventProbability (patternWitnessEvent T m α tree bucket) ≤ _ at hh</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   calc</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     _ ≤ (Fintype.card (TimeWitness J T m α) : ℝ) *</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>         (∏ s : WitnessSlot J m α, ((slotAllowed tree bucket s).card : ℝ) / Fintype.card E) := hh</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     _ = _ := by</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       rw [timeWitness_card, slot_probability_product]</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>       simp only [Nat.cast_mul, Nat.cast_pow, Nat.cast_prod, prod_mul_distrib, div_pow]</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>       ring</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a> </span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a> /-- The exponential version corresponding to the raw pattern bound in (12).</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a> All time-step collisions have been discarded before applying independence. -/</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>  theorem patternWitness_probability_le_exp (T m : ℕ) (α : J → ℕ)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     (tree : Fin m → E) (bucket : J → Finset E) :</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     eventProbability (patternWitnessEvent T m α tree bucket) ≤</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>       ((T:ℝ) / Fintype.card E)^m *</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>         ∏ j, (Real.exp 1 * T * (((bucket j).card : ℝ) / Fintype.card E) / α j)^(α j) := by</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   apply (patternWitness_probability_le T m α tree bucket).trans</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   apply mul_le_mul_of_nonneg_left _ (by positivity)</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>   apply prod_le_prod</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>   · intro j _; positivity</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>   · intro j _</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>     calc</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       (T.choose (α j) : ℝ) * (((bucket j).card : ℝ) / Fintype.card E)^(α j) ≤</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>           (Real.exp 1 * T / α j)^(α j) * (((bucket j).card : ℝ) / Fintype.card E)^(α j) :=</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>         mul_le_mul_of_nonneg_right (choose_le_exp_div_pow T (α j)) (by positivity)</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>       _ = _ := by rw [← mul_pow]; congr 1; ring</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a> </span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a> end GraphChoices</span></pre></html>

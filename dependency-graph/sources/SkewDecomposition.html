@@ -1,0 +1,216 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkewDecomposition.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · SkewDecomposition.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.GraphSkew</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.Decomposition</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.List.OfFn</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Data.Nat.Log</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> import Mathlib.Data.List.Forall2</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> /-! The graph decomposition at the paper&#x27;s doubly exponential scales, with</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> integer capacities and an explicit termination condition. Complexity estimates</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> and the asymptotic simplification of the degree bounds are separate from this</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> finite existence theorem. -/</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> open Finset</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> def scaleNat (i : ℕ) : ℕ := 2^(2^(i+1))</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> </span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> def roundBudget (B i : ℕ) : ℕ := 16*B / scaleNat i</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>  theorem scaleNat_pos (i : ℕ) : 0 &lt; scaleNat i := by unfold scaleNat; positivity</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>  theorem scaleNat_succ (i : ℕ) : scaleNat (i+1) = (scaleNat i)^2 := by</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   unfold scaleNat</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   rw [← pow_mul, pow_succ]</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>  theorem roundBudget_zero (B : ℕ) : roundBudget B 0 = 4*B := by</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   simp only [roundBudget, scaleNat]</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   norm_num</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   omega</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> </span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> /-- Floor rounding leaves enough slack for the minimum active integer degree. -/</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>  theorem active_cutoff_at_scale (B i : ℕ) (d : ℝ) (hd : d ≤ 16*B) :</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     d / (scaleNat i : ℝ)^2 ≤ (roundBudget B (i+1) + 1 : ℕ) := by</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   have hpos := scaleNat_pos (i+1)</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   have hdiv : 16*B &lt; (16*B / scaleNat (i+1) + 1) * scaleNat (i+1) := by</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     have hm := Nat.mod_lt (16*B) hpos</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     have he := Nat.mod_add_div (16*B) (scaleNat (i+1))</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     nlinarith</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   have hcast : (16*B : ℝ) ≤ ((roundBudget B (i+1) + 1 : ℕ) : ℝ) * (scaleNat i : ℝ)^2 := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     have he : scaleNat (i+1) = scaleNat i ^ 2 := scaleNat_succ i</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     have hr : ((16*B : ℕ) : ℝ) &lt; ((16*B / scaleNat (i+1) + 1 : ℕ) : ℝ) * (scaleNat (i+1) : ℝ) := by</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>       exact_mod_cast hdiv</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     simpa [roundBudget, he] using hr.le</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   have hscale : (0:ℝ) &lt; (scaleNat i : ℝ) := by exact_mod_cast scaleNat_pos i</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   apply (div_le_iff₀ (sq_pos_of_pos hscale)).mpr</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   exact hd.trans hcast</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> </span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> noncomputable def skewSchedule (G : Graph L R) (B h : ℕ) (d n : ℝ) : List (ℕ × ℕ) :=</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   List.ofFn fun i : Fin h =&gt;</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (roundBudget B (i.val+1), scaleCapacity G d n (scaleNat i.val))</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a> </span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>  theorem skewSchedule_length (G : Graph L R) (B h : ℕ) (d n : ℝ) :</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (skewSchedule G B h d n).length = h := by simp [skewSchedule]</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> </span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>  theorem skewSchedule_expands (G : Graph L R) (B h : ℕ) (d n : ℝ)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     (hd : 0 &lt; d) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n) (hB : d ≤ 16*B) :</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     ∀ kb ∈ skewSchedule G B h d n, PeelingExpansion G kb.1 kb.2 := by</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   intro kb hkb</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   obtain ⟨i,rfl⟩ := List.mem_ofFn.mp hkb</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   apply peelingExpansion_of_graphLogSkewness G _ d n (scaleNat i.val) hd _ hn hleft</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (active_cutoff_at_scale B i.val d hB)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   exact_mod_cast (scaleNat_pos i.val)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> </span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> /-- A zero cutoff in the last round makes the schedule end at zero. -/</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>  theorem finalBudget_append (D : ℕ) (ss : List (ℕ × ℕ)) (kb : ℕ × ℕ) :</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     finalBudget D (ss ++ [kb]) = kb.1 := by</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   induction ss generalizing D with</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   | nil =&gt; rfl</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   | cons a ss ih =&gt; exact ih a.1</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a> </span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>  theorem skewSchedule_finalBudget (G : Graph L R) (B h : ℕ) (d n : ℝ) :</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     finalBudget (roundBudget B 0) (skewSchedule G B h d n) = roundBudget B h := by</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   induction h with</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   | zero =&gt; simp [skewSchedule, finalBudget]</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   | succ h ih =&gt;</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     unfold skewSchedule</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     rw [List.ofFn_succ&#x27;]</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     simp only [List.concat_eq_append]</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     rw [finalBudget_append]</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     rfl</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a> </span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> /-- Concrete doubly exponential decomposition. There is one piece for each</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> scale 2^(2^(i+1)); their exact integer degree caps are recorded by pieceBudgets.</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> The condition 16 B &lt; scaleNat h certifies that all edges have been extracted. -/</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>  theorem exists_doubly_exponential_decomposition (G : Graph L R) (B h : ℕ) (d n : ℝ)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     (hd : 0 &lt; d) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n)</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     (hB : d ≤ 16*B) (hD : ∀ u, leftDegree G u ≤ 4*B)</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     (hstop : 16*B &lt; scaleNat h) :</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     ∃ Ps : List (Graph L R), Ps.length = h ∧ Ps.Pairwise Disjoint ∧</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>       unionPieces Ps = G ∧</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>       List.Forall₂ (fun P kb =&gt; (∀ u, leftDegree P u ≤ kb.1) ∧</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>         (∀ v, rightDegree P v ≤ kb.2)) Ps</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>         (pieceBudgets (4*B) (skewSchedule G B h d n)) := by</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>   have hfinal : finalBudget (4*B) (skewSchedule G B h d n) = 0 := by</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>     rw [← roundBudget_zero B, skewSchedule_finalBudget]</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     exact Nat.div_eq_of_lt hstop</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   obtain ⟨Ps,hlen,hdisj,hcover,hbounds⟩ := exists_edge_partition G (4*B) hD</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     (skewSchedule G B h d n) (skewSchedule_expands G B h d n hd hn hleft hB) hfinal</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>   exact ⟨Ps,hlen.trans (skewSchedule_length G B h d n),hdisj,hcover,hbounds⟩</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a> </span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a> theorem pieceBudgets_append (D : ℕ) (ss : List (ℕ × ℕ)) (kb : ℕ × ℕ) :</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>     pieceBudgets D (ss ++ [kb]) = pieceBudgets D ss ++</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>       [(finalBudget D ss, finalBudget D ss * kb.2)] := by</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>   induction ss generalizing D with</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>   | nil =&gt; rfl</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   | cons a ss ih =&gt; simpa [pieceBudgets, finalBudget] using congrArg (List.cons (D,D*a.2)) (ih a.1)</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a> </span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a> /-- The generic iteration certificate has exactly the intended scale-by-scale</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> integer degree caps. -/</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a> theorem pieceBudgets_skewSchedule (G : Graph L R) (B h : ℕ) (d n : ℝ) :</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     pieceBudgets (4*B) (skewSchedule G B h d n) =</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>       List.ofFn (fun i : Fin h =&gt; (roundBudget B i.val,</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>         roundBudget B i.val * scaleCapacity G d n (scaleNat i.val))) := by</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   induction h with</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>   | zero =&gt; simp [skewSchedule, pieceBudgets]</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>   | succ h ih =&gt;</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>     have heq : skewSchedule G B (h+1) d n = skewSchedule G B h d n ++</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>         [(roundBudget B (h+1), scaleCapacity G d n (scaleNat h))] := by</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>       unfold skewSchedule</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>       rw [List.ofFn_succ&#x27;]</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>       simp only [List.concat_eq_append]</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>       rfl</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>     rw [heq, pieceBudgets_append, ih]</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     have hfinal : finalBudget (4*B) (skewSchedule G B h d n) = roundBudget B h := by</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>       rw [← roundBudget_zero B, skewSchedule_finalBudget]</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>     rw [hfinal, List.ofFn_succ&#x27;]</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     simp only [List.concat_eq_append]</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>     rfl</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a> </span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a> theorem scaleNat_ge_two (i : ℕ) : 2 ≤ scaleNat i := by</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>   have hp : 1 ≤ 2^(i+1) := Nat.one_le_iff_ne_zero.mpr (pow_ne_zero _ (by decide))</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>   simpa [scaleNat] using Nat.pow_le_pow_right (by decide : 0 &lt; 2) hp</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a> </span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a> theorem roundBudget_mul_scale (B i : ℕ) : roundBudget B i * scaleNat i ≤ 16*B :=</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>   Nat.div_mul_le_self _ _</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a> </span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a> theorem roundBudget_real_le (B i : ℕ) :</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>     (roundBudget B i : ℝ) ≤ (16*B : ℝ) / scaleNat i := by</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a>   have hp : (0:ℝ) &lt; scaleNat i := by exact_mod_cast scaleNat_pos i</span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a>   apply (le_div_iff₀ hp).mpr</span>
+<span class="line" id="L142"><a class="num" href="#L142"> 142</a>   exact_mod_cast roundBudget_mul_scale B i</span>
+<span class="line" id="L143"><a class="num" href="#L143"> 143</a> </span>
+<span class="line" id="L144"><a class="num" href="#L144"> 144</a> /-- Integer rounding of the right capacity costs no extra constant, since each</span>
+<span class="line" id="L145"><a class="num" href="#L145"> 145</a> scale is at least two and the unrounded right-capacity factor is at least one. -/</span>
+<span class="line" id="L146"><a class="num" href="#L146"> 146</a> theorem rounded_capacity_product (B i : ℕ) (Q : ℝ) (hQ : 1 ≤ Q) :</span>
+<span class="line" id="L147"><a class="num" href="#L147"> 147</a>     ((roundBudget B i * ⌈Q⌉₊ : ℕ) : ℝ) ≤ 16*B*Q := by</span>
+<span class="line" id="L148"><a class="num" href="#L148"> 148</a>   have hscale : (2:ℝ) ≤ scaleNat i := by exact_mod_cast scaleNat_ge_two i</span>
+<span class="line" id="L149"><a class="num" href="#L149"> 149</a>   have hmul : (roundBudget B i : ℝ) * scaleNat i ≤ 16*B := by</span>
+<span class="line" id="L150"><a class="num" href="#L150"> 150</a>     exact_mod_cast roundBudget_mul_scale B i</span>
+<span class="line" id="L151"><a class="num" href="#L151"> 151</a>   have hnonneg : (0:ℝ) ≤ roundBudget B i := Nat.cast_nonneg _</span>
+<span class="line" id="L152"><a class="num" href="#L152"> 152</a>   have hsmall : (roundBudget B i : ℝ)*2 ≤ 16*B := by nlinarith</span>
+<span class="line" id="L153"><a class="num" href="#L153"> 153</a>   have hceil : (⌈Q⌉₊ : ℝ) ≤ 2*Q := by</span>
+<span class="line" id="L154"><a class="num" href="#L154"> 154</a>     have hh := Nat.ceil_lt_add_one (by linarith : 0 ≤ Q)</span>
+<span class="line" id="L155"><a class="num" href="#L155"> 155</a>     linarith</span>
+<span class="line" id="L156"><a class="num" href="#L156"> 156</a>   calc</span>
+<span class="line" id="L157"><a class="num" href="#L157"> 157</a>     _ = (roundBudget B i : ℝ) * (⌈Q⌉₊ : ℝ) := by norm_cast</span>
+<span class="line" id="L158"><a class="num" href="#L158"> 158</a>     _ ≤ (roundBudget B i : ℝ) * (2*Q) := mul_le_mul_of_nonneg_left hceil hnonneg</span>
+<span class="line" id="L159"><a class="num" href="#L159"> 159</a>     _ = ((roundBudget B i : ℝ)*2)*Q := by ring</span>
+<span class="line" id="L160"><a class="num" href="#L160"> 160</a>     _ ≤ 16*B*Q := mul_le_mul_of_nonneg_right hsmall (by linarith)</span>
+<span class="line" id="L161"><a class="num" href="#L161"> 161</a> </span>
+<span class="line" id="L162"><a class="num" href="#L162"> 162</a> /-- An explicit log-log number of matching-extraction rounds. -/</span>
+<span class="line" id="L163"><a class="num" href="#L163"> 163</a> def numberRounds (B : ℕ) : ℕ := Nat.log 2 (Nat.log 2 (16*B) + 1)</span>
+<span class="line" id="L164"><a class="num" href="#L164"> 164</a> </span>
+<span class="line" id="L165"><a class="num" href="#L165"> 165</a>  theorem numberRounds_suffices (B : ℕ) : 16*B &lt; scaleNat (numberRounds B) := by</span>
+<span class="line" id="L166"><a class="num" href="#L166"> 166</a>   have houter := Nat.lt_pow_succ_log_self (by decide : 1 &lt; 2) (16*B)</span>
+<span class="line" id="L167"><a class="num" href="#L167"> 167</a>   have hinner := Nat.lt_pow_succ_log_self (by decide : 1 &lt; 2) (Nat.log 2 (16*B) + 1)</span>
+<span class="line" id="L168"><a class="num" href="#L168"> 168</a>   exact houter.trans_le (Nat.pow_le_pow_right (by decide : 0 &lt; 2) (Nat.le_of_lt hinner))</span>
+<span class="line" id="L169"><a class="num" href="#L169"> 169</a> </span>
+<span class="line" id="L170"><a class="num" href="#L170"> 170</a> /-- A bounded-left-degree graph admits an exact partition with the explicit</span>
+<span class="line" id="L171"><a class="num" href="#L171"> 171</a> log-log piece count; no termination or expansion conclusion is assumed. -/</span>
+<span class="line" id="L172"><a class="num" href="#L172"> 172</a> theorem exists_loglog_skew_decomposition (G : Graph L R) (B : ℕ) (d n : ℝ)</span>
+<span class="line" id="L173"><a class="num" href="#L173"> 173</a>     (hd : 0 &lt; d) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L174"><a class="num" href="#L174"> 174</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n)</span>
+<span class="line" id="L175"><a class="num" href="#L175"> 175</a>     (hB : d ≤ 16*B) (hD : ∀ u, leftDegree G u ≤ 4*B) :</span>
+<span class="line" id="L176"><a class="num" href="#L176"> 176</a>     ∃ Ps : List (Graph L R), Ps.length = numberRounds B ∧ Ps.Pairwise Disjoint ∧</span>
+<span class="line" id="L177"><a class="num" href="#L177"> 177</a>       unionPieces Ps = G ∧</span>
+<span class="line" id="L178"><a class="num" href="#L178"> 178</a>       List.Forall₂ (fun P kb =&gt; (∀ u, leftDegree P u ≤ kb.1) ∧</span>
+<span class="line" id="L179"><a class="num" href="#L179"> 179</a>         (∀ v, rightDegree P v ≤ kb.2)) Ps</span>
+<span class="line" id="L180"><a class="num" href="#L180"> 180</a>         (pieceBudgets (4*B) (skewSchedule G B (numberRounds B) d n)) :=</span>
+<span class="line" id="L181"><a class="num" href="#L181"> 181</a>   exists_doubly_exponential_decomposition G B _ d n hd hn hleft hB hD (numberRounds_suffices B)</span>
+<span class="line" id="L182"><a class="num" href="#L182"> 182</a> </span>
+<span class="line" id="L183"><a class="num" href="#L183"> 183</a> /-- Structural existence part of the skew-biregular decomposition, stated with</span>
+<span class="line" id="L184"><a class="num" href="#L184"> 184</a> explicit real degree bounds and an exact log-log piece count. -/</span>
+<span class="line" id="L185"><a class="num" href="#L185"> 185</a> theorem exists_skew_biregular_partition (G : Graph L R) (B : ℕ) (d n : ℝ)</span>
+<span class="line" id="L186"><a class="num" href="#L186"> 186</a>     (hd : 0 &lt; d) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L187"><a class="num" href="#L187"> 187</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n)</span>
+<span class="line" id="L188"><a class="num" href="#L188"> 188</a>     (hB : d ≤ 16*B) (hD : ∀ u, leftDegree G u ≤ 4*B) :</span>
+<span class="line" id="L189"><a class="num" href="#L189"> 189</a>     ∃ Ps : List (Graph L R), Ps.length = numberRounds B ∧ Ps.Pairwise Disjoint ∧</span>
+<span class="line" id="L190"><a class="num" href="#L190"> 190</a>       unionPieces Ps = G ∧ ∀ i : Fin Ps.length,</span>
+<span class="line" id="L191"><a class="num" href="#L191"> 191</a>         (∀ u, (leftDegree (Ps.get i) u : ℝ) ≤ 16*B/(scaleNat i.val)) ∧</span>
+<span class="line" id="L192"><a class="num" href="#L192"> 192</a>         (∀ v, (rightDegree (Ps.get i) v : ℝ) ≤</span>
+<span class="line" id="L193"><a class="num" href="#L193"> 193</a>           16*B*((scaleNat i.val : ℝ)*Real.log n)^(2*graphLogSkewness G d n)) := by</span>
+<span class="line" id="L194"><a class="num" href="#L194"> 194</a>   obtain ⟨Ps,hlen,hdisj,hcover,hbounds⟩ := exists_loglog_skew_decomposition G B d n hd hn hleft hB hD</span>
+<span class="line" id="L195"><a class="num" href="#L195"> 195</a>   rw [pieceBudgets_skewSchedule] at hbounds</span>
+<span class="line" id="L196"><a class="num" href="#L196"> 196</a>   refine ⟨Ps,hlen,hdisj,hcover,?_⟩</span>
+<span class="line" id="L197"><a class="num" href="#L197"> 197</a>   intro i</span>
+<span class="line" id="L198"><a class="num" href="#L198"> 198</a>   have hi : i.val &lt; numberRounds B := by rw [← hlen]; exact i.isLt</span>
+<span class="line" id="L199"><a class="num" href="#L199"> 199</a>   have hh := hbounds.get i.isLt (by simp [hi])</span>
+<span class="line" id="L200"><a class="num" href="#L200"> 200</a>   simp only [List.get_eq_getElem, List.getElem_ofFn] at hh</span>
+<span class="line" id="L201"><a class="num" href="#L201"> 201</a>   constructor</span>
+<span class="line" id="L202"><a class="num" href="#L202"> 202</a>   · intro u</span>
+<span class="line" id="L203"><a class="num" href="#L203"> 203</a>     exact (by exact_mod_cast hh.1 u : (leftDegree (Ps.get i) u : ℝ) ≤ roundBudget B i.val).trans</span>
+<span class="line" id="L204"><a class="num" href="#L204"> 204</a>       (roundBudget_real_le B i.val)</span>
+<span class="line" id="L205"><a class="num" href="#L205"> 205</a>   · intro v</span>
+<span class="line" id="L206"><a class="num" href="#L206"> 206</a>     have hQ : (1:ℝ) ≤ ((scaleNat i.val : ℝ)*Real.log n)^(2*graphLogSkewness G d n) := by</span>
+<span class="line" id="L207"><a class="num" href="#L207"> 207</a>       have hs : (2:ℝ) ≤ scaleNat i.val := by exact_mod_cast scaleNat_ge_two i.val</span>
+<span class="line" id="L208"><a class="num" href="#L208"> 208</a>       apply Real.one_le_rpow</span>
+<span class="line" id="L209"><a class="num" href="#L209"> 209</a>       · nlinarith</span>
+<span class="line" id="L210"><a class="num" href="#L210"> 210</a>       · exact mul_nonneg (by norm_num) (graphLogSkewness_nonneg G d n)</span>
+<span class="line" id="L211"><a class="num" href="#L211"> 211</a>     have hright : (rightDegree (Ps.get i) v : ℝ) ≤</span>
+<span class="line" id="L212"><a class="num" href="#L212"> 212</a>         ((roundBudget B i.val * scaleCapacity G d n (scaleNat i.val) : ℕ) : ℝ) := by</span>
+<span class="line" id="L213"><a class="num" href="#L213"> 213</a>       exact_mod_cast hh.2 v</span>
+<span class="line" id="L214"><a class="num" href="#L214"> 214</a>     exact hright.trans (rounded_capacity_product B i.val _ hQ)</span>
+<span class="line" id="L215"><a class="num" href="#L215"> 215</a> </span>
+<span class="line" id="L216"><a class="num" href="#L216"> 216</a> end GraphChoices.Peeling</span></pre></html>

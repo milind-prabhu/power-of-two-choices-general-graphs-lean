@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PreprocessedShattering.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PreprocessedShattering.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ConcreteShattering</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Analysis.Complex.ExponentialBounds</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! The sampled-degree mean at the paper&#x27;s preprocessing scale. This gives</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> log-squared shattering directly from M ≤ d log N and 2|E| = N d for T ≤ N.</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> theorem real_log_le_nat_log_shift (N : ℕ) (hN : 0 &lt; N) :</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     Real.log (N:ℝ) ≤ (Nat.log 2 N+1 : ℕ) := by</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   have hNr : (0:ℝ) &lt; N := by exact_mod_cast hN</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   have hp : (N:ℝ) ≤ (2:ℝ)^(Nat.log 2 N+1) := by</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     exact_mod_cast (Nat.lt_pow_succ_log_self (by decide : 1 &lt; 2) N).le</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hlog := Real.log_le_log hNr hp</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   rw [Real.log_pow] at hlog</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have htwo : Real.log 2 ≤ 1 := by</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     have hh := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) &lt; 2)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     linarith</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   have hmul := mul_le_mul_of_nonneg_left htwo (Nat.cast_nonneg (Nat.log 2 N+1) : (0:ℝ) ≤ (Nat.log 2 N+1 : ℕ))</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   exact hlog.trans (by simpa using hmul)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> </span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> theorem preprocessing_mean_bound (M T N E : ℕ) (d : ℝ)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     (hE : 0 &lt; E) (hT : T ≤ N)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     (hdegree : (M:ℝ) ≤ d*Real.log (N:ℝ))</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     (haverage : 2*(E:ℝ) = (N:ℝ)*d) :</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     (T:ℝ)*M/E ≤ 2*Real.log (N:ℝ) := by</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   have hEr : (0:ℝ) &lt; E := by exact_mod_cast hE</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   apply (div_le_iff₀ hEr).mpr</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   calc</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     (T:ℝ)*M ≤ (N:ℝ)*M := mul_le_mul_of_nonneg_right (by exact_mod_cast hT) (Nat.cast_nonneg M)</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     _ ≤ (N:ℝ)*(d*Real.log (N:ℝ)) := mul_le_mul_of_nonneg_left hdegree (Nat.cast_nonneg N)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     _ = (2*(E:ℝ))*Real.log (N:ℝ) := by rw [haverage]; ring</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     _ = _ := by ring</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> </span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> theorem preprocessed_mean_below_cutoff (N c : ℕ) (μ : ℝ) (hN : 0 &lt; N)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (hc : 5 ≤ c) (hμ : 0 ≤ μ) (hmean : μ ≤ 2*Real.log (N:ℝ)) :</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     Real.exp 1*μ ≤ (polynomialCutoff N c : ℝ) := by</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   have he : Real.exp 1 ≤ 3 := by linarith [Real.exp_one_lt_d9]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   have hlog := real_log_le_nat_log_shift N hN</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   have hc&#x27; : (6:ℝ) ≤ (c:ℝ)+1 := by exact_mod_cast (by omega : 6 ≤ c+1)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   calc</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     _ ≤ 3*μ := mul_le_mul_of_nonneg_right he hμ</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     _ ≤ 3*(2*Real.log (N:ℝ)) := mul_le_mul_of_nonneg_left hmean (by norm_num)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     _ ≤ 6*(Nat.log 2 N+1 : ℕ) := by linarith</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     _ ≤ ((c:ℝ)+1)*(Nat.log 2 N+1 : ℕ) :=</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>       mul_le_mul_of_nonneg_right hc&#x27; (Nat.cast_nonneg _)</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     _ = _ := by simp only [polynomialCutoff, Nat.cast_mul, Nat.cast_add, Nat.cast_one]</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> open ThresholdGreedy</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   [Fintype L] [Fintype R] [Fintype C]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> </span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> /-- Finite form of the component-shattering lemma in the preprocessed regime.</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a> All coverage and sampling-tail premises are proved, including the source mean. -/</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a> theorem preprocessed_log_squared_component_tail (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D M T N c : ℕ) (f : C → ℝ) (d : ℝ)</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     (hsource : ∀ e, ((encode e).left, (encode e).right) ∈ H (encode e).cls)</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     (hDL : ∀ u a, (sourceBucket encode u a).card ≤ DL a)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (hL : ∀ a u, Peeling.leftDegree (H a) u ≤ D)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     (hR : ∀ a v, Peeling.rightDegree (H a) v ≤ DR a)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     (hM : ∀ u, (leftSourceBucket encode u).card ≤ M)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     (hT : 0 &lt; T) (hTN : T ≤ N) (hf : ∀ a, 1 &lt; f a)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     (hN : 0 &lt; N) (hLN : Fintype.card L ≤ N) (hRN : Fintype.card R ≤ N)</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (hc : 5 ≤ c) (hdegree : (M:ℝ) ≤ d*Real.log (N:ℝ))</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     (haverage : 2*(Fintype.card E : ℝ) = (N:ℝ)*d) :</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     eventProbability (largeComponentEvent encode (automaticThresholds (E := E) DL DR D T f)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       T (3*(polynomialCutoff N c+1)^2)) ≤ 3/(N:ℝ)^c := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   apply log_squared_component_tail H encode DL DR D M T N c f hsimple hsource hDL hL hR hM hT hf hN hLN hRN</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   have hmean := preprocessing_mean_bound M T N (Fintype.card E) d Fintype.card_pos hTN hdegree haverage</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hbound := preprocessed_mean_below_cutoff N c ((T:ℝ)*M/Fintype.card E) hN hc (by positivity) hmean</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   convert hbound using 1 &lt;;&gt; ring</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a> </span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a> end GraphChoices.Patterns</span></pre></html>

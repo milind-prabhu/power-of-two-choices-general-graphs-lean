@@ -1,0 +1,105 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ShortHorizonGreedy.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ShortHorizonGreedy.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.RateCompetitive</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> theorem greedy_bound_by_arrivals {V : Type*} [Fintype V] [DecidableEq V] {T : ℕ}</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a>     (I : Instance V T) (a : Orientation T) (hg : IsGreedy I a) (hT : 0 &lt; T) :</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>     maxLoad I a ≤ 2*opt I*(Nat.log 2 (2*T)+1) := by</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>   let S := univ.image I.left ∪ univ.image I.right</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   have hl (t : Fin T) : I.left t ∈ S := mem_union_left _ (mem_image.mpr ⟨t,mem_univ _,rfl⟩)</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   have hr (t : Fin T) : I.right t ∈ S := mem_union_right _ (mem_image.mpr ⟨t,mem_univ _,rfl⟩)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   have hc : S.card ≤ 2*T := by</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     have h1 := card_image_le (f := I.left) (s := univ)</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     have h2 := card_image_le (f := I.right) (s := univ)</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>     have h3 := card_union_le (univ.image I.left) (univ.image I.right)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     simp only [card_univ, Fintype.card_fin] at h1 h2</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     dsimp only [S]</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     omega</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   apply (maxLoad_le_iff _ _ _).mpr</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   intro v</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   by_cases hv : v ∈ S</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   · exact (greedy_load_lt_of_closed I a hg S (fun t =&gt; ⟨fun _ =&gt; hr t,fun _ =&gt; hl t⟩)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       hT (Nat.log 2 (2*T)+1) (hc.trans_lt (Nat.lt_pow_succ_log_self (by decide) _)) v hv).le</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   · have hz : load I a v = 0 := by</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       apply card_eq_zero.mpr</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>       apply Finset.eq_empty_iff_forall_not_mem.mpr</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       intro t ht</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       have hd := (mem_filter.mp ht).2</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>       have hm : destination I a t ∈ S := by</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>         rcases destination_endpoint I a t with he | he</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>         · rw [he]; exact hl t</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>         · rw [he]; exact hr t</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>       exact hv (hd ▸ hm)</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     rw [hz]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     omega</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> </span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> end GraphChoices</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> </span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> open Finset ThresholdGreedy</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> def simpleEncode (G : Graph L R) (e : G) : Arrival L R Unit := ⟨e.val.1,e.val.2,()⟩</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> def simpleGreedyPolicy (G : Graph L R) : OnlinePolicy G := thresholdPolicy (simpleEncode G) (fun _ =&gt; 0)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> </span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> theorem simpleGreedyPolicy_isGreedy (G : Graph L R) [Nonempty G] {T : ℕ} (ω : Fin T → G) :</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     IsGreedy ((graphBase G).sample ω) (onlineOrientation (simpleGreedyPolicy G) ω) := by</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   apply isGreedy_of_execution _ _ (policyPrefixLoad (simpleEncode G) (fun _ =&gt; 0) ω)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (policyPrefixLoad_zero _ _ ω) (policyPrefixLoad_step _ _ ω)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   intro t v hv</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   let es := (((List.ofFn ω).take t.val).map (simpleEncode G))</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   let s := run (fun _ : Unit =&gt; 0) es</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   have hzero (u : L) : ∑ i : Unit, s.threshold u i = 0 := by</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     have hh := threshold_budget (fun _ : Unit =&gt; 0) es u</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     simpa only [sum_const_zero, Nat.le_zero] using hh</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   have hload (u : L) : stateLoad s (Sum.inl u) = s.greedyLeft u := by simp only [stateLoad, Sum.elim_inl, hzero, zero_add]</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   change stateLoad s (if stepChoice (fun _ : Unit =&gt; 0) s (simpleEncode G (ω t)) then</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     Sum.inl (ω t).val.1 else Sum.inr (ω t).val.2) ≤ stateLoad s v</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   change v = Sum.inl (ω t).val.1 ∨ v = Sum.inr (ω t).val.2 at hv</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   simp only [stepChoice, Nat.not_lt_zero, ↓reduceIte, simpleEncode, decide_eq_true_eq]</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   by_cases hh : s.greedyLeft (ω t).val.1 &lt; s.greedyRight (ω t).val.2</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   · rw [if_pos hh, hload]</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     rcases hv with rfl | rfl</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     · rw [hload]</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     · exact hh.le</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   · rw [if_neg hh]</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     rcases hv with rfl | rfl</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     · rw [hload]</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       exact le_of_not_gt hh</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     · exact le_rfl</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a> </span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a> theorem short_horizon_policy (G : Graph L R) [Nonempty G] (N T : ℕ)</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     (hT : 0 &lt; T) (hlog : 2 ≤ Real.log (N:ℝ)) (hshort : (T:ℝ) ≤ Real.log (N:ℝ)) :</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     expectedCost (graphBase G) (onlineOrientation (T := T) (simpleGreedyPolicy G)) ≤</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>       12*loglogFactor N*expectedOpt (graphBase G) T := by</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   have hgreedy : expectedCost (graphBase G) (onlineOrientation (T := T) (simpleGreedyPolicy G)) ≤</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>       (2*(Nat.log 2 (2*T)+1):ℕ)*expectedOpt (graphBase G) T := by</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     unfold expectedCost expectedOpt</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     rw [← average_mul]</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     apply average_mono</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     intro ω</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     have hh := greedy_bound_by_arrivals ((graphBase G).sample ω) _ (simpleGreedyPolicy_isGreedy G ω) hT</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     exact_mod_cast (by nlinarith : maxLoad ((graphBase G).sample ω) (onlineOrientation (simpleGreedyPolicy G) ω) ≤</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>       (2*(Nat.log 2 (2*T)+1))*opt ((graphBase G).sample ω))</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   have hln := nat_log_le_twice_real_log (2*T) (by omega)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>   have hTp : (0:ℝ) &lt; T := by exact_mod_cast hT</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   have hlogT := Real.log_le_log hTp hshort</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>   have hloglog := Real.log_le_log (by linarith : 0 &lt; Real.log (N:ℝ)) (by linarith : Real.log (N:ℝ) ≤ 1+Real.log (N:ℝ))</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>   have hN2 : (2:ℝ) ≤ N := by</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     by_contra hn</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     have hnat : N &lt; 2 := by exact_mod_cast lt_of_not_ge hn</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>     have hz : N = 0 ∨ N = 1 := by omega</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>     rcases hz with rfl | rfl &lt;;&gt; norm_num at hlog</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   have hfactor : loglogFactor N = 1+Real.log (1+Real.log (N:ℝ)) := by unfold loglogFactor; rw [max_eq_right hN2]</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>   have hlog2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   rw [Nat.cast_mul, Real.log_mul (by norm_num) hTp.ne&#x27;] at hln</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   norm_num only [Nat.cast_ofNat] at hln</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hcoeff : (((2*(Nat.log 2 (2*T)+1):ℕ):ℝ)) ≤ 12*loglogFactor N := by</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     push_cast</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     rw [hfactor]</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>     have hh := Real.log_nonneg (show 1 ≤ 1+Real.log (N:ℝ) by linarith)</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     linarith</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>   exact hgreedy.trans (mul_le_mul_of_nonneg_right hcoeff (expectedOpt_nonneg _ _))</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a> </span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a> end GraphChoices.Peeling</span></pre></html>

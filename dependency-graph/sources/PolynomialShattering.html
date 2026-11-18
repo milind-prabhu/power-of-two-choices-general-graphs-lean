@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PolynomialShattering.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PolynomialShattering.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ComponentTreeEvents</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Explicit logarithmic cutoffs, inverse-polynomial failure probabilities,</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> and the expected-load consequence. The canonical-coverage containment remains</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> an explicit premise, so these are not unconditional shattering theorems. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> def polynomialCutoff (N c : ℕ) : ℕ := (c+1)*(Nat.log 2 N+1)</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> theorem polynomialCutoff_pos (N c : ℕ) : 0 &lt; polynomialCutoff N c := by</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   unfold polynomialCutoff</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   positivity</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> </span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> theorem polynomialCutoff_power (N c : ℕ) : N^(c+1) ≤ 2^polynomialCutoff N c := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hN := (Nat.lt_pow_succ_log_self (by decide : 1 &lt; 2) N).le</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   calc</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     _ ≤ (2^(Nat.log 2 N+1))^(c+1) := Nat.pow_le_pow_left hN _</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     _ = _ := by rw [← pow_mul]; congr 1; unfold polynomialCutoff; ring</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> </span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> theorem geometric_tail_le_polynomial (N c k A : ℕ) (hN : 0 &lt; N) (hA : A ≤ N)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     (hk : polynomialCutoff N c ≤ k) (r : ℝ) (hr : 0 ≤ r) (hrsmall : r ≤ 1/2) :</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     (A:ℝ)*r^k ≤ 1/(N:ℝ)^c := by</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   have hNr : (0:ℝ) &lt; N := by exact_mod_cast hN</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   have hexp : (N:ℝ)^(c+1) ≤ (2:ℝ)^k := by</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     exact_mod_cast (polynomialCutoff_power N c).trans (Nat.pow_le_pow_right (by decide : 0 &lt; 2) hk)</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   calc</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     _ ≤ (A:ℝ)*((1:ℝ)/2)^k := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hr hrsmall k) (Nat.cast_nonneg _)</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     _ = (A:ℝ)/(2:ℝ)^k := by rw [div_pow]; ring</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     _ ≤ (N:ℝ)/(2:ℝ)^k := div_le_div_of_nonneg_right (by exact_mod_cast hA) (by positivity)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     _ ≤ (N:ℝ)/(N:ℝ)^(c+1) := div_le_div_of_nonneg_left hNr.le (by positivity) hexp</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     _ = _ := by rw [pow_succ]; field_simp</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> end GraphChoices</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> </span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> open ThresholdGreedy</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   [Fintype L] [Fintype R] [Fintype C]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> </span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> /-- Conditional component shattering with exact cutoff and failure constant.</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> The source of the remaining coverage assumption is stated in the module header. -/</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> theorem largeComponent_polynomial_tail_of_coverage (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (encode : E → Arrival L R C) (α : C → ℕ) (T D k B N c : ℕ)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     (hN : 0 &lt; N) (hL : Fintype.card L ≤ N) (hR : Fintype.card R ≤ N)</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     (hD : polynomialCutoff N c ≤ D+1) (hk : polynomialCutoff N c ≤ k)</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     (hmean : ∀ u, Real.exp 1*T*(((leftSourceBucket encode u).card : ℝ)/Fintype.card E)/(D+1) ≤ 1/2)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (hcoverage : largeHeavyTreeEvent encode α T k ⊆ largeShapeEvent H encode α T k B)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (hshape : ∀ j ≤ B, eventProbability (heavyShapeEvent H encode α T (k+j)) ≤</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       (Fintype.card R : ℝ)/2^(k+j)) :</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     eventProbability (largeComponentEvent encode α T ((D+1)*(k+1))) ≤ 3/(N:ℝ)^c := by</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   have h := largeComponent_tail_of_canonical_coverage H encode α T D k B (1/2) hmean hcoverage hshape</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   have hd := geometric_tail_le_polynomial N c (D+1) (Fintype.card L) hN hL hD (1/2) (by norm_num) le_rfl</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   have hr := geometric_tail_le_polynomial N c k (Fintype.card R) hN hR hk (1/2) (by norm_num) le_rfl</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   have heq : (Fintype.card R : ℝ)*((1:ℝ)/2)^k = (Fintype.card R : ℝ)/2^k := by</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     rw [div_pow]; ring</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   rw [heq] at hr</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   calc</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     _ ≤ _ := h</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     _ = (Fintype.card L : ℝ)*((1:ℝ)/2)^(D+1) + 2*((Fintype.card R : ℝ)/2^k) := by ring</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     _ ≤ 1/(N:ℝ)^c + 2*(1/(N:ℝ)^c) := add_le_add hd (mul_le_mul_of_nonneg_left hr (by norm_num))</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     _ = _ := by ring</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> </span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> /-- The fully explicit expectation reduction from a canonical-coverage proof.</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> No main competitive result is claimed while that premise remains open. -/</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> theorem expected_load_polynomial_of_coverage (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     (encode : E → Arrival L R C) (α : C → ℕ) (T D k B N c : ℕ)</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     (hN : 0 &lt; N) (hL : Fintype.card L ≤ N) (hR : Fintype.card R ≤ N)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (hD : polynomialCutoff N c ≤ D+1) (hk : polynomialCutoff N c ≤ k)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     (hmean : ∀ u, Real.exp 1*T*(((leftSourceBucket encode u).card : ℝ)/Fintype.card E)/(D+1) ≤ 1/2)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     (hcoverage : largeHeavyTreeEvent encode α T k ⊆ largeShapeEvent H encode α T k B)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     (hshape : ∀ j ≤ B, eventProbability (heavyShapeEvent H encode α T (k+j)) ≤</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>       (Fintype.card R : ℝ)/2^(k+j)) :</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     expectedTotalMaxLoad encode α T ≤ (∑ c, (α c : ℝ)) +</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>       (2*(Nat.log 2 ((D+1)*(k+1))+1) : ℕ)*expectedReplayOpt encode T +</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>       3*T/(N:ℝ)^c := by</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   have ht := largeComponent_polynomial_tail_of_coverage H encode α T D k B N c hN hL hR hD hk</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     hmean hcoverage hshape</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   have h := expected_load_of_component_tail encode α T _ _ ht</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   convert h using 1 &lt;;&gt; ring</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a> </span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> end GraphChoices.Patterns</span></pre></html>

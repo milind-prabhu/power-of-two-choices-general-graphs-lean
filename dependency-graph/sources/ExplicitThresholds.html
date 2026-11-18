@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExplicitThresholds.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ExplicitThresholds.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ShatteringBounds</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Real.Archimedean</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! An explicit rounded threshold satisfying both local numerical conditions.</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> This finite formula is not yet bounded by the paper&#x27;s asymptotic budget. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> noncomputable def sufficientThreshold (mean f logRequirement : ℝ) : ℕ :=</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>   ⌈max (f * mean) logRequirement⌉₊ + 1</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> theorem sufficientThreshold_pos (mean f z : ℝ) : 0 &lt; sufficientThreshold mean f z := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   unfold sufficientThreshold</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   omega</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> theorem sufficientThreshold_dominates (mean f z : ℝ) :</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     max (f*mean) z ≤ (sufficientThreshold mean f z : ℝ) := by</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   have h := Nat.le_ceil (max (f*mean) z)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   simp only [sufficientThreshold, Nat.cast_add, Nat.cast_one]</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   linarith</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> theorem sufficientThreshold_base (mean f z : ℝ) (hf : 0 &lt; f) :</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     mean / sufficientThreshold mean f z ≤ 1/f := by</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   have hpos : (0:ℝ) &lt; sufficientThreshold mean f z := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     exact_mod_cast sufficientThreshold_pos mean f z</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   apply (div_le_div_iff₀ hpos hf).mpr</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have h := (le_max_left (f*mean) z).trans (sufficientThreshold_dominates mean f z)</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   nlinarith</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> theorem sufficientThreshold_log (mean f z : ℝ) :</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     z ≤ (sufficientThreshold mean f z : ℝ) :=</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   (le_max_right (f*mean) z).trans (sufficientThreshold_dominates mean f z)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> end GraphChoices</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> </span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> open ThresholdGreedy</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   [Fintype L] [Fintype R] [Fintype C]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> </span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> noncomputable def explicitThresholds (DL DR : C → ℕ) (T : ℕ) (f : C → ℝ) (b : ℝ) : C → ℕ :=</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   fun c =&gt; sufficientThreshold (Real.exp 1*T*(DL c : ℝ)/Fintype.card E) (f c)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     (Real.log (((DR c : ℝ)*((T:ℝ)/Fintype.card E))/b) / Real.log (f c))</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> </span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> /-- Geometric pattern-union decay for concrete rounded integer thresholds;</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> no local threshold inequalities are left as premises. -/</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> theorem heavyShape_decay_explicit (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D T m : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     (b r : ℝ) (hT : 0 &lt; T) (hb : 0 &lt; b) (hr : 0 ≤ r) (hbr : b ≤ r)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     (hpair : (D : ℝ)*((T:ℝ)/Fintype.card E)*b ≤ r^2)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     (hf : ∀ c, 1 &lt; f c) :</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     eventProbability (heavyShapeEvent H encode (explicitThresholds (E := E) DL DR T f b) T m) ≤</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>       (Fintype.card R : ℝ)*(4*(Fintype.card C : ℝ)*r)^m := by</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   apply heavyShape_decay_of_thresholds H encode _ DL DR D f hsimple hDL hL hR</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     b r hT hb hr hbr hpair hf</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   · intro c</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     exact sufficientThreshold_base _ _ _ (by linarith [hf c])</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   · intro c _</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     exact sufficientThreshold_log _ _ _</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> end GraphChoices.Patterns</span></pre></html>

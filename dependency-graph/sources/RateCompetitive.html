@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RateCompetitive.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · RateCompetitive.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.HorizonDecomposition</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> noncomputable def rateReference (G : Graph L R) (d : ℝ) : ℕ :=</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>   (graphBase G).referenceCap+⌈d/16⌉₊</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> theorem rateReference_bounds (G : Graph L R) [Nonempty G] (N T : ℕ) (d : ℝ)</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     (hT : 0 &lt; T) (hd : 0 &lt; d) (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     (haverage : 2*(G.card:ℝ) = (T:ℝ)*d) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     d ≤ 16*(rateReference G d:ℝ) ∧ rateReference G d ≤ N^2 ∧</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>       (rateReference G d:ℝ)*((T:ℝ)/G.card) ≤ 6*expectedOpt (graphBase G) T := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hTr : (1:ℝ) ≤ T := by exact_mod_cast hT</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have hM : (0:ℝ) &lt; G.card := by</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     exact_mod_cast (show 0 &lt; G.card by simpa only [← Fintype.card_coe] using Fintype.card_pos (α := G))</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   have hdM : d ≤ 2*(G.card:ℝ) := by nlinarith</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   have hceilM : ⌈d/16⌉₊ ≤ G.card := Nat.ceil_le.mpr (by linarith)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   have hbaseM : (graphBase G).referenceCap ≤ G.card := by simpa only [Fintype.card_coe] using (graphBase G).referenceCap_le_edges</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   have hBM : rateReference G d ≤ 2*G.card := by unfold rateReference; omega</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have hMprod : G.card ≤ Fintype.card L*Fintype.card R := by simpa only [Fintype.card_prod] using card_le_univ G</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   have hsum : Fintype.card L+Fintype.card R ≤ N := by simpa only [Fintype.card_sum] using hvertices</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   have hM2 : 2*G.card ≤ N^2 := by nlinarith [Nat.mul_self_le_mul_self hsum]</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   have hc := Nat.le_ceil (d/16)</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have hcap : d ≤ 16*(rateReference G d:ℝ) := by</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     unfold rateReference</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     push_cast</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     have hbase : (0:ℝ) ≤ (graphBase G).referenceCap := Nat.cast_nonneg _</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     linarith</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   refine ⟨hcap, hBM.trans hM2, ?_⟩</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   have hceil : (⌈d/16⌉₊:ℝ) ≤ d/16+1 := (Nat.ceil_lt_add_one (by linarith : 0 ≤ d/16)).le</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   have hz : 0 ≤ (T:ℝ)/G.card := by positivity</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   have hh := mul_le_mul_of_nonneg_right hceil hz</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   have heq : (d/16)*((T:ℝ)/G.card) = 1/8 := by</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     apply (eq_div_iff (by norm_num : (8:ℝ) ≠ 0)).mpr</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     field_simp</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     nlinarith</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   have hb := expected_reference_cap_bound (graphBase G) T</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   have he := expected_edge_rate_le_two_opt (graphBase G) T</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   rw [Fintype.card_coe] at hb he</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   have ho := expectedOpt_ge_one (graphBase G) T hT</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   unfold rateReference</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   push_cast</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   rw [add_mul]</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   nlinarith</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> </span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> theorem exists_rate_competitive_policy (G : Graph L R) [Nonempty G] (N T : ℕ) (d : ℝ)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (hT : 0 &lt; T) (hd : 0 &lt; d) (hlog : 2 ≤ Real.log (N:ℝ))</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (hlogT : Real.log (N:ℝ) ≤ T) (hTN : T ≤ N)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     (hleft : ∀ u, (leftDegree G u:ℝ) ≤ d*Real.log (N:ℝ))</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (hD : ∀ u, leftDegree G u ≤ 4*(graphBase G).referenceCap)</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     (haverage : 2*(G.card:ℝ) = (T:ℝ)*d) :</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     ∃ p : OnlinePolicy G, expectedCost (graphBase G) (onlineOrientation (T := T) p) ≤</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>       15000*loglogFactor N*expectedOpt (graphBase G) T := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   obtain ⟨hcap,hBsquare,hBmean⟩ := rateReference_bounds G N T d hT hd hvertices haverage</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   have hBbase : (graphBase G).referenceCap ≤ rateReference G d := by unfold rateReference; omega</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   obtain ⟨P⟩ := exists_preparedDecomposition G (rateReference G d) N d hd (by linarith) hleft hcap</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     (fun u =&gt; (hD u).trans (Nat.mul_le_mul_left 4 hBbase))</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   refine ⟨P.policy T, ?_⟩</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   have hh := P.expected_cost_horizon T hT hTN hvertices haverage hBsquare</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   have hs := graphLogSkewness_le_eight_expectedOpt_horizon G N T d hd hlog hlogT hleft hvertices haverage</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   have ho := expectedOpt_ge_one (graphBase G) T hT</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   have hQ : (1:ℝ) ≤ iteratedLog N := by exact_mod_cast iteratedLog_pos N</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   have hsum : (rateReference G d:ℝ)*((T:ℝ)/G.card)+graphLogSkewness G d (N:ℝ)+1 ≤</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>       15*expectedOpt (graphBase G) T := by linarith</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   have hcost : expectedCost (graphBase G) (onlineOrientation (T := T) (P.policy T)) ≤</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       5000*(iteratedLog N:ℝ)*expectedOpt (graphBase G) T := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     have hm := mul_le_mul_of_nonneg_right hsum (by positivity : 0 ≤ 320*(iteratedLog N:ℝ))</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     have hqe : 1 ≤ (iteratedLog N:ℝ)*expectedOpt (graphBase G) T := by nlinarith</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     nlinarith</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   apply hcost.trans</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   have hcomp := iteratedLog_le_real_factor N (by linarith)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   have hm := mul_le_mul_of_nonneg_right hcomp (show 0 ≤ 5000*expectedOpt (graphBase G) T by positivity)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   nlinarith</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> </span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> end GraphChoices.Peeling</span></pre></html>

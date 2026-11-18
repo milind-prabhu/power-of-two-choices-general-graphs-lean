@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SourceRelabel.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · SourceRelabel.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ShortHorizonGreedy</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Changing edge-label names preserves both sampling and nonanticipating</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> policies. A once-per-base-edge instance identifies the rounded density cap. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> open Finset</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> variable {V E F : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>   [Fintype E] [Fintype F] [DecidableEq E] [DecidableEq F] [Nonempty E] [Nonempty F]</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> theorem relabel_sample (G : BaseGraph V E) (H : BaseGraph V F) (e : E ≃ F)</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     (hl : ∀ x, H.left (e x) = G.left x) (hr : ∀ x, H.right (e x) = G.right x)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     {T : ℕ} (ω : Fin T → E) : H.sample (fun t =&gt; e (ω t)) = G.sample ω := by</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   apply Instance.ext &lt;;&gt; funext t</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   · exact hl (ω t)</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   · exact hr (ω t)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> </span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> theorem relabel_expectedOpt (G : BaseGraph V E) (H : BaseGraph V F) (e : E ≃ F)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     (hl : ∀ x, H.left (e x) = G.left x) (hr : ∀ x, H.right (e x) = G.right x) (T : ℕ) :</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     expectedOpt G T = expectedOpt H T := by</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   unfold expectedOpt</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   rw [← average_equiv (Equiv.arrowCongr (Equiv.refl (Fin T)) e)]</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   congr 1</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   funext ω</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   congr 1</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   change opt (G.sample ω) = opt (H.sample (fun t =&gt; e (ω t)))</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   rw [relabel_sample G H e hl hr ω]</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> def pullbackPolicy (e : E ≃ F) (p : OnlinePolicy F) : OnlinePolicy E :=</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   fun history x =&gt; p (history.map e) (e x)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> theorem pullback_orientation (e : E ≃ F) (p : OnlinePolicy F) {T : ℕ} (ω : Fin T → E) :</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     onlineOrientation (pullbackPolicy e p) ω = onlineOrientation p (fun t =&gt; e (ω t)) := by</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   funext t</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   simp only [onlineOrientation, pullbackPolicy, List.map_take, List.map_ofFn, Function.comp_def]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> </span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> theorem relabel_expectedCost (G : BaseGraph V E) (H : BaseGraph V F) (e : E ≃ F)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hl : ∀ x, H.left (e x) = G.left x) (hr : ∀ x, H.right (e x) = G.right x)</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     (T : ℕ) (p : OnlinePolicy F) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     expectedCost G (onlineOrientation (T := T) (pullbackPolicy e p)) =</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>       expectedCost H (onlineOrientation (T := T) p) := by</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   unfold expectedCost</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   rw [← average_equiv (Equiv.arrowCongr (Equiv.refl (Fin T)) e)]</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   congr 1</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   funext ω</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   rw [pullback_orientation]</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   congr 1</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   change maxLoad (G.sample ω) (onlineOrientation p (fun t =&gt; e (ω t))) =</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     maxLoad (H.sample (fun t =&gt; e (ω t))) (onlineOrientation p (fun t =&gt; e (ω t)))</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   rw [relabel_sample G H e hl hr ω]</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a> </span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a> theorem relabel_referenceCap (G : BaseGraph V E) (H : BaseGraph V F) (e : E ≃ F)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (hl : ∀ x, H.left (e x) = G.left x) (hr : ∀ x, H.right (e x) = G.right x) :</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     G.referenceCap = H.referenceCap := by</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   have hcount (S : Finset V) : (G.internalEdges S).card = (H.internalEdges S).card := by</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     apply card_equiv e</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     intro x</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     simp only [BaseGraph.internalEdges, mem_filter, mem_univ, true_and, hl, hr]</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   have hd : G.maxBaseDensity = H.maxBaseDensity := by</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     unfold BaseGraph.maxBaseDensity</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     apply sup&#x27;_congr _ rfl</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     intro S _</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     simp only [BaseGraph.baseDensity, hcount]</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   simp only [BaseGraph.referenceCap, hd]</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> noncomputable def sourceInstance (G : BaseGraph V E) : Instance V (Fintype.card E) :=</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   G.sample (Fintype.equivFin E).symm</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> </span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a> theorem sourceInstance_internalCount (G : BaseGraph V E) (S : Finset V) :</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     internalCount (sourceInstance G) S = (G.internalEdges S).card := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   apply card_equiv (Fintype.equivFin E).symm</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   intro t</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   simp only [mem_filter, mem_univ, true_and, sourceInstance, BaseGraph.sample, BaseGraph.internalEdges]</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a> </span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a> theorem sourceInstance_opt (G : BaseGraph V E) : opt (sourceInstance G) = G.referenceCap := by</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   rw [opt_eq_ceil_maxDensity]</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   have hd : maxDensity (sourceInstance G) = G.maxBaseDensity := by</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     unfold maxDensity BaseGraph.maxBaseDensity</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     apply sup&#x27;_congr _ rfl</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     intro S _</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     simp only [density, BaseGraph.baseDensity, sourceInstance_internalCount]</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   rw [hd]</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>   rfl</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> </span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> theorem sourceInstance_split (G : BaseGraph V E) (b : E → Bool) :</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>     sourceInstance (G.split b) = splitInstance (sourceInstance G)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       (fun t =&gt; b ((Fintype.equivFin E).symm t)) := split_sample G b _</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> </span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> theorem source_split_reference (G : BaseGraph V E) (b : E → Bool) :</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     G.referenceCap ≤ 2*(G.split b).referenceCap := by</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>   rw [← sourceInstance_opt G, ← sourceInstance_opt (G.split b), sourceInstance_split]</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   exact opt_le_two_split_opt _ _</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a> </span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> theorem exists_reference_source_orientation (G : BaseGraph V E) :</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     ∃ b : E → Bool, ∀ v,</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>       (univ.filter fun x =&gt; (if b x then G.left x else G.right x) = v).card ≤ G.referenceCap := by</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   obtain ⟨a,ha⟩ := exists_exact_opt (sourceInstance G)</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   let b := fun x : E =&gt; a (Fintype.equivFin E x)</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   refine ⟨b, fun v =&gt; ?_⟩</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>   have hc : (univ.filter fun x : E =&gt; (if b x then G.left x else G.right x) = v).card =</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>       load (sourceInstance G) a v := by</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>     apply card_equiv (Fintype.equivFin E)</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     intro x</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>     simp only [mem_filter, mem_univ, true_and, destination, load, sourceInstance,</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>       BaseGraph.sample, b, Equiv.symm_apply_apply]</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>   rw [hc]</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>   have hh := load_le_maxLoad (sourceInstance G) a v</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   rw [ha, sourceInstance_opt] at hh</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>   exact hh</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a> </span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> end GraphChoices</span></pre></html>

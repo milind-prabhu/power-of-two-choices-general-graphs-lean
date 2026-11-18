@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AssignmentCount.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · AssignmentCount.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Model</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Fin.Tuple.Basic</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Counting sequentially generated assignments by their available choices.</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> Menus may depend on every preceding choice. No independence is assumed. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> open Finset</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> variable {V : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> def appendChoice {n : ℕ} (f : Fin n → V) (v : V) : Fin (n+1) → V := Fin.snoc f v</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> noncomputable def menuAssignments (menu : (k : ℕ) → (Fin k → V) → Finset V) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     (n : ℕ) → Finset (Fin n → V)</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   | 0 =&gt; univ</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   | n+1 =&gt; (menuAssignments menu n).biUnion fun f =&gt;</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>       (menu n f).image fun v =&gt; appendChoice f v</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> </span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> def MenuValid (menu : (k : ℕ) → (Fin k → V) → Finset V) : (n : ℕ) → (Fin n → V) → Prop</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   | 0, _ =&gt; True</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   | n+1, f =&gt; MenuValid menu n (Fin.init f) ∧ f (Fin.last n) ∈ menu n (Fin.init f)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> </span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>  theorem mem_menuAssignments_iff (menu : (k : ℕ) → (Fin k → V) → Finset V)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     (n : ℕ) (f : Fin n → V) : f ∈ menuAssignments menu n ↔ MenuValid menu n f := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   classical</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   induction n with</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   | zero =&gt;</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     change f ∈ (univ : Finset (Fin 0 → V)) ↔ True</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     simp only [mem_univ]</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   | succ n ih =&gt;</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     simp only [menuAssignments, mem_biUnion, mem_image]</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     constructor</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     · rintro ⟨g,hg,v,hv,rfl⟩</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>       simp only [MenuValid, appendChoice, Fin.init_snoc, Fin.snoc_last]</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       exact ⟨(ih g).mp hg,hv⟩</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     · rintro ⟨hg,hv⟩</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>       exact ⟨Fin.init f,(ih _).mpr hg,f (Fin.last n),hv,Fin.snoc_init_self f⟩</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> /-- The number of complete assignments is at most the product of the menu</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> bounds, even though each menu can depend on the prefix. -/</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>  theorem menuAssignments_card_le (menu : (k : ℕ) → (Fin k → V) → Finset V)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (d : ℕ → ℕ) (n : ℕ) (hmenu : ∀ k, k &lt; n → ∀ f, (menu k f).card ≤ d k) :</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     (menuAssignments menu n).card ≤ ∏ k ∈ range n, d k := by</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   classical</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   induction n with</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   | zero =&gt; simp [menuAssignments]</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   | succ n ih =&gt;</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     have hi := ih (fun k hk f =&gt; hmenu k (Nat.lt_succ_of_lt hk) f)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     rw [menuAssignments]</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     calc</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       _ ≤ ∑ f ∈ menuAssignments menu n, ((menu n f).image fun v =&gt; appendChoice f v).card := card_biUnion_le (s := menuAssignments menu n)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>         (t := fun f : Fin n → V =&gt; (menu n f).image (appendChoice f))</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>       _ ≤ ∑ f ∈ menuAssignments menu n, d n := by</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>         apply sum_le_sum</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>         intro f _</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         exact card_image_le.trans (hmenu n (by omega) f)</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>       _ = (menuAssignments menu n).card * d n := by simp</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>       _ ≤ (∏ k ∈ range n, d k) * d n := Nat.mul_le_mul_right _ hi</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>       _ = _ := (prod_range_succ _ _).symm</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> </span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> end GraphChoices</span></pre></html>

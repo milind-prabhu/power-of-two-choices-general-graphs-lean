@@ -1,0 +1,1020 @@
+✔ [2111/2213] Built GraphChoices.Model (2.5s)
+✔ [2112/2213] Built GraphChoices.Bipartite (3.3s)
+✔ [2113/2213] Built GraphChoices.SkewExpansion (5.6s)
+✔ [2114/2213] Built GraphChoices.AssignmentCount (3.5s)
+⚠ [2115/2213] Built GraphChoices.BalancedProduct (3.5s)
+warning: GraphChoices/BalancedProduct.lean:12:31: unused variable `hr`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [2116/2213] Built GraphChoices.ThresholdGreedy (3.7s)
+✔ [2117/2213] Built GraphChoices.Uniform (3.7s)
+✔ [2118/2213] Built GraphChoices.CapacityMatching (3.8s)
+✔ [2119/2213] Built GraphChoices.Greedy (3.8s)
+✔ [2120/2213] Built GraphChoices.WitnessProbability (2.3s)
+⚠ [2121/2213] Built GraphChoices.GreedyExecution (2.5s)
+warning: GraphChoices/GreedyExecution.lean:10:1: automatically included section variable(s) unused in theorem `GraphChoices.prefixLoad_succ`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/GreedyExecution.lean:78:8: This simp argument is unused:
+  t.isLt
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵t̵.̵i̵s̵L̵t̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [2122/2213] Built GraphChoices.Density (2.5s)
+✔ [2123/2213] Built GraphChoices.ThresholdBudget (2.8s)
+⚠ [2124/2213] Built GraphChoices.ResidualReplay (2.9s)
+warning: GraphChoices/ResidualReplay.lean:74:49: This simp argument is unused:
+  Bool.not_true
+
+Hint: Omit it from the simp argument list.
+  simp only [traceFrom, residualArrivals, h, B̵o̵o̵l̵.̵n̵o̵t̵_̵t̵r̵u̵e̵,̵ ̵List.filter_cons_of_neg]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ResidualReplay.lean:74:64: This simp argument is unused:
+  List.filter_cons_of_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [traceFrom, residualArrivals, h, Bool.not_true,̵ ̵L̵i̵s̵t̵.̵f̵i̵l̵t̵e̵r̵_̵c̵o̵n̵s̵_̵o̵f̵_̵n̵e̵g̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ResidualReplay.lean:94:59: This simp argument is unused:
+  List.filter_cons_of_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [runFrom, traceFrom, thresholdArrivals, h,̵ ̵L̵i̵s̵t̵.̵f̵i̵l̵t̵e̵r̵_̵c̵o̵n̵s̵_̵o̵f̵_̵n̵e̵g̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ResidualReplay.lean:154:63: This simp argument is unused:
+  Nat.add_left_comm
+
+Hint: Omit it from the simp argument list.
+  simp [traceFrom, runFrom, ih, Nat.add_assoc, Nat.add_comm,̵ ̵N̵a̵t̵.̵a̵d̵d̵_̵l̵e̵f̵t̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ResidualReplay.lean:158:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.threshold_residual_times_disjoint`:
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2125/2213] Built GraphChoices.ComponentGreedy (2.9s)
+⚠ [2126/2213] Built GraphChoices.Peeling (3.1s)
+warning: GraphChoices/Peeling.lean:23:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.leftNeighbors_mono`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/Peeling.lean:39:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.rightDegree_union_le`:
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/Peeling.lean:51:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.PeelingExpansion.mono`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2127/2213] Built GraphChoices.Examples (2.2s)
+⚠ [2128/2213] Built GraphChoices.Preprocessing (2.4s)
+warning: GraphChoices/Preprocessing.lean:48:1: automatically included section variable(s) unused in theorem `GraphChoices.expected_competitive_transfer`:
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2129/2213] Built GraphChoices.SamplingTail (2.8s)
+warning: GraphChoices/SamplingTail.lean:34:1: automatically included section variable(s) unused in theorem `GraphChoices.hitTail_subset_witness_union`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2130/2213] Built GraphChoices.ThresholdWitnesses (2.7s)
+warning: GraphChoices/ThresholdWitnesses.lean:15:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.thresholdBucket_length`:
+  [DecidableEq R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2131/2213] Built GraphChoices.ReplayGreedyAdapter (2.6s)
+warning: GraphChoices/ReplayGreedyAdapter.lean:19:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.greedyVertexLoad_step`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ReplayGreedyAdapter.lean:24:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.greedyTarget_min`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ReplayGreedyAdapter.lean:31:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.greedyRun_append`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ReplayGreedyAdapter.lean:54:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.replay_destination`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ReplayGreedyAdapter.lean:59:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.replay_zero`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2132/2213] Built GraphChoices.PatternEmbeddingCount (2.7s)
+warning: GraphChoices/PatternEmbeddingCount.lean:38:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.patternMenu_card_le`:
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2133/2213] Built GraphChoices.ComponentTrees (2.8s)
+warning: GraphChoices/ComponentTrees.lean:19:0: automatically included section variable(s) unused in theorem `GraphChoices.component_induce_connected`:
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2134/2213] Built GraphChoices.Decomposition (2.9s)
+warning: GraphChoices/Decomposition.lean:31:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.mem_subset_unionPieces`:
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/Decomposition.lean:101:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.graph_empty_of_left_degrees_zero`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/Decomposition.lean:128:4: Try `simp at this` instead of `simpa using this`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+✔ [2135/2213] Built GraphChoices.ExecutionIndex (2.4s)
+⚠ [2136/2213] Built GraphChoices.ResidualOptimum (2.4s)
+warning: GraphChoices/ResidualOptimum.lean:40:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.replay_internalCount`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ResidualOptimum.lean:55:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.residual_sublist`:
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2137/2213] Built GraphChoices.Targets (3.2s)
+⚠ [2138/2213] Built GraphChoices.InjectedWitnesses (3.2s)
+warning: GraphChoices/InjectedWitnesses.lean:18:1: automatically included section variable(s) unused in theorem `GraphChoices.constraintsAt_selected`:
+  [DecidableEq E]
+  [Nonempty E]
+  [DecidableEq J]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] [DecidableEq J] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2139/2213] Built GraphChoices.GraphSkew (5.6s)
+warning: GraphChoices/GraphSkew.lean:18:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.minLeftDegree_le`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/GraphSkew.lean:23:1: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.le_minLeftDegree`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2140/2213] Built GraphChoices.TreePruning (2.0s)
+warning: GraphChoices/TreePruning.lean:160:0: automatically included section variable(s) unused in theorem `GraphChoices.pruning_size_bound`:
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2141/2213] Built GraphChoices.ResidualComponents (1.6s)
+⚠ [2142/2213] Built GraphChoices.BlockSampling (4.6s)
+warning: GraphChoices/BlockSampling.lean:43:0: automatically included section variable(s) unused in theorem `GraphChoices.blockHitEvent_compl`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/BlockSampling.lean:61:0: automatically included section variable(s) unused in theorem `GraphChoices.blockHit_union`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/BlockSampling.lean:99:0: automatically included section variable(s) unused in theorem `GraphChoices.allBlocks_probability`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/BlockSampling.lean:104:0: automatically included section variable(s) unused in theorem `GraphChoices.allBlocks_inter`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/BlockSampling.lean:120:38: unused variable `hp`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2143/2213] Built GraphChoices.PatternWitnessBound (2.1s)
+warning: GraphChoices/PatternWitnessBound.lean:37:20: This simp argument is unused:
+  Fintype.card_coe
+
+Hint: Omit it from the simp argument list.
+  simp [TimeChoice, F̵i̵n̵t̵y̵p̵e̵.̵c̵a̵r̵d̵_̵c̵o̵e̵,̵ ̵card_powersetCard]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/PatternWitnessBound.lean:37:38: This simp argument is unused:
+  card_powersetCard
+
+Hint: Omit it from the simp argument list.
+  simp [TimeChoice, Fintype.card_coe,̵ ̵c̵a̵r̵d̵_̵p̵o̵w̵e̵r̵s̵e̵t̵C̵a̵r̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/PatternWitnessBound.lean:41:40: This simp argument is unused:
+  Fintype.card_fun
+
+Hint: Omit it from the simp argument list.
+  simp [TimeWitness, Fintype.card_prod, F̵i̵n̵t̵y̵p̵e̵.̵c̵a̵r̵d̵_̵f̵u̵n̵,̵ ̵Fintype.card_pi, timeChoice_card]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/PatternWitnessBound.lean:41:75: This simp argument is unused:
+  timeChoice_card
+
+Hint: Omit it from the simp argument list.
+  simp [TimeWitness, Fintype.card_prod, Fintype.card_fun, Fintype.card_pi,̵ ̵t̵i̵m̵e̵C̵h̵o̵i̵c̵e̵_̵c̵a̵r̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/PatternWitnessBound.lean:43:1: automatically included section variable(s) unused in theorem `GraphChoices.slot_probability_product`:
+  [DecidableEq E]
+  [Nonempty E]
+  [DecidableEq J]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] [DecidableEq J] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2144/2213] Built GraphChoices.SkewDecomposition (2.1s)
+⚠ [2145/2213] Built GraphChoices.WitnessEncoding (1.3s)
+warning: GraphChoices/WitnessEncoding.lean:10:1: automatically included section variable(s) unused in theorem `GraphChoices.witnessTime_injective`:
+  [Fintype J]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype J] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/WitnessEncoding.lean:46:1: automatically included section variable(s) unused in theorem `GraphChoices.mem_patternWitnessEvent_of_times`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2146/2213] Built GraphChoices.ResidualTreeBound (1.3s)
+warning: GraphChoices/ResidualTreeBound.lean:18:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.sampleArrivals_length`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ResidualTreeBound.lean:24:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.sample_event_arrival`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ResidualTreeBound.lean:42:1: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.mem_fixedResidualEvent_iff`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2147/2213] Built GraphChoices.ComponentExpectation (1.8s)
+warning: GraphChoices/ComponentExpectation.lean:95:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ComponentExpectation.lean:95:38: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2148/2213] Built GraphChoices.PatternEventBound (2.1s)
+warning: GraphChoices/PatternEventBound.lean:35:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.embedding_projection_inj`:
+  [DecidableEq E]
+  [Nonempty E]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/PatternEventBound.lean:65:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.embedding_left_buckets_distinct`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype
+  E] [DecidableEq E] [Nonempty E] [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2149/2213] Built GraphChoices.ResidualDegree (1.5s)
+warning: GraphChoices/ResidualDegree.lean:43:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.residual_left_degree_le_hits`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2150/2213] Built GraphChoices.PatternDecay (1.9s)
+warning: GraphChoices/PatternDecay.lean:14:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.weighted_branch_identity`:
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/PatternDecay.lean:24:36: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  simp [h̵,̵ ̵mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2151/2213] Built GraphChoices.OccupancySecondMoment (2.9s)
+warning: GraphChoices/OccupancySecondMoment.lean:79:55: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: GraphChoices/OccupancySecondMoment.lean:79:55: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: GraphChoices/OccupancySecondMoment.lean:104:54: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: GraphChoices/OccupancySecondMoment.lean:106:74: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: GraphChoices/OccupancySecondMoment.lean:104:54: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: GraphChoices/OccupancySecondMoment.lean:106:74: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [2152/2213] Built GraphChoices.ListArrivalGraph (1.6s)
+warning: GraphChoices/ListArrivalGraph.lean:14:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.mem_listLeftNeighbors`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ListArrivalGraph.lean:24:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.replay_adj_iff`:
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2153/2213] Built GraphChoices.ShapePatterns (2.2s)
+warning: GraphChoices/ShapePatterns.lean:77:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.heavyShape_probability_le`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2154/2213] Built GraphChoices.ThresholdDecay (2.3s)
+warning: GraphChoices/ThresholdDecay.lean:34:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.bucketDecay_small_of_threshold`:
+  [DecidableEq E]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2155/2213] Built GraphChoices.ComponentPruning (1.6s)
+warning: GraphChoices/ComponentPruning.lean:10:0: automatically included section variable(s) unused in theorem `GraphChoices.connected_both_colors`:
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ComponentPruning.lean:27:0: automatically included section variable(s) unused in theorem `GraphChoices.component_induce_degree`:
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2156/2213] Built GraphChoices.ResidualAdjacency (1.5s)
+warning: GraphChoices/ResidualAdjacency.lean:30:45: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: GraphChoices/ResidualAdjacency.lean:12:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.mem_residual_sample_iff`:
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2157/2213] Built GraphChoices.ShatteringBounds (1.6s)
+warning: GraphChoices/ShatteringBounds.lean:34:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.heavyShape_geometric_tail`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ShatteringBounds.lean:48:1: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.heavyShape_polynomial_tail`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2158/2213] Built GraphChoices.PatternCoverage (1.4s)
+warning: GraphChoices/PatternCoverage.lean:34:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.edgeData_labels_injective`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype
+  E] [DecidableEq E] [Nonempty E] [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/PatternCoverage.lean:60:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.edgeData_mem_assignments`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2159/2213] Built GraphChoices.ShapeCoverage (1.5s)
+warning: GraphChoices/ShapeCoverage.lean:44:62: This simp argument is unused:
+  hs
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵s̵,̵ ̵Bool.false_eq_true, if_false, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [2160/2213] Built GraphChoices.ExplicitThresholds (1.7s)
+⚠ [2161/2213] Built GraphChoices.LargeShapeTail (1.7s)
+warning: GraphChoices/LargeShapeTail.lean:17:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.largeShape_probability_le`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2162/2213] Built GraphChoices.LabelledForest (1.5s)
+⚠ [2163/2213] Built GraphChoices.ComponentTreeEvents (1.6s)
+warning: GraphChoices/ComponentTreeEvents.lean:52:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.largeComponent_subset_degree_or_tree`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2164/2213] Built GraphChoices.ExplicitThresholdBudget (2.0s)
+⚠ [2165/2213] Built GraphChoices.PolynomialShattering (1.4s)
+warning: GraphChoices/PolynomialShattering.lean:80:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2166/2213] Built GraphChoices.AutomaticThresholds (1.4s)
+warning: GraphChoices/AutomaticThresholds.lean:60:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.class_card_pos`:
+  [Fintype E]
+  [DecidableEq E]
+  [Fintype L]
+  [Fintype R]
+  [DecidableEq L]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype
+  E] [DecidableEq E] [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2167/2213] Built GraphChoices.ForestIndices (4.1s)
+warning: GraphChoices/ForestIndices.lean:67:27: This simp argument is unused:
+  dite_true
+
+Hint: Omit it from the simp argument list.
+  simp only [eraseForest, Tree.map, forestParent, parentPos, hz, if_false, map_numNodes, hil,
+  ̲  ̲ ̲ ̲ ̲ ̲d̵i̵t̵e̵_̵t̵r̵u̵e̵,̵ ̵dite_false]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ForestIndices.lean:74:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ForestIndices.lean:88:27: This simp argument is unused:
+  dite_true
+
+Hint: Omit it from the simp argument list.
+  simp only [eraseForest, Tree.map, forestSide, sidePos, hz, if_false, map_numNodes, hil,
+  ̲  ̲ ̲ ̲ ̲ ̲d̵i̵t̵e̵_̵t̵r̵u̵e̵,̵ ̵dite_false]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/ForestIndices.lean:120:26: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ForestIndices.lean:120:38: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ForestIndices.lean:135:26: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ForestIndices.lean:135:38: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [2168/2213] Built GraphChoices.AutomaticBudget (1.6s)
+✔ [2169/2213] Built GraphChoices.CanonicalForest (1.2s)
+✔ [2170/2213] Built GraphChoices.CanonicalCoverage (1.2s)
+⚠ [2171/2213] Built GraphChoices.ThresholdPolicy (1.6s)
+warning: GraphChoices/ThresholdPolicy.lean:17:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.encoded_internalCount`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] [Fintype C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ThresholdPolicy.lean:51:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.step_stateLoad`:
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ThresholdPolicy.lean:72:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.policyPrefixLoad_zero`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ThresholdPolicy.lean:81:47: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: GraphChoices/ThresholdPolicy.lean:76:0: automatically included section variable(s) unused in theorem `GraphChoices.ThresholdGreedy.policyPrefixLoad_step`:
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2172/2213] Built GraphChoices.ConcreteShattering (1.7s)
+warning: GraphChoices/ConcreteShattering.lean:17:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.sampledDegreeCutoff_ge`:
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ConcreteShattering.lean:22:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.sampledDegreeCutoff_mean`:
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype L]
+  [Fintype R]
+  [Fintype C]
+  [DecidableEq R]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] [Fintype L] [Fintype R] [Fintype C] [DecidableEq R] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ConcreteShattering.lean:42:23: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/ConcreteShattering.lean:79:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.sampledDegreeCutoff_le_three_cutoffs`:
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ConcreteShattering.lean:91:0: automatically included section variable(s) unused in theorem `GraphChoices.Patterns.largeComponentEvent_antitone`:
+  [DecidableEq E]
+  [Nonempty E]
+  [Fintype C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] [Fintype C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ConcreteShattering.lean:140:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2173/2213] Built GraphChoices.PreprocessedShattering (1.6s)
+warning: GraphChoices/PreprocessedShattering.lean:73:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2174/2213] Built GraphChoices.PieceEncoding (1.1s)
+warning: GraphChoices/PieceEncoding.lean:12:0: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.mem_unionPieces_iff`:
+  [Fintype L]
+  [Fintype R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] [Fintype R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2175/2213] Built GraphChoices.PreparedDecomposition (1.3s)
+warning: GraphChoices/PreparedDecomposition.lean:115:54: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [2176/2213] Built GraphChoices.BlockDensity (3.2s)
+warning: GraphChoices/BlockDensity.lean:31:0: automatically included section variable(s) unused in theorem `GraphChoices.block_success_density`:
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2177/2213] Built GraphChoices.DecomposedAlgorithm (3.3s)
+✔ [2178/2213] Built GraphChoices.SampleRestriction (6.8s)
+⚠ [2179/2213] Built GraphChoices.ExpectedDensity (6.0s)
+warning: GraphChoices/ExpectedDensity.lean:20:0: automatically included section variable(s) unused in theorem `GraphChoices.expectedOpt_nonneg`:
+  [DecidableEq E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ExpectedDensity.lean:24:0: automatically included section variable(s) unused in theorem `GraphChoices.BaseGraph.baseDensity_nonneg`:
+  [Fintype V]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ExpectedDensity.lean:84:0: automatically included section variable(s) unused in theorem `GraphChoices.BaseGraph.referenceCap_le_edges`:
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/ExpectedDensity.lean:98:0: automatically included section variable(s) unused in theorem `GraphChoices.BaseGraph.total_edges_le_card_mul_referenceCap`:
+  [DecidableEq E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2180/2213] Built GraphChoices.BudgetSimplification (9.8s)
+warning: GraphChoices/BudgetSimplification.lean:87:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/BudgetSimplification.lean:87:61: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2181/2213] Built GraphChoices.SubgraphOccupancy (4.7s)
+warning: GraphChoices/SubgraphOccupancy.lean:12:0: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.subgraphBucket_degree_lower`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SubgraphOccupancy.lean:25:0: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.subgraphBucket_source`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2182/2213] Built GraphChoices.IteratedLogBounds (5.6s)
+warning: GraphChoices/IteratedLogBounds.lean:29:47: unused variable `hN`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2183/2213] Built GraphChoices.PreprocessedComparison (11s)
+warning: GraphChoices/PreprocessedComparison.lean:11:0: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.graph_card_le_square`:
+  [DecidableEq L]
+  [DecidableEq R]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq L] [DecidableEq R] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/PreprocessedComparison.lean:31:9: `mul_le_mul_left` has been deprecated: Use `mul_le_mul_iff_right₀` instead
+warning: GraphChoices/PreprocessedComparison.lean:36:55: unused variable `P`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: GraphChoices/PreprocessedComparison.lean:43:55: unused variable `P`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2184/2213] Built GraphChoices.SkewBlockArithmetic (15s)
+warning: GraphChoices/SkewBlockArithmetic.lean:8:58: unused variable `hd`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: GraphChoices/SkewBlockArithmetic.lean:69:9: `mul_le_mul_right` has been deprecated: Use `mul_le_mul_iff_left₀` instead
+✔ [2185/2213] Built GraphChoices.RealLoglogComparison (6.8s)
+✔ [2186/2213] Built GraphChoices.SkewLowerBound (8.4s)
+⚠ [2187/2213] Built GraphChoices.PreprocessedCompetitive (7.1s)
+warning: GraphChoices/PreprocessedCompetitive.lean:21:46: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+✔ [2188/2213] Built GraphChoices.SkewHorizonLower (8.1s)
+✔ [2189/2213] Built GraphChoices.ExpectedMaxHits (6.6s)
+⚠ [2190/2213] Built GraphChoices.LeftEndpointPolicy (7.1s)
+warning: GraphChoices/LeftEndpointPolicy.lean:9:0: automatically included section variable(s) unused in theorem `GraphChoices.Peeling.leftBucket_card`:
+  [Fintype L]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype L] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/LeftEndpointPolicy.lean:54:23: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2191/2213] Built GraphChoices.HorizonDecomposition (7.5s)
+warning: GraphChoices/HorizonDecomposition.lean:42:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/HorizonDecomposition.lean:42:61: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/HorizonDecomposition.lean:83:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/HorizonDecomposition.lean:109:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [2192/2213] Built GraphChoices.RateCompetitive (19s)
+⚠ [2193/2213] Built GraphChoices.ShortHorizonGreedy (7.5s)
+warning: GraphChoices/ShortHorizonGreedy.lean:26:12: `Finset.eq_empty_iff_forall_not_mem` has been deprecated: Use `Finset.eq_empty_iff_forall_notMem` instead
+⚠ [2194/2213] Built GraphChoices.SourceRelabel (6.6s)
+warning: GraphChoices/SourceRelabel.lean:10:0: automatically included section variable(s) unused in theorem `GraphChoices.relabel_sample`:
+  [Fintype V]
+  [DecidableEq V]
+  [Fintype E]
+  [Fintype F]
+  [DecidableEq E]
+  [DecidableEq F]
+  [Nonempty E]
+  [Nonempty F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype
+  V] [DecidableEq V] [Fintype E] [Fintype F] [DecidableEq E] [DecidableEq F] [Nonempty E] [Nonempty F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SourceRelabel.lean:31:0: automatically included section variable(s) unused in theorem `GraphChoices.pullback_orientation`:
+  [Fintype E]
+  [Fintype F]
+  [DecidableEq E]
+  [DecidableEq F]
+  [Nonempty E]
+  [Nonempty F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype E] [Fintype F] [DecidableEq E] [DecidableEq F] [Nonempty E] [Nonempty F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SourceRelabel.lean:51:0: automatically included section variable(s) unused in theorem `GraphChoices.relabel_referenceCap`:
+  [DecidableEq E]
+  [DecidableEq F]
+  [Nonempty E]
+  [Nonempty F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [DecidableEq F] [Nonempty E] [Nonempty F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SourceRelabel.lean:68:0: automatically included section variable(s) unused in theorem `GraphChoices.sourceInstance_internalCount`:
+  [Fintype V]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SourceRelabel.lean:84:0: automatically included section variable(s) unused in theorem `GraphChoices.sourceInstance_split`:
+  [Fintype V]
+  [DecidableEq V]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/SourceRelabel.lean:103:60: This simp argument is unused:
+  load
+
+Hint: Omit it from the simp argument list.
+  simp only [mem_filter, mem_univ, true_and, destination, l̵o̵a̵d̵,̵ ̵sourceInstance,
+  ̵  ̵ ̵ ̵ ̵ ̵BaseGraph.sample, b,
+  ̲  ̲ ̲ ̲ ̲ ̲Equiv.symm_apply_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2195/2213] Built GraphChoices.OriginalGraphPreprocessing (5.5s)
+warning: GraphChoices/OriginalGraphPreprocessing.lean:16:0: automatically included section variable(s) unused in theorem `GraphChoices.orientedPair_injective`:
+  [Fintype V]
+  [DecidableEq V]
+  [Fintype E]
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] [Fintype E] [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2196/2213] Built GraphChoices.BipartiteAllHorizons (32s)
+warning: GraphChoices/BipartiteAllHorizons.lean:31:2: 'norm_num only [Nat.cast_ofNat] at hlog' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [2197/2213] Built GraphChoices.MainProof (6.2s)
+⚠ [2198/2213] Built GraphChoices.RandomGreedy (4.8s)
+warning: GraphChoices/RandomGreedy.lean:31:0: automatically included section variable(s) unused in theorem `GraphChoices.RandomGreedy.run_append`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/RandomGreedy.lean:34:0: automatically included section variable(s) unused in theorem `GraphChoices.RandomGreedy.state_zero`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/RandomGreedy.lean:40:47: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: GraphChoices/RandomGreedy.lean:57:0: automatically included section variable(s) unused in theorem `GraphChoices.RandomGreedy.choice_favours_left`:
+  [Fintype V]
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2199/2213] Built GraphChoices.GreedyCoinMarginals (7.7s)
+warning: GraphChoices/GreedyCoinMarginals.lean:7:0: automatically included section variable(s) unused in theorem `GraphChoices.RandomGreedy.choice_at_tie`:
+  [Fintype V]
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/GreedyCoinMarginals.lean:22:0: automatically included section variable(s) unused in theorem `GraphChoices.RandomGreedy.coin_expectedOpt`:
+  [DecidableEq E]
+  [Nonempty E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq E] [Nonempty E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2200/2213] Built GraphChoices.BinomialLowerTail (9.4s)
+✔ [2201/2213] Built GraphChoices.LayeredLowerGraph (6.7s)
+✔ [2202/2213] Built GraphChoices.GreedyBatchPropagation (9.8s)
+✔ [2203/2213] Built GraphChoices.GreedyPropagationProbability (7.8s)
+⚠ [2204/2213] Built GraphChoices.CompleteBlockDensity (5.8s)
+warning: GraphChoices/CompleteBlockDensity.lean:15:0: automatically included section variable(s) unused in theorem `GraphChoices.LowerBound.blockAllowed_card`:
+  [Fintype C]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype C] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/CompleteBlockDensity.lean:23:0: automatically included section variable(s) unused in theorem `GraphChoices.LowerBound.sum_block_sets_le`:
+  [Fintype V]
+  [DecidableEq C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/CompleteBlockDensity.lean:34:0: automatically included section variable(s) unused in theorem `GraphChoices.LowerBound.internalCount_block_sum`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: GraphChoices/CompleteBlockDensity.lean:44:58: This simp argument is unused:
+  hitCount
+
+Hint: Omit it from the simp argument list.
+  simp only [blockAllowed, blockLeftSet, blockRightSet, h̵i̵t̵C̵o̵u̵n̵t̵,̵ ̵mem_filter,
+  ̵  ̵ ̵ ̵ ̵ ̵mem_univ, true_and,
+  ̲  ̲ ̲ ̲ ̲ ̲mem_product, mem_singleton, blockBase]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2205/2213] Built GraphChoices.BlockDensityTailArithmetic (29s)
+warning: GraphChoices/BlockDensityTailArithmetic.lean:8:45: unused variable `hbtm`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: GraphChoices/BlockDensityTailArithmetic.lean:65:19: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: GraphChoices/BlockDensityTailArithmetic.lean:44:98: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/BlockDensityTailArithmetic.lean:65:19: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [2206/2213] Built GraphChoices.CompleteBlockTail (9.1s)
+warning: GraphChoices/CompleteBlockTail.lean:41:38: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/CompleteBlockTail.lean:65:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/CompleteBlockTail.lean:66:50: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/CompleteBlockTail.lean:68:0: automatically included section variable(s) unused in theorem `GraphChoices.LowerBound.not_badBlockDensity`:
+  [Nonempty C]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nonempty C] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2207/2213] Built GraphChoices.LowerFamilyParameters (10s)
+warning: GraphChoices/LowerFamilyParameters.lean:44:87: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [2208/2213] Built GraphChoices.LowerOfflineOptimum (15s)
+warning: GraphChoices/LowerOfflineOptimum.lean:56:4: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [2209/2213] Built GraphChoices.LowerFamilyLogBounds (22s)
+warning: GraphChoices/LowerFamilyLogBounds.lean:15:87: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/LowerFamilyLogBounds.lean:16:89: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/LowerFamilyLogBounds.lean:51:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/LowerFamilyLogBounds.lean:51:66: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: GraphChoices/LowerFamilyLogBounds.lean:78:33: unused variable `hb`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: GraphChoices/LowerFamilyLogBounds.lean:106:6: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [2210/2213] Built GraphChoices.LowerGraphDegrees (22s)
+warning: GraphChoices/LowerGraphDegrees.lean:49:13: This simp argument is unused:
+  rightVertex
+
+Hint: Omit it from the simp argument list.
+  simp only [̵r̵i̵g̵h̵t̵V̵e̵r̵t̵e̵x̵,̵c̵h̵i̵l̵d̵G̵r̵o̵u̵p̵,̵E̵q̵u̵i̵v̵.̵s̵y̵m̵m̵_̵a̵p̵p̵l̵y̵_̵a̵p̵p̵l̵y̵,̵P̵r̵o̵d̵.̵f̵s̵t̵,̵P̵r̵o̵d̵.̵s̵n̵d̵]̵[̲c̲h̲i̲l̲d̲G̲r̲o̲u̲p̲,̲ ̲E̲q̲u̲i̲v̲.̲s̲y̲m̲m̲_̲a̲p̲p̲l̲y̲_̲a̲p̲p̲l̲y̲,̲ ̲P̲r̲o̲d̲.̲f̲s̲t̲,̲ ̲P̲r̲o̲d̲.̲s̲n̲d̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/LowerGraphDegrees.lean:49:59: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [rightVertex, ̲childGroup, ̲Equiv.symm_apply_apply, ̲Prod.f̵st̵,̵P̵r̵o̵d̵.̵s̵nd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: GraphChoices/LowerGraphDegrees.lean:49:68: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [rightVertex, ̲childGroup, ̲Equiv.symm_apply_apply, ̲Prod.fst,̵P̵r̵o̵d̵.̵s̵n̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [2211/2213] Built GraphChoices.GreedyLowerBound (12s)
+✔ [2212/2213] Built GraphChoices (5.6s)
+Build completed successfully (2213 jobs).
+PASS: 578 named proved results; no sorryAx or additional axioms.

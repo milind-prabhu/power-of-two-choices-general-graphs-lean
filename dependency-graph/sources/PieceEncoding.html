@@ -1,0 +1,125 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PieceEncoding.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PieceEncoding.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.SkewDecomposition</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.PreprocessedShattering</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Actual edge classes and degree certificates from an exact finite graph</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> partition. Edge labels are the base graph&#x27;s concrete endpoint pairs, so</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> simplicity and all bucket bounds are proved rather than assumed. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open ThresholdGreedy</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> theorem mem_unionPieces_iff (Ps : List (Graph L R)) (e : L × R) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     e ∈ unionPieces Ps ↔ ∃ P ∈ Ps, e ∈ P := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   induction Ps with</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   | nil =&gt; simp [unionPieces]</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   | cons P Ps ih =&gt; simp [unionPieces, ih, or_and_right, exists_or]</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> </span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> theorem exists_piece_index (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     (hcover : unionPieces Ps = G) (e : G) : ∃ i : Fin Ps.length, e.val ∈ Ps.get i := by</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   have he : e.val ∈ unionPieces Ps := by rw [hcover]; exact e.property</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   obtain ⟨P, hP, heP⟩ := (mem_unionPieces_iff Ps e.val).mp he</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   obtain ⟨i, hi⟩ := List.mem_iff_get.mp hP</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   exact ⟨i, by rw [hi]; exact heP⟩</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> noncomputable def pieceClass (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     (hcover : unionPieces Ps = G) (e : G) : Fin Ps.length :=</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   Classical.choose (exists_piece_index G Ps hcover e)</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> theorem pieceClass_mem (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     (hcover : unionPieces Ps = G) (e : G) : e.val ∈ Ps.get (pieceClass G Ps hcover e) :=</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   Classical.choose_spec (exists_piece_index G Ps hcover e)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> noncomputable def pieceEncode (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     (hcover : unionPieces Ps = G) (e : G) : Arrival L R (Fin Ps.length) :=</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   ⟨e.val.1, e.val.2, pieceClass G Ps hcover e⟩</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> </span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> theorem pieceEncode_simple (G : Graph L R) (Ps : List (Graph L R)) (hcover : unionPieces Ps = G) :</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     Function.Injective fun e =&gt; ((pieceEncode G Ps hcover e).left, (pieceEncode G Ps hcover e).right) := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   intro e f h</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   exact Subtype.ext h</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> </span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> theorem pieceEncode_source (G : Graph L R) (Ps : List (Graph L R)) (hcover : unionPieces Ps = G) :</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     ∀ e, ((pieceEncode G Ps hcover e).left, (pieceEncode G Ps hcover e).right) ∈</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>       Ps.get (pieceEncode G Ps hcover e).cls := pieceClass_mem G Ps hcover</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> </span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> theorem piece_sourceBucket_card_le (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     (hcover : unionPieces Ps = G) (u : L) (i : Fin Ps.length) :</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (sourceBucket (pieceEncode G Ps hcover) u i).card ≤ leftDegree (Ps.get i) u := by</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   classical</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   apply card_le_card_of_injOn (fun e : G =&gt; e.val.2)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   · intro e he</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     obtain ⟨hu, hc⟩ := (mem_filter.mp he).2</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     have hsrc := pieceEncode_source G Ps hcover e</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     rw [hc] at hsrc</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     change e.val.1 = u at hu</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     change (e.val.1, e.val.2) ∈ Ps.get i at hsrc</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     change e.val.2 ∈ leftNeighbors (Ps.get i) u</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     simp only [leftNeighbors, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     rw [← hu]</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     exact hsrc</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   · intro e he f hf hright</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     have heleft := (mem_filter.mp he).2.1</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     have hfleft := (mem_filter.mp hf).2.1</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     apply Subtype.ext</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     exact Prod.ext (heleft.trans hfleft.symm) hright</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> </span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> theorem piece_leftSourceBucket_card_le (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     (hcover : unionPieces Ps = G) (u : L) :</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (leftSourceBucket (pieceEncode G Ps hcover) u).card ≤ leftDegree G u := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   classical</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   apply card_le_card_of_injOn (fun e : G =&gt; e.val.2)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   · intro e he</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     have hu := (mem_filter.mp he).2</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     change e.val.1 = u at hu</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     change e.val.2 ∈ leftNeighbors G u</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     simp only [leftNeighbors, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     rw [← hu]</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     exact e.property</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   · intro e he f hf hright</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     apply Subtype.ext</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     exact Prod.ext ((mem_filter.mp he).2.trans (mem_filter.mp hf).2.symm) hright</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> </span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> def maxLeftDegree (G : Graph L R) : ℕ := univ.sup (leftDegree G)</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> </span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a> def maxRightDegree (G : Graph L R) : ℕ := univ.sup (rightDegree G)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a> </span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> theorem leftDegree_le_max (G : Graph L R) (u : L) : leftDegree G u ≤ maxLeftDegree G :=</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>   Finset.le_sup (mem_univ u)</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a> </span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a> theorem rightDegree_le_max (G : Graph L R) (v : R) : rightDegree G v ≤ maxRightDegree G :=</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   Finset.le_sup (mem_univ v)</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a> </span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> theorem maxLeftDegree_le (G : Graph L R) (D : ℕ) (h : ∀ u, leftDegree G u ≤ D) :</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     maxLeftDegree G ≤ D := Finset.sup_le (fun u _ =&gt; h u)</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a> </span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a> theorem nat_sup_cast_le {U : Type*} (s : Finset U) (f : U → ℕ) (K : ℝ)</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     (hK : 0 ≤ K) (h : ∀ u ∈ s, (f u : ℝ) ≤ K) : ((s.sup f : ℕ) : ℝ) ≤ K := by</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   classical</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>   induction s using Finset.induction_on with</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>   | empty =&gt; simpa using hK</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   | @insert u s hu ih =&gt;</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     rw [Finset.sup_insert]</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>     change ((max (f u) (s.sup f) : ℕ) : ℝ) ≤ K</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     rw [Nat.cast_max]</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     exact max_le (h u (mem_insert_self _ _)) (ih (fun v hv =&gt; h v (mem_insert_of_mem hv)))</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a> </span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a> theorem maxLeftDegree_real_le (G : Graph L R) (K : ℝ)</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     (hK : 0 ≤ K) (h : ∀ u, (leftDegree G u : ℝ) ≤ K) : (maxLeftDegree G : ℝ) ≤ K :=</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>   nat_sup_cast_le _ _ _ hK (fun u _ =&gt; h u)</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> </span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a> theorem maxRightDegree_real_le (G : Graph L R) (K : ℝ)</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     (hK : 0 ≤ K) (h : ∀ v, (rightDegree G v : ℝ) ≤ K) : (maxRightDegree G : ℝ) ≤ K :=</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>   nat_sup_cast_le _ _ _ hK (fun v _ =&gt; h v)</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a> </span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a> theorem piece_maxLeftDegree_le (G : Graph L R) (Ps : List (Graph L R))</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>     (hcover : unionPieces Ps = G) (i : Fin Ps.length) :</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     maxLeftDegree (Ps.get i) ≤ maxLeftDegree G := by</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   apply maxLeftDegree_le</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   intro u</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   have hsub : Ps.get i ⊆ G := by</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>     rw [← hcover]</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>     exact mem_subset_unionPieces (List.get_mem _ _)</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>   exact (leftDegree_mono hsub u).trans (leftDegree_le_max G u)</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a> </span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a> end GraphChoices.Peeling</span></pre></html>

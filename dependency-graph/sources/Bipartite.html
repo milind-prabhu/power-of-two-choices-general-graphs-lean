@@ -1,0 +1,93 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bipartite.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · Bipartite.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Model</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Fintype.Sum</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Samplewise orientation and optimum comparisons for the vertex-copy</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> construction in Lemma 2.4. The comparisons hold for every reference orientation,</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> not just a density-minimizing one. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {V : Type*} [Fintype V] [DecidableEq V] {T : ℕ}</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> def flip (a : Orientation T) : Orientation T := fun t =&gt; !(a t)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> def splitInstance (I : Instance V T) (b : Orientation T) : Instance (V ⊕ V) T where</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   left t := Sum.inl (destination I b t)</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   right t := Sum.inr (destination I (flip b) t)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> </span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> /-- Orientations on the copied graph and original graph are in bijection. -/</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> def transport (b a : Orientation T) : Orientation T := fun t =&gt;</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   if b t then a t else !(a t)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>  theorem transport_involutive (b a : Orientation T) : transport b (transport b a) = a := by</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   funext t</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   simp only [transport]</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   cases b t &lt;;&gt; cases a t &lt;;&gt; rfl</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> omit [Fintype V] [DecidableEq V] in</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>  theorem collapse_destination (I : Instance V T) (b a : Orientation T) (t : Fin T) :</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     Sum.elim id id (destination (splitInstance I b) a t) = destination I (transport b a) t := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   cases hb : b t &lt;;&gt; cases ha : a t &lt;;&gt;</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     simp [destination, splitInstance, transport, flip, hb, ha]</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> </span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> omit [Fintype V] in</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>  theorem collapse_load (I : Instance V T) (b a : Orientation T) (v : V) :</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     load I (transport b a) v =</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>       load (splitInstance I b) a (Sum.inl v) + load (splitInstance I b) a (Sum.inr v) := by</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   simp only [load, card_eq_sum_ones, sum_filter, ← sum_add_distrib]</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   apply sum_congr rfl</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   intro t _</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   rw [← collapse_destination]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   cases h : destination (splitInstance I b) a t with</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   | inl x =&gt; simp</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   | inr x =&gt; simp</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> </span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>  theorem split_maxLoad_le (I : Instance V T) (b a : Orientation T) :</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     maxLoad (splitInstance I b) a ≤ maxLoad I (transport b a) := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   apply (maxLoad_le_iff _ _ _).2</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   intro w</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   cases w with</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   | inl v =&gt;</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     have h := collapse_load I b a v</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     have hmax := load_le_maxLoad I (transport b a) v</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     omega</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   | inr v =&gt;</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     have h := collapse_load I b a v</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     have hmax := load_le_maxLoad I (transport b a) v</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     omega</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> </span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>  theorem collapse_maxLoad_le (I : Instance V T) (b a : Orientation T) :</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     maxLoad I (transport b a) ≤ 2 * maxLoad (splitInstance I b) a := by</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   apply (maxLoad_le_iff _ _ _).2</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   intro v</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   rw [collapse_load]</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   have hl := load_le_maxLoad (splitInstance I b) a (Sum.inl v)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   have hr := load_le_maxLoad (splitInstance I b) a (Sum.inr v)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   omega</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> </span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>  theorem split_opt_le (I : Instance V T) (b : Orientation T) :</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     opt (splitInstance I b) ≤ opt I := by</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   obtain ⟨a, ha⟩ := exists_exact_opt I</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   calc</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     _ ≤ maxLoad (splitInstance I b) (transport b a) := opt_le_maxLoad _ _</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     _ ≤ maxLoad I (transport b (transport b a)) := split_maxLoad_le _ _ _</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     _ = opt I := by rw [transport_involutive, ha]</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a> </span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>  theorem opt_le_two_split_opt (I : Instance V T) (b : Orientation T) :</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     opt I ≤ 2 * opt (splitInstance I b) := by</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   obtain ⟨a, ha⟩ := exists_exact_opt (splitInstance I b)</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   calc</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     _ ≤ maxLoad I (transport b a) := opt_le_maxLoad _ _</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     _ ≤ 2 * maxLoad (splitInstance I b) a := collapse_maxLoad_le _ _ _</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     _ = _ := by rw [ha]</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> </span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> /-- Pointwise competitive transfer; expectation preserves these inequalities. -/</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>  theorem competitive_transfer (I : Instance V T) (b a : Orientation T) (c : ℕ)</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>     (hc : maxLoad (splitInstance I b) a ≤ c * opt (splitInstance I b)) :</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     maxLoad I (transport b a) ≤ (2*c) * opt I := by</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   calc</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     _ ≤ 2 * maxLoad (splitInstance I b) a := collapse_maxLoad_le _ _ _</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     _ ≤ 2 * (c * opt (splitInstance I b)) := Nat.mul_le_mul_left _ hc</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     _ ≤ 2 * (c * opt I) := Nat.mul_le_mul_left _ (Nat.mul_le_mul_left c (split_opt_le I b))</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     _ = _ := by ring</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a> </span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> end GraphChoices</span></pre></html>

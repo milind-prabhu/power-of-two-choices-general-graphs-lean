@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GreedyPropagationProbability.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · GreedyPropagationProbability.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.GreedyBatchPropagation</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.LowerBound</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> noncomputable def badBatches (b t m s : ℕ) : Finset (Fin b → Fin s → Edges b t m × Bool) := by</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a>   classical</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>   exact univ.filter fun ω =&gt; ¬ allBatchesGood b t m s ω</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> theorem badBatches_probability (b t m s : ℕ) [Nonempty (Edges b t m)] :</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     eventProbability (badBatches b t m s) ≤</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>       (b:ℝ)*(Fintype.card (Blocks b t):ℝ)*m*</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>         Real.exp ((b:ℝ)*Real.log 2-(s:ℝ)*(t*m)/(4*(Fintype.card (Edges b t m):ℝ))) := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   classical</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   let events := fun p : Fin b × (Blocks b t × Fin m) =&gt;</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     univ.filter fun ω : Fin b → Fin s → Edges b t m × Bool =&gt;</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>       hitCount (markedBucket p.2.1 p.2.2) (ω p.1) &lt; b</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   have hsub : badBatches b t m s ⊆ univ.biUnion events := by</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     intro ω hω</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     have hh := (mem_filter.mp hω).2</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     simp only [allBatchesGood, not_forall, not_le] at hh</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     obtain ⟨i,c,a,h⟩ := hh</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     exact mem_biUnion.mpr ⟨(i,c,a),mem_univ _,mem_filter.mpr ⟨mem_univ _,h⟩⟩</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   have heach (p : Fin b × (Blocks b t × Fin m)) : eventProbability (events p) ≤</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       Real.exp ((b:ℝ)*Real.log 2-(s:ℝ)*(t*m)/(4*(Fintype.card (Edges b t m):ℝ))) := by</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     have hc := coordinate_event_probability</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       (univ.filter fun η : Fin s → Edges b t m × Bool =&gt; hitCount (markedBucket p.2.1 p.2.2) η &lt; b) p.1</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     have heq : events p = univ.filter (fun ω : Fin b → Fin s → Edges b t m × Bool =&gt;</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>       ω p.1 ∈ univ.filter fun η : Fin s → Edges b t m × Bool =&gt; hitCount (markedBucket p.2.1 p.2.2) η &lt; b) := by</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>       ext ω</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>       simp [events]</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     have hceq : eventProbability (events p) = eventProbability</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>         (univ.filter fun η : Fin s → Edges b t m × Bool =&gt; hitCount (markedBucket p.2.1 p.2.2) η &lt; b) := by</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       convert hc using 1</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>       congr 1</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>       ext ω</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>       simp [events]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     rw [hceq]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     apply (hitLowerTail_probability (markedBucket p.2.1 p.2.2) s b).trans_eq</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     congr 1</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     rw [markedBucket_card, Fintype.card_prod, Fintype.card_bool]</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     push_cast</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     ring</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   apply (eventProbability_mono hsub).trans</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   apply (witness_union_bound univ events).trans</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   have hh := sum_le_sum (fun p (_ : p ∈ (univ : Finset (Fin b × (Blocks b t × Fin m)))) =&gt; heach p)</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   simpa only [sum_const, card_univ, Fintype.card_prod, Fintype.card_fin, nsmul_eq_mul, Nat.cast_mul, mul_assoc] using hh</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> theorem goodBatches_maxLoad (b t m s : ℕ) (hm : 0 &lt; m)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (ω : Fin b → Fin s → Edges b t m × Bool) (hgood : allBatchesGood b t m s ω) :</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     b ≤ maxLoad ((RandomGreedy.coinGraph (graph b t m)).sample (blockFlatten b s ω))</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>       (onlineOrientation (RandomGreedy.policy (graph b t m)) (blockFlatten b s ω)) := by</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   let v : Vertices b t m := ⟨0,(⟨0,by simp⟩,⟨0,hm⟩)⟩</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   have hh := propagation b t m s ω hgood b le_rfl v (by simp [v])</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   have heq := execution_final_load _ _ _</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     (RandomGreedy.state_zero (graph b t m) (blockFlatten b s ω))</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     (RandomGreedy.state_step (graph b t m) (blockFlatten b s ω)) v</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   rw [heq] at hh</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   exact hh.trans (load_le_maxLoad _ _ _)</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> </span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a> theorem expectedGreedy_lower (b t m s : ℕ) [Nonempty (Edges b t m)] (hm : 0 &lt; m) :</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     (b:ℝ)*(1-(b:ℝ)*(Fintype.card (Blocks b t):ℝ)*m*</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>       Real.exp ((b:ℝ)*Real.log 2-(s:ℝ)*(t*m)/(4*(Fintype.card (Edges b t m):ℝ)))) ≤</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>       RandomGreedy.expectedLoad (graph b t m) (b*s) := by</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   classical</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   let good := univ \ badBatches b t m s</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   have hpoint (ω : Fin b → Fin s → Edges b t m × Bool) :</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>       (b:ℝ)*(if ω ∈ good then (1:ℝ) else 0) ≤</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>         (maxLoad ((RandomGreedy.coinGraph (graph b t m)).sample (blockFlatten b s ω))</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>           (onlineOrientation (RandomGreedy.policy (graph b t m)) (blockFlatten b s ω)):ℝ) := by</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     split_ifs with hω</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     · rw [mul_one]</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>       have hh : allBatchesGood b t m s ω := by</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>         have h := (mem_sdiff.mp hω).2</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>         simpa only [badBatches, mem_filter, mem_univ, true_and, not_not] using h</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>       exact_mod_cast goodBatches_maxLoad b t m s hm ω hh</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     · rw [mul_zero]</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>       positivity</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   have hh := average_mono hpoint</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   rw [average_mul, average_unit_indicator, eventProbability_compl,</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     average_equiv (blockFlatten b s) (fun ω =&gt; (maxLoad ((RandomGreedy.coinGraph (graph b t m)).sample ω)</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>       (onlineOrientation (RandomGreedy.policy (graph b t m)) ω):ℝ))] at hh</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>   apply le_trans _ hh</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>   have hb := badBatches_probability b t m s</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   have hbr : (0:ℝ) ≤ b := Nat.cast_nonneg _</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>   nlinarith</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> </span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> end GraphChoices.LowerBound</span></pre></html>

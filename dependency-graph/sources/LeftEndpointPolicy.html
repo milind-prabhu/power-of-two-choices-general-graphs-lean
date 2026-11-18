@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LeftEndpointPolicy.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · LeftEndpointPolicy.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ExpectedMaxHits</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> def leftBucket (G : Graph L R) (u : L) : Finset G := univ.filter fun e =&gt; e.val.1 = u</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> theorem leftBucket_card (G : Graph L R) (u : L) : (leftBucket G u).card = leftDegree G u := by</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   classical</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   apply card_bij (fun e _ =&gt; e.val.2)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   · intro e he</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     have hh := (mem_filter.mp he).2</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     simp only [leftNeighbors, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>     simpa only [← hh] using e.property</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   · intro e he f hf h</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     apply Subtype.ext</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     exact Prod.ext (((mem_filter.mp he).2).trans ((mem_filter.mp hf).2).symm) h</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   · intro v hv</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     have hh : (u,v) ∈ G := (mem_filter.mp hv).2</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     exact ⟨⟨(u,v),hh⟩, mem_filter.mpr ⟨mem_univ _,rfl⟩, rfl⟩</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> </span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> theorem allLeft_maxLoad (G : Graph L R) {T : ℕ} (ω : Fin T → G) :</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     maxLoad ((graphBase G).sample ω) (fun _ =&gt; true) =</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       univ.sup (fun u : L =&gt; hitCount (leftBucket G u) ω) := by</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have hl (u : L) : load ((graphBase G).sample ω) (fun _ =&gt; true) (Sum.inl u) =</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       hitCount (leftBucket G u) ω := by simp [load, destination, graphBase, BaseGraph.sample, hitCount, leftBucket]</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   have hr (v : R) : load ((graphBase G).sample ω) (fun _ =&gt; true) (Sum.inr v) = 0 := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     simp [load, destination, graphBase, BaseGraph.sample]</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   apply Nat.le_antisymm</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   · apply (maxLoad_le_iff _ _ _).mpr</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     intro v</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     cases v with</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     | inl u =&gt; rw [hl]; exact Finset.le_sup (f := fun u : L =&gt; hitCount (leftBucket G u) ω) (mem_univ u)</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     | inr v =&gt; rw [hr]; omega</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   · apply Finset.sup_le</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     intro u _</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     rw [← hl]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     exact load_le_maxLoad _ _ _</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> </span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> theorem allLeft_expectedCost (G : Graph L R) [Nonempty G] (T N : ℕ)</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     (hvertices : Fintype.card (L ⊕ R) ≤ N) :</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     expectedCost (graphBase G) (onlineOrientation (T := T) (fun _ _ =&gt; true)) ≤</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>       2*Real.log (N:ℝ)+2*(maxLeftDegree G:ℝ)*((T:ℝ)/G.card) := by</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   classical</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   let e : G := Classical.choice (inferInstance : Nonempty G)</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   letI : Nonempty L := ⟨e.val.1⟩</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   have hc : (0:ℝ) &lt; Fintype.card L := by exact_mod_cast Fintype.card_pos</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   have hLN : Fintype.card L ≤ N := by simp only [Fintype.card_sum] at hvertices; omega</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   have hh := expected_max_hits (leftBucket G) T ((maxLeftDegree G:ℝ)*((T:ℝ)/G.card)) (fun u =&gt; by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     rw [leftBucket_card, Fintype.card_coe]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     have hd : (leftDegree G u:ℝ) ≤ maxLeftDegree G := by exact_mod_cast leftDegree_le_max G u</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     have he := mul_le_mul_of_nonneg_right hd (show 0 ≤ (T:ℝ)/G.card by positivity)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     convert he using 1 &lt;;&gt; ring)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   have heq : expectedCost (graphBase G) (onlineOrientation (T := T) (fun _ _ =&gt; true)) =</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>       average (fun ω : Fin T → G =&gt; ((univ.sup fun u =&gt; hitCount (leftBucket G u) ω:ℕ):ℝ)) := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     unfold expectedCost</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     congr 1</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     funext ω</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     exact_mod_cast allLeft_maxLoad G ω</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   rw [heq]</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   have hlog := Real.log_le_log hc (show (Fintype.card L:ℝ) ≤ N by exact_mod_cast hLN)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   linarith</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> theorem allLeft_reference_bound (G : Graph L R) [Nonempty G] (T N : ℕ)</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     (hD : ∀ u, leftDegree G u ≤ 4*(graphBase G).referenceCap) :</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     expectedCost (graphBase G) (onlineOrientation (T := T) (fun _ _ =&gt; true)) ≤</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       24*expectedOpt (graphBase G) T+2*Real.log (N:ℝ) := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   have hd : (maxLeftDegree G:ℝ) ≤ 4*(graphBase G).referenceCap := by</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     exact_mod_cast maxLeftDegree_le G _ hD</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hm := mul_le_mul_of_nonneg_right hd (show 0 ≤ (T:ℝ)/G.card by positivity)</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   have hc := expected_reference_cap_bound (graphBase G) T</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   rw [Fintype.card_coe] at hc</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   apply (allLeft_expectedCost G T N hvertices).trans</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   nlinarith</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> </span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> end GraphChoices.Peeling</span></pre></html>

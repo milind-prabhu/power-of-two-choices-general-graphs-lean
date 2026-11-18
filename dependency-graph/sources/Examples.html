@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Examples.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · Examples.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Density</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Small exact regression examples. All use kernel-reduced `decide`; no</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> native decider or external solver is used. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices.Examples</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> private def repeated : Instance (Fin 2) 3 where</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>   left _ := 0</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   right _ := 1</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> /-- Three parallel arrivals need optimum load two, rather than density 3/2. -/</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> theorem repeated_opt : opt repeated = 2 := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   let a : Orientation 3 := fun t =&gt; decide (t.val &lt; 2)</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hm : maxLoad repeated a = 2 := by decide</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have hu := opt_le_maxLoad repeated a</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   rw [hm] at hu</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   have hl := total_le_card_mul_opt repeated</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   norm_num at hl</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   omega</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> </span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> private def oneEdge : ThresholdGreedy.Arrival (Fin 1) (Fin 1) (Fin 1) := ⟨0,0,0⟩</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> </span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> /-- Threshold one followed by residual Greedy with ties sent right. -/</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> theorem threshold_execution :</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     let s := ThresholdGreedy.run (fun _ : Fin 1 =&gt; 1) [oneEdge, oneEdge, oneEdge, oneEdge]</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     s.threshold 0 0 = 1 ∧ s.greedyLeft 0 = 1 ∧ s.greedyRight 0 = 2 := by decide</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> end GraphChoices.Examples</span></pre></html>

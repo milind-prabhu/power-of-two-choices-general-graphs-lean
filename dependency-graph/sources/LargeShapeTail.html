@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LargeShapeTail.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · LargeShapeTail.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ShatteringBounds</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ThresholdBudget</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Union over tree sizes as well as shapes. This avoids assuming that a</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> large left-heavy tree contains a left-heavy subtree of an exact chosen size.</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> Coverage by the canonical encoding is still a separate deterministic step. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   [Fintype L] [Fintype R] [Fintype C]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> noncomputable def largeShapeEvent (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     (encode : E → ThresholdGreedy.Arrival L R C) (α : C → ℕ) (T k B : ℕ) : Finset (Fin T → E) :=</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   (range (B+1)).biUnion fun j =&gt; heavyShapeEvent H encode α T (k+j)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> </span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> theorem largeShape_probability_le (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     (encode : E → ThresholdGreedy.Arrival L R C) (α : C → ℕ) (T k B : ℕ)</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     (htail : ∀ j ≤ B, eventProbability (heavyShapeEvent H encode α T (k+j)) ≤</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>       (Fintype.card R : ℝ)/2^(k+j)) :</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     eventProbability (largeShapeEvent H encode α T k B) ≤ 2*(Fintype.card R : ℝ)/2^k := by</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   calc</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     _ ≤ ∑ j ∈ range (B+1), eventProbability (heavyShapeEvent H encode α T (k+j)) :=</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       witness_union_bound _ _</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     _ ≤ ∑ j ∈ range (B+1), (Fintype.card R : ℝ)/2^(k+j) := by</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>       apply sum_le_sum</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       intro j hj</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       exact htail j (by have := mem_range.mp hj; omega)</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     _ = ((Fintype.card R : ℝ)/2^k) * (∑ j ∈ range (B+1), (1:ℝ)/2^j) := by</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>       rw [mul_sum]</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>       apply sum_congr rfl</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>       intro j _</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>       rw [pow_add]</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       ring</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     _ ≤ ((Fintype.card R : ℝ)/2^k) * 2 :=</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>       mul_le_mul_of_nonneg_left (ThresholdGreedy.inverse_powers_sum_le_two _) (by positivity)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     _ = _ := by ring</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> </span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> end GraphChoices.Patterns</span></pre></html>

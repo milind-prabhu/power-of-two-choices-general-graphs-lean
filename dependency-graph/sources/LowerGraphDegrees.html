@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LowerGraphDegrees.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · LowerGraphDegrees.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.LayeredLowerGraph</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.LowerFamilyLogBounds</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> namespace GraphChoices.LowerBound</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> open Finset</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> def baseDegree {V E : Type*} [Fintype E] [DecidableEq V] (G : BaseGraph V E) (v : V) : ℕ :=</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>   (univ.filter fun e =&gt; G.left e = v ∨ G.right e = v).card</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> theorem block_degree_upper {V C : Type*} [Fintype C] [DecidableEq C] [DecidableEq V] {m r : ℕ}</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     (left : C × Fin m → V) (right : C × Fin r → V)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     (hl : Function.Injective left) (hr : Function.Injective right) (v : V) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     baseDegree (blockBase left right) v ≤ m+r := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hL : (univ.filter fun e : C × (Fin m × Fin r) =&gt; left (e.1,e.2.1) = v).card ≤ r := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>     let A := univ.filter fun e : C × (Fin m × Fin r) =&gt; left (e.1,e.2.1) = v</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     let f : A → Fin r := fun e =&gt; e.val.2.2</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     have hf : Function.Injective f := by</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>       intro e f h</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>       have hh := hl (((mem_filter.mp e.property).2).trans ((mem_filter.mp f.property).2).symm)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>       apply Subtype.ext</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>       exact Prod.ext (congrArg (fun p : C × Fin m =&gt; p.1) hh)</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>         (Prod.ext (congrArg (fun p : C × Fin m =&gt; p.2) hh) h)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     simpa only [Fintype.card_coe,Fintype.card_fin] using Fintype.card_le_of_injective f hf</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   have hR : (univ.filter fun e : C × (Fin m × Fin r) =&gt; right (e.1,e.2.2) = v).card ≤ m := by</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     let A := univ.filter fun e : C × (Fin m × Fin r) =&gt; right (e.1,e.2.2) = v</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     let f : A → Fin m := fun e =&gt; e.val.2.1</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     have hf : Function.Injective f := by</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       intro e f h</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>       have hh := hr (((mem_filter.mp e.property).2).trans ((mem_filter.mp f.property).2).symm)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>       apply Subtype.ext</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>       exact Prod.ext (congrArg (fun p : C × Fin r =&gt; p.1) hh)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>         (Prod.ext h (congrArg (fun p : C × Fin r =&gt; p.2) hh))</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     simpa only [Fintype.card_coe,Fintype.card_fin] using Fintype.card_le_of_injective f hf</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   have heq : (univ.filter fun e : C × (Fin m × Fin r) =&gt; left (e.1,e.2.1) = v ∨ right (e.1,e.2.2) = v) =</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>       (univ.filter fun e =&gt; left (e.1,e.2.1) = v) ∪ (univ.filter fun e =&gt; right (e.1,e.2.2) = v) := by ext e; simp</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   unfold baseDegree</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   change (univ.filter fun e : C × (Fin m × Fin r) =&gt; left (e.1,e.2.1) = v ∨ right (e.1,e.2.2) = v).card ≤ m+r</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   rw [heq]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   exact (card_union_le _ _).trans (by omega)</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> </span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> theorem rightVertex_covers_positive (b t m : ℕ) (v : Vertices b t m) (hv : v.1 ≠ 0) :</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     ∃ p : Blocks b t × Fin (t*m), rightVertex p = v := by</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   rcases v with ⟨i,g,a⟩</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   obtain ⟨j,rfl⟩ := Fin.eq_succ_of_ne_zero hv</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   let p := finProdFinEquiv.symm (Fin.cast (pow_succ t j.val) g)</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   refine ⟨(⟨j,p.1⟩,finProdFinEquiv (p.2,a)),?_⟩</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   apply Sigma.mk.inj_iff.mpr</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   refine ⟨rfl,heq_of_eq ?_⟩</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   simp only [rightVertex,childGroup,Equiv.symm_apply_apply,Prod.fst,Prod.snd]</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   apply Prod.ext</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   · change Fin.cast (pow_succ t j.val).symm (finProdFinEquiv p) = g</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     change Fin.cast (pow_succ t j.val).symm</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>       (finProdFinEquiv (finProdFinEquiv.symm (Fin.cast (pow_succ t j.val) g))) = g</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     rw [Equiv.apply_symm_apply]</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     exact Fin.ext rfl</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   · rfl</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> </span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a> theorem vertex_block_cover (b t m : ℕ) (hb : 0 &lt; b) (v : Vertices b t m) :</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     (∃ p : Blocks b t × Fin m, leftVertex p = v) ∨</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>       ∃ p : Blocks b t × Fin (t*m), rightVertex p = v := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   by_cases hv : v.1.val &lt; b</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   · left</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     exact ⟨(⟨⟨v.1.val,hv⟩,v.2.1⟩,v.2.2),rfl⟩</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   · right</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     apply rightVertex_covers_positive</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     intro hz</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     have hval := congrArg Fin.val hz</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     simp only [Fin.val_zero] at hval</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     omega</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a> </span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a> theorem graph_degree_lower (b t m : ℕ) (hb : 0 &lt; b) (ht : 1 ≤ t) (v : Vertices b t m) :</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     m ≤ baseDegree (graph b t m) v := by</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   rcases vertex_block_cover b t m hb v with ⟨⟨c,a⟩,hv⟩ | ⟨⟨c,r⟩,hv⟩</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   · have hh : t*m ≤ baseDegree (graph b t m) v := by</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>       let f : Fin (t*m) → {e : Edges b t m // (graph b t m).left e = v ∨ (graph b t m).right e = v} :=</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>         fun r =&gt; ⟨(c,a,r),Or.inl hv⟩</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>       have hf : Function.Injective f := by intro r s h; exact congrArg (fun e =&gt; e.val.2.2) h</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>       simpa only [Fintype.card_fin,Fintype.card_subtype,baseDegree] using Fintype.card_le_of_injective f hf</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     exact (by nlinarith : m ≤ t*m).trans hh</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   · let f : Fin m → {e : Edges b t m // (graph b t m).left e = v ∨ (graph b t m).right e = v} :=</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>       fun a =&gt; ⟨(c,a,r),Or.inr hv⟩</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     have hf : Function.Injective f := by intro a a&#x27; h; exact congrArg (fun e =&gt; e.val.2.1) h</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     simpa only [Fintype.card_fin,Fintype.card_subtype,baseDegree] using Fintype.card_le_of_injective f hf</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> </span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a> /-- The literal degree interval in Theorem 1.2, with the actual vertex</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a> count N rather than an auxiliary asymptotic size parameter. -/</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> theorem family_degree_range (b : ℕ) (hb : 16 ≤ b) (v : Vertices b (branching b) (width b)) :</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     Real.sqrt (size b:ℝ) ≤ (baseDegree (graph b (branching b) (width b)) v:ℝ) ∧</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>       (baseDegree (graph b (branching b) (width b)) v:ℝ) ≤</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>         Real.sqrt (size b:ℝ)*(Real.log (size b:ℝ))^3 := by</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   have hp := family_parameter_bounds b hb</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   have hm : (0:ℝ) ≤ width b := Nat.cast_nonneg _</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>   have hN : (0:ℝ) ≤ size b := Nat.cast_nonneg _</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   have hmin := graph_degree_lower b (branching b) (width b) (by omega) (by have := hp.1; omega) v</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>   have hmax := block_degree_upper (@leftVertex b (branching b) (width b)) (@rightVertex b (branching b) (width b))</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>     (leftVertex_injective _ _ _) (rightVertex_injective _ _ _) v</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   have hminr : (width b:ℝ) ≤ baseDegree (graph b (branching b) (width b)) v := by exact_mod_cast hmin</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hmaxr : (baseDegree (graph b (branching b) (width b)) v:ℝ) ≤ (width b:ℝ)*(branching b+1) := by</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     have hh : baseDegree (graph b (branching b) (width b)) v ≤ width b+branching b*width b := hmax</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     exact_mod_cast (by nlinarith : baseDegree (graph b (branching b) (width b)) v ≤ width b*(branching b+1))</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   have hsqrt : Real.sqrt (size b:ℝ) ≤ width b := Real.sqrt_le_iff.mpr ⟨hm,by exact_mod_cast hp.2.2.2.2.2⟩</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>   have hS : (branching b)^b ≤ layerSum (branching b) (b+1) := by rw [layerSum_succ]; omega</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>   have hm2N : (width b:ℝ)^2 ≤ 2*(size b:ℝ) := by</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     have hh := Nat.mul_le_mul_left (4*(branching b)^b) hS</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     unfold width size at *</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     exact_mod_cast (by nlinarith : (2*(branching b)^b)^2 ≤ 2*(2*(branching b)^b*layerSum (branching b) (b+1)))</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   have hs0 := Real.sqrt_nonneg (size b:ℝ)</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>   have hs2 := Real.sq_sqrt hN</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>   have hmupper : (width b:ℝ) ≤ 2*Real.sqrt (size b:ℝ) := by nlinarith</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>   have hlog := family_log_large b hb</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>   have hpow := pow_le_pow_left₀ (show (0:ℝ) ≤ 30*(b:ℝ) by positivity) hlog 3</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>   have htdef : (branching b:ℝ) = 4096*(b:ℝ)^3 := by unfold branching; push_cast; ring</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>   have hb16 : (16:ℝ) ≤ b := by exact_mod_cast hb</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   have hb3 : (1:ℝ) ≤ (b:ℝ)^3 := one_le_pow₀ (by linarith : (1:ℝ) ≤ b)</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   have htlog : 2*((branching b:ℝ)+1) ≤ (Real.log (size b:ℝ))^3 := by rw [htdef]; nlinarith</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>   refine ⟨hsqrt.trans hminr,?_⟩</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>   have hh := mul_le_mul_of_nonneg_right hmupper (show 0 ≤ (branching b:ℝ)+1 by positivity)</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   have hh&#x27; := mul_le_mul_of_nonneg_left htlog hs0</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   push_cast at hmaxr</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   nlinarith</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a> </span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a> end GraphChoices.LowerBound</span></pre></html>

@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ThresholdDecay.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ThresholdDecay.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.PatternDecay</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Analysis.SpecialFunctions.Log.Basic</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Explicit logarithmic threshold conditions imply the local decay needed by</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> the fixed-pattern probability theorem. No probability conclusion is assumed. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>  theorem inverse_power_le_target (f target : ℝ) (k : ℕ)</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>     (hf : 1 &lt; f) (ht : 0 &lt; target)</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     (hk : Real.log (1/target) / Real.log f ≤ (k:ℝ)) :</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     ((1:ℝ)/f)^k ≤ target := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   have hfpos : 0 &lt; f := by linarith</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   apply (Real.log_le_log_iff (pow_pos (div_pos zero_lt_one hfpos) _) ht).mp</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   rw [Real.log_pow, Real.log_div (by norm_num) (ne_of_gt hfpos), Real.log_one]</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hh := (div_le_iff₀ (Real.log_pos hf)).mp hk</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   rw [Real.log_div (by norm_num) (ne_of_gt ht), Real.log_one] at hh</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   linarith</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>  theorem power_le_target_of_threshold (x f target : ℝ) (k : ℕ)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     (hx : 0 ≤ x) (hf : 1 &lt; f) (ht : 0 &lt; target)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     (hbase : x ≤ 1/f) (hk : Real.log (1/target) / Real.log f ≤ (k:ℝ)) :</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     x^k ≤ target :=</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   (pow_le_pow_left₀ hx hbase k).trans (inverse_power_le_target f target k hf ht hk)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> end GraphChoices</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> </span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> open Finset</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> open ThresholdGreedy</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   {T m : ℕ}</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>  theorem bucketDecay_small_of_threshold (α DL DR : C → ℕ) (f : C → ℝ) (T : ℕ)</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     (b : ℝ) (hT : 0 &lt; T) (hb : 0 &lt; b) (hf : ∀ c, 1 &lt; f c)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (hbase : ∀ c, Real.exp 1*T*(DL c : ℝ)/Fintype.card E/α c ≤ 1/f c)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hthreshold : ∀ c, 0 &lt; DR c →</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>       Real.log (((DR c : ℝ)*((T:ℝ)/Fintype.card E))/b) / Real.log (f c) ≤ (α c : ℝ)) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     ∀ c, (DR c : ℝ)*((T:ℝ)/Fintype.card E)*bucketDecay (E := E) α DL T c ≤ b := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   intro c</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   by_cases hDR : DR c = 0</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   · simp [hDR, le_of_lt hb]</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   have hp : (0:ℝ) &lt; (DR c : ℝ)*((T:ℝ)/Fintype.card E) := by</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     have hd : (0:ℝ) &lt; DR c := by exact_mod_cast Nat.pos_of_ne_zero hDR</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     have ht : (0:ℝ) &lt; T := by exact_mod_cast hT</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     exact mul_pos hd (div_pos ht (by exact_mod_cast Fintype.card_pos))</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   have htarget : 0 &lt; b / ((DR c : ℝ)*((T:ℝ)/Fintype.card E)) := div_pos hb hp</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   have hlog : Real.log (1 / (b / ((DR c : ℝ)*((T:ℝ)/Fintype.card E)))) /</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       Real.log (f c) ≤ (α c : ℝ) := by</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     simpa [one_div_div] using hthreshold c (Nat.pos_of_ne_zero hDR)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   have hdecay : bucketDecay (E := E) α DL T c ≤ b / ((DR c : ℝ)*((T:ℝ)/Fintype.card E)) :=</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     GraphChoices.power_le_target_of_threshold _ _ _ _ (by positivity) (hf c) htarget (hbase c) hlog</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   calc</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     _ ≤ ((DR c : ℝ)*((T:ℝ)/Fintype.card E)) * (b / ((DR c : ℝ)*((T:ℝ)/Fintype.card E))) :=</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>       mul_le_mul_of_nonneg_left hdecay hp.le</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     _ = b := by field_simp</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> </span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a> /-- Conditional fixed-pattern decay with explicit base and logarithmic</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> threshold inequalities. Instantiation by the paper&#x27;s alpha_i remains separate. -/</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>  theorem residualPattern_decay_of_thresholds (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (encode : E → Arrival L R C) (α : C → ℕ) (DL DR : C → ℕ) (D : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (b r : ℝ) (hT : 0 &lt; T) (hb : 0 &lt; b) (hr : 0 ≤ r) (hbr : b ≤ r)</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     (hpair : (D : ℝ)*((T:ℝ)/Fintype.card E)*b ≤ r^2)</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     (hf : ∀ c, 1 &lt; f c)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (hbase : ∀ c, Real.exp 1*T*(DL c : ℝ)/Fintype.card E/α c ≤ 1/f c)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     (hthreshold : ∀ c, 0 &lt; DR c →</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>       Real.log (((DR c : ℝ)*((T:ℝ)/Fintype.card E))/b) / Real.log (f c) ≤ (α c : ℝ))</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     (hheavy : m ≤ 2*(univ.filter fun i : Fin m =&gt; p.childLeft i = true).card) :</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     eventProbability (residualPatternEvent p H encode α T) ≤ (Fintype.card R : ℝ)*r^m :=</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   residualPattern_probability_decay p H encode α DL DR D hsimple hDL hL hR b r hb.le hr hbr hpair</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     (bucketDecay_small_of_threshold α DL DR f T b hT hb hf hbase hthreshold) hheavy</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a> </span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> end GraphChoices.Patterns</span></pre></html>

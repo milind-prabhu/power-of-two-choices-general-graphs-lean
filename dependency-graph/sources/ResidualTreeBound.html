@@ -1,0 +1,119 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ResidualTreeBound.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ResidualTreeBound.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ExecutionIndex</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.WitnessEncoding</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! The fixed-residual-tree event is contained in the counted joint witness</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> event. The proof uses actual execution counters and time labels, not an</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> assumed witness-encoding hypothesis. Tree geometry is only needed later for</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> counting embeddings and ensuring that left-vertex buckets are distinct. -/</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> namespace GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open Finset</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> variable {E L R C J : Type*}</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   [Fintype J] [DecidableEq J] {T m : ℕ}</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> def sampleArrivals (encode : E → Arrival L R C) (ω : Fin T → E) : List (Arrival L R C) :=</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   List.ofFn fun t =&gt; encode (ω t)</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> </span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>  theorem sampleArrivals_length (encode : E → Arrival L R C) (ω : Fin T → E) :</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     (sampleArrivals encode ω).length = T := by simp [sampleArrivals]</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> def residualTime (α : C → ℕ) (encode : E → Arrival L R C) (ω : Fin T → E) (t : Fin T) : Prop :=</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   ∃ ev ∈ trace α (sampleArrivals encode ω), ev.time = t.val ∧ ev.threshold = false</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> </span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>  theorem sample_event_arrival (α : C → ℕ) (encode : E → Arrival L R C) (ω : Fin T → E)</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     (ev : Event L R C) (hev : ev ∈ trace α (sampleArrivals encode ω))</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     (t : Fin T) (ht : ev.time = t.val) : ev.arrival = encode (ω t) := by</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   obtain ⟨i,hi,ha⟩ := trace_mem_arrival α (sampleArrivals encode ω) ev hev</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   have hval : i.val = t.val := hi.symm.trans ht</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   simpa only [sampleArrivals, List.get_eq_getElem, List.getElem_ofFn, hval] using ha</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> noncomputable def fixedResidualEvent (α : C → ℕ) (encode : E → Arrival L R C)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     (T m : ℕ) (tree : Fin m → E) : Finset (Fin T → E) := by</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   classical</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   exact univ.filter fun ω =&gt; ∃ τ : Fin m → Fin T, Function.Injective τ ∧</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     ∀ i, ω (τ i) = tree i ∧ residualTime α encode ω (τ i)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> </span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> def sourceBucket (encode : E → Arrival L R C) (u : L) (c : C) : Finset E :=</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   univ.filter fun e =&gt; (encode e).left = u ∧ (encode e).cls = c</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> </span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> /-- For distinct fixed edge labels, occurrence of every label in the residual</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> process is equivalent to the injectively time-labelled event definition. -/</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>  theorem mem_fixedResidualEvent_iff (α : C → ℕ) (encode : E → Arrival L R C)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     (tree : Fin m → E) (htree : Function.Injective tree) (ω : Fin T → E) :</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     ω ∈ fixedResidualEvent α encode T m tree ↔</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>       ∀ i, ∃ t : Fin T, ω t = tree i ∧ residualTime α encode ω t := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   classical</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   simp only [fixedResidualEvent, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   constructor</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   · rintro ⟨τ,hτ,hh⟩ i</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     exact ⟨τ i,hh i⟩</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   · intro hh</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     choose τ hτ using hh</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     refine ⟨τ,?_,hτ⟩</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     intro i j hij</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     apply htree</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     exact (hτ i).1.symm.trans ((congrArg ω hij).trans (hτ j).1)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> </span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a> /-- Every fixed residual-edge event forces the exact witnesses counted in the</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> joint probability bound. There is one representative residual edge per bucket. -/</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>  theorem fixedResidualEvent_subset_witness (α : C → ℕ) (encode : E → Arrival L R C)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (tree : Fin m → E) (vertex : J → L) (cls : J → C) (representative : J → Fin m)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     (hrepresentative : ∀ j, (encode (tree (representative j))).left = vertex j ∧</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>       (encode (tree (representative j))).cls = cls j)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     (hdistinct : Function.Injective (fun j =&gt; (vertex j,cls j))) :</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     fixedResidualEvent α encode T m tree ⊆</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>       GraphChoices.patternWitnessEvent T m (fun j =&gt; α (cls j)) tree</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>         (fun j =&gt; sourceBucket encode (vertex j) (cls j)) := by</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   classical</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   intro ω hω</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   obtain ⟨τ,hτ,hocc⟩ := (mem_filter.mp hω).2</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   let es := sampleArrivals encode ω</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hlen : es.length = T := sampleArrivals_length encode ω</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   let K (j : J) := finiteThresholdTimes α es T hlen (vertex j) (cls j)</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   apply GraphChoices.mem_patternWitnessEvent_of_times ω tree</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     (fun j =&gt; sourceBucket encode (vertex j) (cls j)) τ K</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   · intro j</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     rw [finiteThresholdTimes_card]</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     obtain ⟨ev,hev,htime,hr⟩ := (hocc (representative j)).2</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     have ha : ev.arrival = encode (tree (representative j)) :=</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>       (sample_event_arrival α encode ω ev hev _ htime).trans (congrArg encode (hocc _).1)</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     have hs := residual_event_final_saturated α es ev hev hr</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     simpa [ha, (hrepresentative j).1, (hrepresentative j).2] using hs</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>   · exact hτ</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>   · exact fun i =&gt; (hocc i).1</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   · intro i j ht</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     obtain ⟨ev,hev,htime,hth,_,_⟩ := thresholdWitnessTimes_spec α es (vertex j) (cls j) (τ i).val</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>       ((mem_finiteThresholdTimes α es T hlen _ _ _).mp ht)</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     obtain ⟨ev&#x27;,hev&#x27;,htime&#x27;,hr⟩ := (hocc i).2</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     have heq := trace_event_eq_of_time α es ev ev&#x27; hev hev&#x27; (htime.trans htime&#x27;.symm)</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     have : true = false := hth.symm.trans ((congrArg Event.threshold heq).trans hr)</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     cases this</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   · intro j j&#x27; hj</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>     exact finiteThresholdTimes_buckets_disjoint α es T hlen _ _ _ _ (fun h =&gt; hj (hdistinct h))</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   · intro j t ht</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     obtain ⟨ev,hev,htime,_,hu,hc⟩ := thresholdWitnessTimes_spec α es (vertex j) (cls j) t.val</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>       ((mem_finiteThresholdTimes α es T hlen _ _ _).mp ht)</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     have ha := sample_event_arrival α encode ω ev hev t htime</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>     simp only [sourceBucket, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     exact ⟨(congrArg Arrival.left ha).symm.trans hu,(congrArg Arrival.cls ha).symm.trans hc⟩</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a> </span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a> /-- The raw exponential fixed-tree probability bound (Equation (12)), now</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a> proved for the actual residual execution. -/</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>  theorem fixedResidual_probability_le (α : C → ℕ) (encode : E → Arrival L R C)</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     (tree : Fin m → E) (vertex : J → L) (cls : J → C) (representative : J → Fin m)</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     (hrepresentative : ∀ j, (encode (tree (representative j))).left = vertex j ∧</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>       (encode (tree (representative j))).cls = cls j)</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>     (hdistinct : Function.Injective (fun j =&gt; (vertex j,cls j))) :</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     GraphChoices.eventProbability (fixedResidualEvent α encode T m tree) ≤</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>       ((T:ℝ) / Fintype.card E)^m *</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>         ∏ j, (Real.exp 1 * T * ((sourceBucket encode (vertex j) (cls j)).card : ℝ) /</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>           Fintype.card E / α (cls j))^(α (cls j)) := by</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>   have hs := GraphChoices.eventProbability_mono</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     (fixedResidualEvent_subset_witness (T := T) α encode tree vertex cls representative hrepresentative hdistinct)</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   have hp := GraphChoices.patternWitness_probability_le_exp T m (fun j =&gt; α (cls j)) tree</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>     (fun j =&gt; sourceBucket encode (vertex j) (cls j))</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>   apply hs.trans</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>   simpa only [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hp</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a> </span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a> end GraphChoices.ThresholdGreedy</span></pre></html>

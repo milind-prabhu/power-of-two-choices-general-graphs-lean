@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ResidualDegree.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ResidualDegree.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ComponentExpectation</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.SamplingTail</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! The degree condition used in the right-leaf pruning reduction: deleting</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> threshold occurrences cannot increase any sampled left neighborhood. Its</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> probability tail follows in the same i.i.d. space as the pattern bounds. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> def listLeftNeighbors (es : List (Arrival L R C)) (u : L) : Finset R :=</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   ((es.filter fun e =&gt; decide (e.left = u)).map Arrival.right).toFinset</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> omit [Fintype L] [Fintype R] [DecidableEq C] in</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> theorem listLeftNeighbors_card_le (es : List (Arrival L R C)) (u : L) :</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     (listLeftNeighbors es u).card ≤ es.countP (fun e =&gt; decide (e.left = u)) := by</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   exact (List.toFinset_card_le _).trans_eq (by simp [List.countP_eq_length_filter])</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> </span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> omit [Fintype L] [Fintype R] [DecidableEq C] in</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> theorem listLeftNeighbors_mono {xs ys : List (Arrival L R C)} (h : xs.Sublist ys) (u : L) :</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     listLeftNeighbors xs u ⊆ listLeftNeighbors ys u := by</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   intro v hv</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   exact List.mem_toFinset.mpr (((h.filter _).map Arrival.right).subset (List.mem_toFinset.mp hv))</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> theorem residual_left_neighbors_subset (α : C → ℕ) (es : List (Arrival L R C)) (u : L) :</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     listLeftNeighbors (residualArrivals (trace α es)) u ⊆ listLeftNeighbors es u :=</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   listLeftNeighbors_mono (residual_sublist α es) u</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> </span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> def leftSourceBucket (encode : E → Arrival L R C) (u : L) : Finset E :=</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   univ.filter fun e =&gt; (encode e).left = u</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> omit [Nonempty E] [Fintype L] [Fintype R] [DecidableEq R] [DecidableEq C] in</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> theorem sample_left_count_eq_hits (encode : E → Arrival L R C) {T : ℕ}</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     (ω : Fin T → E) (u : L) :</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (sampleArrivals encode ω).countP (fun e =&gt; decide (e.left = u)) =</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>       hitCount (leftSourceBucket encode u) ω := by</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   unfold sampleArrivals</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   rw [countP_ofFn_eq_sum]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   simp only [hitCount, leftSourceBucket, card_eq_sum_ones, sum_filter,</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     mem_filter, mem_univ, true_and, decide_eq_true_eq]</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> theorem residual_left_degree_le_hits (encode : E → Arrival L R C) (α : C → ℕ) {T : ℕ}</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (ω : Fin T → E) (u : L) :</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     (listLeftNeighbors (residualArrivals (trace α (sampleArrivals encode ω))) u).card ≤</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>       hitCount (leftSourceBucket encode u) ω := by</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   calc</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     _ ≤ (listLeftNeighbors (sampleArrivals encode ω) u).card :=</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       card_le_card (residual_left_neighbors_subset α _ u)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     _ ≤ _ := (listLeftNeighbors_card_le _ u).trans_eq (sample_left_count_eq_hits encode ω u)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a> </span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a> /-- Left-degree tail for the actual residual graph, counting distinct neighbors. -/</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> theorem residual_left_degree_tail (encode : E → Arrival L R C) (α : C → ℕ)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     (T k : ℕ) (r : ℝ)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     (hmean : ∀ u, Real.exp 1*T*(((leftSourceBucket encode u).card : ℝ)/Fintype.card E)/k ≤ r) :</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     eventProbability (univ.filter fun ω : Fin T → E =&gt; ∃ u,</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>       k ≤ (listLeftNeighbors (residualArrivals (trace α (sampleArrivals encode ω))) u).card) ≤</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>       Fintype.card L * r^k := by</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   apply (eventProbability_mono (B := univ.filter fun ω : Fin T → E =&gt;</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     ∃ u, k ≤ hitCount (leftSourceBucket encode u) ω) ?_).trans</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   · exact some_bucket_tail_bound (leftSourceBucket encode) T k r hmean</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   · intro ω hω</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     obtain ⟨u, hu⟩ := (mem_filter.mp hω).2</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     exact mem_filter.mpr ⟨mem_univ _, u, hu.trans (residual_left_degree_le_hits encode α ω u)⟩</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> </span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> end GraphChoices.ThresholdGreedy</span></pre></html>

@@ -1,0 +1,137 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LowerFamilyLogBounds.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · LowerFamilyLogBounds.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.LowerFamilyParameters</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.LowerBound</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> theorem branching_log (b : ℕ) : Real.log (branching b:ℝ) = 3*Real.log (16*(b:ℝ)) := by</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a>   simp only [branching, Nat.cast_pow, Nat.cast_mul, Real.log_pow, Nat.cast_ofNat]</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> theorem family_elementary_logs (b : ℕ) (hb : 16 ≤ b) :</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     1 ≤ Real.log ((b:ℝ)+1) ∧ 15 ≤ Real.log (branching b:ℝ) ∧</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>       Real.log (branching b:ℝ) ≤ 12*Real.log ((b:ℝ)+1) := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   have hbr : (16:ℝ) ≤ b := by exact_mod_cast hb</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   have hlog2 := Real.log_two_gt_d9</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hlog2&#x27; := Real.log_two_lt_d9</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have h16 : Real.log (16:ℝ) = 4*Real.log 2 := by convert Real.log_pow (2:ℝ) 4 using 1 &lt;;&gt; norm_num</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have h256 : Real.log (256:ℝ) = 8*Real.log 2 := by convert Real.log_pow (2:ℝ) 8 using 1 &lt;;&gt; norm_num</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   have hbp := Real.log_le_log (by norm_num : (0:ℝ)&lt;16) (show (16:ℝ) ≤ (b:ℝ)+1 by linarith)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   rw [h16] at hbp</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   have h15 := Real.log_le_log (by norm_num : (0:ℝ)&lt;256) (show (256:ℝ) ≤ 16*(b:ℝ) by linarith)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   rw [h256] at h15</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   have hblog := Real.log_le_log (show (0:ℝ)&lt;b by linarith) (show (b:ℝ) ≤ (b:ℝ)+1 by linarith)</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have ht := branching_log b</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   rw [Real.log_mul (by norm_num) (by positivity),h16] at ht</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   refine ⟨by linarith,?_,?_⟩</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   · rw [branching_log]; linarith</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   · linarith</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> theorem family_log_bounds (b : ℕ) (hb : 16 ≤ b) :</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     (b:ℝ)+1 ≤ Real.log (size b:ℝ) ∧</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>       Real.log (size b:ℝ) ≤ 26*(b:ℝ)*Real.log ((b:ℝ)+1) := by</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   have hp := family_parameter_bounds b hb</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   obtain ⟨hlogbp,hlogt,hlogt_up⟩ := family_elementary_logs b hb</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   have hbr : (16:ℝ) ≤ b := by exact_mod_cast hb</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   have htp : 0 &lt; branching b := by have := hp.1; omega</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   have hN : 0 &lt; size b := by have := hp.2.2.2.2.1; omega</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   have hpowm : (branching b)^b ≤ width b := by unfold width; omega</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   have hmN : width b ≤ size b := by</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     unfold size</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     have hs : 1 ≤ layerSum (branching b) (b+1) := layerSum_pos _ _ (by omega)</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     nlinarith</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   have hlogpow := Real.log_le_log (show (0:ℝ) &lt; (branching b:ℝ)^b by positivity)</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     (show (branching b:ℝ)^b ≤ size b by exact_mod_cast hpowm.trans hmN)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   rw [Real.log_pow] at hlogpow</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   constructor</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   · nlinarith</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   · have hupper : size b ≤ 2*(b+1)*(branching b)^(2*b) := by</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>       unfold size</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>       have hs := layerSum_upper (branching b) b (by have := hp.1; omega)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       have hh := Nat.mul_le_mul_left (width b) hs</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       unfold width at hh</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>       convert hh using 1 &lt;;&gt; rw [show 2*b = b+b by omega,pow_add] &lt;;&gt; ring</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     have hu := Real.log_le_log (show (0:ℝ) &lt; size b by exact_mod_cast hN)</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>       (show (size b:ℝ) ≤ 2*((b:ℝ)+1)*(branching b:ℝ)^(2*b) by exact_mod_cast hupper)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     rw [Real.log_mul (by positivity) (by positivity),Real.log_mul (by norm_num) (by positivity),Real.log_pow] at hu</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     push_cast at hu</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     have hmul := mul_le_mul_of_nonneg_left hlogt_up (show 0 ≤ 2*(b:ℝ) by positivity)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     have hlog2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     nlinarith</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> </span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> theorem family_log_large (b : ℕ) (hb : 16 ≤ b) : 30*(b:ℝ) ≤ Real.log (size b:ℝ) := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   have hp := family_parameter_bounds b hb</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   have htp : 0 &lt; branching b := by have := hp.1; omega</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   have hS : (branching b)^b ≤ layerSum (branching b) (b+1) := by rw [layerSum_succ]; omega</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   have hN : 2*(branching b)^(2*b) ≤ size b := by</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     unfold size width</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     rw [show 2*b = b+b by omega,pow_add]</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     have hh := Nat.mul_le_mul_left (2*(branching b)^b) hS</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     nlinarith</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   have hh := Real.log_le_log (show (0:ℝ) &lt; 2*(branching b:ℝ)^(2*b) by positivity)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     (show 2*(branching b:ℝ)^(2*b) ≤ size b by exact_mod_cast hN)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   rw [Real.log_mul (by norm_num) (by positivity),Real.log_pow] at hh</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   push_cast at hh</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   have ht := (family_elementary_logs b hb).2.1</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   have hlog2 := Real.log_pos (by norm_num : (1:ℝ)&lt;2)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   have hm := mul_le_mul_of_nonneg_left ht (show 0 ≤ 2*(b:ℝ) by positivity)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   nlinarith</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> </span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> theorem branching_large (b : ℕ) (hb : 16 ≤ b) : 1024*b^3 ≤ branching b := by</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   unfold branching</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   rw [show (16*b)^3 = 4096*b^3 by ring]</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   omega</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> </span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> theorem family_propagation_error (b : ℕ) (hb : 16 ≤ b) :</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>     (b:ℝ)*(Fintype.card (Blocks b (branching b)):ℝ)*width b*</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>       Real.exp ((b:ℝ)*Real.log 2-(batchLength b:ℝ)*(branching b*width b)/</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>         (4*(Fintype.card (Edges b (branching b) (width b)):ℝ))) ≤ 1/(size b:ℝ)^2 := by</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   have hp := family_parameter_bounds b hb</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>   letI := family_edges_nonempty b hb</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>   have hbr : (16:ℝ) ≤ b := by exact_mod_cast hb</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>   have hm : (0:ℝ) &lt; width b := by have hh := hp.2.1; exact_mod_cast (show 0 &lt; width b by omega)</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   have hN : (0:ℝ) &lt; size b := by have hh := hp.2.2.2.2.1; exact_mod_cast (show 0 &lt; size b by omega)</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   have hE : (0:ℝ) &lt; Fintype.card (Edges b (branching b) (width b)) := by exact_mod_cast Fintype.card_pos</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>   have hQ : (0:ℝ) &lt; Fintype.card (Blocks b (branching b)) := by rw [card_blocks]; exact_mod_cast layerSum_pos (branching b) b (by omega)</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   let M : ℝ := Fintype.card (Edges b (branching b) (width b))</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>   let μ : ℝ := (batchLength b:ℝ)*(branching b*width b)/(4*M)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   let C : ℝ := (b:ℝ)*(Fintype.card (Blocks b (branching b)):ℝ)*width b</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   have hC : 0 &lt; C := by dsimp [C]; positivity</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hμ : 256*(b:ℝ)^2 ≤ μ := by</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     have hr := (family_rate_bounds b hb).1</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     have hmul := mul_le_mul_of_nonneg_right hr (Nat.cast_nonneg (branching b): (0:ℝ) ≤ branching b)</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>     have hsize : (size b:ℝ) = (b:ℝ)*batchLength b := by exact_mod_cast size_eq_batches b (by omega)</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     have hlow : (branching b:ℝ)/(4*(b:ℝ)) ≤ μ := by</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>       apply (div_le_div_iff₀ (by positivity : (0:ℝ) &lt; 4*(b:ℝ)) (by dsimp [M]; positivity : (0:ℝ)&lt;4*M)).mpr</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>       dsimp [μ]</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>       rw [hsize] at hmul</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>       push_cast</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>       nlinarith</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     have ht : 1024*(b:ℝ)^3 ≤ branching b := by exact_mod_cast branching_large b hb</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>     apply le_trans _ hlow</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>     apply (le_div_iff₀ (by positivity : (0:ℝ)&lt;4*(b:ℝ))).mpr</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>     nlinarith</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>   have hCbound : C ≤ (b:ℝ)*size b := by</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     have hQle : layerSum (branching b) b ≤ layerSum (branching b) (b+1) := by rw [layerSum_succ]; omega</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>     have hmul := Nat.mul_le_mul_left (b*width b) hQle</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>     dsimp only [C]</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>     rw [card_blocks,size_eq_vertices,card_vertices]</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     exact_mod_cast (by nlinarith : b*layerSum (branching b) b*width b ≤ b*(width b*layerSum (branching b) (b+1)))</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   have hlogC := Real.log_le_log hC hCbound</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   rw [Real.log_mul (by positivity) hN.ne&#x27;] at hlogC</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   have hlogN := (family_log_bounds b hb).2</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>   have hlogbp := Real.log_le_sub_one_of_pos (show (0:ℝ)&lt;(b:ℝ)+1 by positivity)</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>   have hlogb := Real.log_le_sub_one_of_pos (show (0:ℝ)&lt;b by positivity)</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>   have hlog2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>   have hlogN&#x27; : Real.log (size b:ℝ) ≤ 26*(b:ℝ)^2 := by</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     have hh := mul_le_mul_of_nonneg_left hlogbp (show 0 ≤ 26*(b:ℝ) by positivity)</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>     nlinarith</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>   have hexp : Real.log C+((b:ℝ)*Real.log 2-μ) ≤ -(2*Real.log (size b:ℝ)) := by</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     have hh := mul_le_mul_of_nonneg_left hlog2 (Nat.cast_nonneg b : (0:ℝ) ≤ b)</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>     nlinarith</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>   change C*Real.exp ((b:ℝ)*Real.log 2-μ) ≤ _</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>   calc</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>     _ = Real.exp (Real.log C+((b:ℝ)*Real.log 2-μ)) := by rw [Real.exp_add,Real.exp_log hC]</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>     _ ≤ Real.exp (-(2*Real.log (size b:ℝ))) := Real.exp_le_exp.mpr hexp</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a>     _ = _ := by rw [Real.exp_neg,show (2:ℝ)*Real.log (size b:ℝ) = (2:ℕ)*Real.log (size b:ℝ) by norm_num,</span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a>       Real.exp_nat_mul,Real.exp_log hN]; simp</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a> </span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a> end GraphChoices.LowerBound</span></pre></html>

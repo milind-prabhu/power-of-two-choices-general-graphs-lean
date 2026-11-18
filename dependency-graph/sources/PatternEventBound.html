@@ -1,0 +1,134 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PatternEventBound.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PatternEventBound.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.PatternEmbeddingCount</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ResidualTreeBound</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Combines the fixed-pattern assignment count with the actual residual-tree</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> probability bound. Embeddings carry real base-edge labels; uniqueness follows</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> from the base graph having at most one label per bipartite endpoint pair. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open ThresholdGreedy</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   {T m : ℕ}</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> </span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> def childIndex (i : Fin m) : Fin (m+1) := ⟨i.val+1,by omega⟩</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> </span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> def parentIndex (p : ParentPattern C m) (i : Fin m) : Fin (m+1) :=</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   ⟨(p.parent i).val,by have := (p.parent i).isLt; have := i.isLt; omega⟩</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> def EdgeData (p : ParentPattern C m) (encode : E → Arrival L R C)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     (f : Fin (m+1) → L ⊕ R) (g : Fin m → E) : Prop :=</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   ∀ i, (encode (g i)).cls = p.cls i ∧</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     if p.childLeft i then</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       f (childIndex i) = Sum.inl (encode (g i)).left ∧</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       f (parentIndex p i) = Sum.inr (encode (g i)).right</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     else</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>       f (parentIndex p i) = Sum.inl (encode (g i)).left ∧</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       f (childIndex i) = Sum.inr (encode (g i)).right</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> noncomputable def embeddingSet (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     (encode : E → Arrival L R C) :</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     Finset ((Fin (m+1) → L ⊕ R) × (Fin m → E)) := by</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   classical</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   exact univ.filter fun fg =&gt; fg.1 ∈ patternAssignments p H ∧ Function.Injective fg.1 ∧ EdgeData p encode fg.1 fg.2</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> </span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>  theorem embedding_projection_inj (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (encode : E → Arrival L R C)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right)) :</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     Set.InjOn (fun fg : ((Fin (m+1) → L ⊕ R) × (Fin m → E)) =&gt; fg.1)</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>       (↑(embeddingSet p H encode) : Set _) := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   classical</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   intro a ha b hb hab</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   change a.1 = b.1 at hab</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   have hA := (mem_filter.mp ha).2.2.2</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   have hB := (mem_filter.mp hb).2.2.2</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   apply Prod.ext hab</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   funext i</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   apply hsimple</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   have hx := (hA i).2</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   have hy := (hB i).2</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   rw [hab] at hx</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   cases hs : p.childLeft i &lt;;&gt; simp only [hs, Bool.false_eq_true, if_false, if_true] at hx hy</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   · exact Prod.ext (Sum.inl.inj (hx.1.symm.trans hy.1)) (Sum.inr.inj (hx.2.symm.trans hy.2))</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   · exact Prod.ext (Sum.inl.inj (hx.1.symm.trans hy.1)) (Sum.inr.inj (hx.2.symm.trans hy.2))</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> </span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>  theorem embeddingSet_card_le (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     (encode : E → Arrival L R C)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right)) :</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     (embeddingSet p H encode).card ≤ (patternAssignments p H).card := by</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   classical</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   exact card_le_card_of_injOn Prod.fst</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (fun fg hfg =&gt; (mem_filter.mp hfg).2.1) (embedding_projection_inj p H encode hsimple)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a> </span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> abbrev LeftChildren (p : ParentPattern C m) := {i : Fin m // p.childLeft i = true}</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>  theorem embedding_left_buckets_distinct (p : ParentPattern C m) (encode : E → Arrival L R C)</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (f : Fin (m+1) → L ⊕ R) (g : Fin m → E) (hf : Function.Injective f) (he : EdgeData p encode f g) :</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     Function.Injective (fun j : LeftChildren p =&gt; ((encode (g j.val)).left,p.cls j.val)) := by</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   intro j k hjk</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   have hj := (he j.val).2</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   have hk := (he k.val).2</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   simp only [j.property, k.property, if_true] at hj hk</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hl := congrArg Prod.fst hjk</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   have hc : childIndex j.val = childIndex k.val := hf (hj.1.trans ((congrArg Sum.inl hl).trans hk.1.symm))</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   apply Subtype.ext</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   apply Fin.ext</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   have hv := congrArg Fin.val hc</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   simp only [childIndex] at hv</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   omega</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a> </span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a> noncomputable def patternProbabilityFactor (p : ParentPattern C m) (α : C → ℕ)</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     (DL : C → ℕ) (T : ℕ) : ℝ :=</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>   ((T:ℝ) / Fintype.card E)^m * ∏ j : LeftChildren p,</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     (Real.exp 1 * T * (DL (p.cls j.val) : ℝ) / Fintype.card E / α (p.cls j.val))^(α (p.cls j.val))</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> </span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>  theorem embedding_probability_le (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     (encode : E → Arrival L R C) (α : C → ℕ) (DL : C → ℕ)</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     (fg : (Fin (m+1) → L ⊕ R) × (Fin m → E)) (hfg : fg ∈ embeddingSet p H encode) :</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     eventProbability (fixedResidualEvent α encode T m fg.2) ≤ patternProbabilityFactor (E := E) p α DL T := by</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>   classical</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   have hf := (mem_filter.mp hfg).2.2.1</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   have he := (mem_filter.mp hfg).2.2.2</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>   have hp := fixedResidual_probability_le (T := T) (J := LeftChildren p) α encode fg.2</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     (fun j =&gt; (encode (fg.2 j.val)).left) (fun j =&gt; p.cls j.val) (fun j =&gt; j.val)</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     (fun j =&gt; ⟨rfl,(he j.val).1⟩) (embedding_left_buckets_distinct p encode fg.1 fg.2 hf he)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   apply hp.trans</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   apply mul_le_mul_of_nonneg_left _ (by positivity)</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   apply prod_le_prod</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>   · intro j _; positivity</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>   · intro j _</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>     apply pow_le_pow_left₀ (by positivity) _</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>     apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     apply mul_le_mul_of_nonneg_left _ (by positivity)</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     exact_mod_cast hDL (encode (fg.2 j.val)).left (p.cls j.val)</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a> </span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a> noncomputable def residualPatternEvent (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     (encode : E → Arrival L R C) (α : C → ℕ) (T : ℕ) : Finset (Fin T → E) :=</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>   (embeddingSet p H encode).biUnion fun fg =&gt; fixedResidualEvent α encode T m fg.2</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> </span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a> /-- Fixed-pattern union bound combining the concrete embedding count and raw</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a> residual-tree probability. Threshold parameter simplification is still separate. -/</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>  theorem residualPattern_probability_le (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>     (encode : E → Arrival L R C) (α : C → ℕ) (DL DR : C → ℕ) (D : ℕ)</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c) :</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>     eventProbability (residualPatternEvent p H encode α T) ≤</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>       (Fintype.card R * (∏ i : Fin m, if p.childLeft i then DR (p.cls i) else D) : ℕ) *</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>         patternProbabilityFactor (E := E) p α DL T := by</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>   classical</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>   have hP : 0 ≤ patternProbabilityFactor (E := E) p α DL T := by unfold patternProbabilityFactor; positivity</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>   calc</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     _ ≤ ∑ fg ∈ embeddingSet p H encode, eventProbability (fixedResidualEvent α encode T m fg.2) := witness_union_bound _ _</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>     _ ≤ ∑ _fg ∈ embeddingSet p H encode, patternProbabilityFactor (E := E) p α DL T :=</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>       sum_le_sum fun fg hfg =&gt; embedding_probability_le p H encode α DL hDL fg hfg</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     _ = (embeddingSet p H encode).card * patternProbabilityFactor (E := E) p α DL T := by simp</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>     _ ≤ (Fintype.card R * (∏ i : Fin m, if p.childLeft i then DR (p.cls i) else D) : ℕ) *</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>         patternProbabilityFactor (E := E) p α DL T := by</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>       apply mul_le_mul_of_nonneg_right _ hP</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>       exact_mod_cast (embeddingSet_card_le p H encode hsimple).trans (patternAssignments_card_le p H D DR hL hR)</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a> </span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a> end GraphChoices.Patterns</span></pre></html>

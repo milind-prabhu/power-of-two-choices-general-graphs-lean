@@ -1,0 +1,84 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RandomGreedy.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · RandomGreedy.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.MainProof</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Ordinary Greedy with a fresh independent fair coin for ties. The source</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> alphabet E × Bool records both the edge and the otherwise unused coin. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices.RandomGreedy</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> open Finset</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> variable {V E : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> def choice (G : BaseGraph V E) (s : V → ℕ) (x : E × Bool) : Bool :=</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   if s (G.left x.1) &lt; s (G.right x.1) then true</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   else if s (G.right x.1) &lt; s (G.left x.1) then false else x.2</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> def target (G : BaseGraph V E) (s : V → ℕ) (x : E × Bool) : V :=</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   if choice G s x then G.left x.1 else G.right x.1</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> </span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> def step (G : BaseGraph V E) (s : V → ℕ) (x : E × Bool) : V → ℕ :=</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   fun v =&gt; s v + if target G s x = v then 1 else 0</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> def run (G : BaseGraph V E) (xs : List (E × Bool)) : V → ℕ :=</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   xs.foldl (step G) (fun _ =&gt; 0)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> </span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> def policy (G : BaseGraph V E) : OnlinePolicy (E × Bool) := fun history x =&gt; choice G (run G history) x</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> </span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> def coinGraph (G : BaseGraph V E) : BaseGraph V (E × Bool) where</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   left x := G.left x.1</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   right x := G.right x.1</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> def state (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool) (k : ℕ) : V → ℕ :=</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   run G ((List.ofFn ω).take k)</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> theorem run_append (G : BaseGraph V E) (xs : List (E × Bool)) (x : E × Bool) :</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     run G (xs ++ [x]) = step G (run G xs) x := by simp only [run, List.foldl_append, List.foldl_cons, List.foldl_nil]</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> theorem state_zero (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool) (v : V) : state G ω 0 v = 0 := by</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   simp only [state, List.take_zero, run, List.foldl_nil]</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> </span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> theorem state_step (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool) (t : Fin T) (v : V) :</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     state G ω (t.val+1) v = state G ω t.val v +</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>       if destination ((coinGraph G).sample ω) (onlineOrientation (policy G) ω) t = v then 1 else 0 := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   have ht : t.val &lt; (List.ofFn ω).length := by simpa using t.isLt</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   simp only [state, List.take_succ_eq_append_getElem ht, run_append, step,</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     List.getElem_ofFn, destination, BaseGraph.sample, coinGraph, onlineOrientation, policy, target]</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> </span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> theorem state_eq_prefixLoad (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     (k : ℕ) (hk : k ≤ T) (v : V) :</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     state G ω k v = prefixLoad ((coinGraph G).sample ω) (onlineOrientation (policy G) ω) k v :=</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   execution_counts_prefix _ _ _ (state_zero G ω) (state_step G ω) k hk v</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> theorem state_mono (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     {a b : ℕ} (hab : a ≤ b) (hb : b ≤ T) (v : V) : state G ω a v ≤ state G ω b v := by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   rw [state_eq_prefixLoad G ω a (hab.trans hb), state_eq_prefixLoad G ω b hb]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   apply card_le_card</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   intro t ht</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   simp only [mem_filter, mem_univ, true_and] at ht ⊢</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   exact ⟨by omega,ht.2⟩</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a> </span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> theorem choice_favours_left (G : BaseGraph V E) (s : V → ℕ) (x : E × Bool)</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     (hcoin : x.2 = true) (hload : s (G.left x.1) ≤ s (G.right x.1)) : choice G s x = true := by</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   unfold choice</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   split_ifs with h1 h2</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   · rfl</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   · omega</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   · exact hcoin</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> theorem policy_isGreedy (G : BaseGraph V E) {T : ℕ} (ω : Fin T → E × Bool) :</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     IsGreedy ((coinGraph G).sample ω) (onlineOrientation (policy G) ω) := by</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   apply isGreedy_of_execution _ _ _ (state_zero G ω) (state_step G ω)</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   intro t v hv</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   change v = G.left (ω t).1 ∨ v = G.right (ω t).1 at hv</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   change state G ω t.val (target G (state G ω t.val) (ω t)) ≤ state G ω t.val v</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   by_cases h1 : state G ω t.val (G.left (ω t).1) &lt; state G ω t.val (G.right (ω t).1)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   · simp only [target, choice, if_pos h1, ↓reduceIte]</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     rcases hv with rfl | rfl &lt;;&gt; omega</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   · by_cases h2 : state G ω t.val (G.right (ω t).1) &lt; state G ω t.val (G.left (ω t).1)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     · simp only [target, choice, if_neg h1, if_pos h2, Bool.false_eq_true, ↓reduceIte]</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>       rcases hv with rfl | rfl &lt;;&gt; omega</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     · simp only [target, choice, if_neg h1, if_neg h2]</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>       split &lt;;&gt; rcases hv with rfl | rfl &lt;;&gt; omega</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a> </span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a> variable [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a> noncomputable def expectedLoad (G : BaseGraph V E) (T : ℕ) : ℝ :=</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>   expectedCost (coinGraph G) (onlineOrientation (T := T) (policy G))</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> </span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> end GraphChoices.RandomGreedy</span></pre></html>

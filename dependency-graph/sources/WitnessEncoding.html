@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WitnessEncoding.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · WitnessEncoding.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.PatternWitnessBound</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Deterministic encoding of disjoint tree and threshold occurrence times into</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> the finite witness family used by the proved joint probability bound. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> open Finset</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> variable {E J : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>   [Fintype J] [DecidableEq J] {T m : ℕ} {α : J → ℕ}</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>  theorem witnessTime_injective (w : TimeWitness J T m α)</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     (htree : Function.Injective w.1)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     (hsep : ∀ i j, w.1 i ∉ (w.2 j).val)</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     (hdisj : ∀ j j&#x27;, j ≠ j&#x27; → Disjoint (w.2 j).val (w.2 j&#x27;).val) :</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     Function.Injective (witnessTime w) := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   intro a b hab</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   cases a with</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   | inl i =&gt;</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     cases b with</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     | inl i&#x27; =&gt; exact congrArg Sum.inl (htree hab)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     | inr p =&gt;</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>       obtain ⟨j,k⟩ := p</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>       have hk := (w.2 j).val.orderEmbOfFin_mem ((mem_powersetCard.mp (w.2 j).property).2) k</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       simp only [witnessTime] at hab</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       exact False.elim (hsep i j (hab.symm ▸ hk))</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   | inr p =&gt;</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     obtain ⟨j,k⟩ := p</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     cases b with</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     | inl i =&gt;</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>       have hk := (w.2 j).val.orderEmbOfFin_mem ((mem_powersetCard.mp (w.2 j).property).2) k</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>       simp only [witnessTime] at hab</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>       exact False.elim (hsep i j (hab ▸ hk))</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     | inr p&#x27; =&gt;</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>       obtain ⟨j&#x27;,k&#x27;⟩ := p&#x27;</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       by_cases hj : j = j&#x27;</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>       · subst j&#x27;</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>         have hk : k = k&#x27; := ((w.2 j).val.orderEmbOfFin ((mem_powersetCard.mp (w.2 j).property).2)).injective hab</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>         subst k&#x27;</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>         rfl</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>       · have hk := (w.2 j).val.orderEmbOfFin_mem ((mem_powersetCard.mp (w.2 j).property).2) k</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>         have hk&#x27; := (w.2 j&#x27;).val.orderEmbOfFin_mem ((mem_powersetCard.mp (w.2 j&#x27;).property).2) k&#x27;</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>         simp only [witnessTime] at hab</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>         exact False.elim (Finset.disjoint_left.mp (hdisj j j&#x27; hj) hk (hab.symm ▸ hk&#x27;))</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> </span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> /-- Exhibiting actual, globally disjoint occurrence times is sufficient for</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> membership in the abstract pattern witness event. -/</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>  theorem mem_patternWitnessEvent_of_times (ω : Fin T → E) (tree : Fin m → E)</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     (bucket : J → Finset E) (τ : Fin m → Fin T) (K : J → Finset (Fin T))</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (hcard : ∀ j, (K j).card = α j)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (htree : Function.Injective τ) (hlabel : ∀ i, ω (τ i) = tree i)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (hsep : ∀ i j, τ i ∉ K j)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     (hdisj : ∀ j j&#x27;, j ≠ j&#x27; → Disjoint (K j) (K j&#x27;))</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (hbucket : ∀ j t, t ∈ K j → ω t ∈ bucket j) :</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     ω ∈ patternWitnessEvent T m α tree bucket := by</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   classical</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   let w : TimeWitness J T m α := (τ, fun j =&gt; ⟨K j,mem_powersetCard.mpr ⟨subset_univ _,hcard j⟩⟩)</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   have hinj : Function.Injective (witnessTime w) := witnessTime_injective w htree hsep hdisj</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   unfold patternWitnessEvent</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   apply mem_biUnion.mpr</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   refine ⟨w,mem_univ _,?_⟩</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   rw [if_pos hinj]</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   simp only [requirementsEvent, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   intro s</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   cases s with</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   | inl i =&gt; simpa [slotAllowed, witnessTime, w] using hlabel i</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   | inr p =&gt;</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     obtain ⟨j,k⟩ := p</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     apply hbucket j</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     exact (K j).orderEmbOfFin_mem (hcard j) k</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a> </span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a> end GraphChoices</span></pre></html>

@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AutomaticThresholds.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · AutomaticThresholds.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ExplicitThresholds</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.LargeShapeTail</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import GraphChoices.PolynomialShattering</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> </span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> /-! Concrete rate and branching parameters remove the remaining numerical</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> decay premises from the canonical-shape tail. These are finite explicit</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> thresholds; end-to-end component coverage and asymptotic analysis are separate.</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> -/</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> open ThresholdGreedy</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> noncomputable def shapeRate (h : ℕ) : ℝ := 1/(8*h)</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> </span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> noncomputable def branchTarget (D h : ℕ) (z : ℝ) : ℝ := (shapeRate h)^2/((D:ℝ)*z+1)</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> </span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> theorem shapeRate_pos (h : ℕ) (hh : 0 &lt; h) : 0 &lt; shapeRate h := by</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   unfold shapeRate</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   positivity</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> </span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> theorem shapeRate_le_one (h : ℕ) (hh : 0 &lt; h) : shapeRate h ≤ 1 := by</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   have hhr : (1:ℝ) ≤ h := by exact_mod_cast hh</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   unfold shapeRate</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   apply (div_le_iff₀ (by positivity : (0:ℝ) &lt; 8*h)).mpr</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   linarith</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> theorem shapeRate_class_factor (h : ℕ) (hh : 0 &lt; h) :</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     4*(h:ℝ)*shapeRate h = 1/2 := by</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   have hne : (h:ℝ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hh</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   unfold shapeRate</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   field_simp</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   ring</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> theorem branchTarget_pos (D h : ℕ) (z : ℝ) (hh : 0 &lt; h) (hz : 0 ≤ z) :</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     0 &lt; branchTarget D h z := by</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   unfold branchTarget</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   exact div_pos (sq_pos_of_pos (shapeRate_pos h hh)) (by positivity)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> theorem branchTarget_le_rate (D h : ℕ) (z : ℝ) (hh : 0 &lt; h) (hz : 0 ≤ z) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     branchTarget D h z ≤ shapeRate h := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   have hr := shapeRate_pos h hh</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   have hr1 := shapeRate_le_one h hh</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   unfold branchTarget</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   apply (div_le_iff₀ (by positivity : (0:ℝ) &lt; (D:ℝ)*z+1)).mpr</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   have hDz : 0 ≤ (D:ℝ)*z := mul_nonneg (Nat.cast_nonneg _) hz</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   have hmul := mul_nonneg hr.le hDz</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   nlinarith</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> </span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> theorem branchTarget_pair (D h : ℕ) (z : ℝ) (hh : 0 &lt; h) (hz : 0 ≤ z) :</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (D:ℝ)*z*branchTarget D h z ≤ (shapeRate h)^2 := by</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   have hb := (branchTarget_pos D h z hh hz).le</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   have heq : branchTarget D h z * ((D:ℝ)*z+1) = (shapeRate h)^2 := by</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     unfold branchTarget</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     exact div_mul_cancel₀ _ (ne_of_gt (by positivity : (0:ℝ) &lt; (D:ℝ)*z+1))</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   nlinarith</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a> </span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   [Fintype L] [Fintype R] [Fintype C]</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> </span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> theorem class_card_pos (encode : E → Arrival L R C) : 0 &lt; Fintype.card C := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   classical</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   exact Fintype.card_pos_iff.mpr ⟨(encode (Classical.choice (inferInstance : Nonempty E))).cls⟩</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> </span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> noncomputable def automaticThresholds (DL DR : C → ℕ) (D T : ℕ) (f : C → ℝ) : C → ℕ :=</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   explicitThresholds (E := E) DL DR T f</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (branchTarget D (Fintype.card C) ((T:ℝ)/Fintype.card E))</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> </span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a> /-- Canonical-shape geometric decay for an explicit integer threshold vector.</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a> Every local numerical inequality is proved from the parameter definitions. -/</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a> theorem heavyShape_geometric_automatic (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D T m : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     (hT : 0 &lt; T) (hf : ∀ c, 1 &lt; f c) :</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>     eventProbability (heavyShapeEvent H encode (automaticThresholds (E := E) DL DR D T f) T m) ≤</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>       (Fintype.card R : ℝ)/2^m := by</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   have hh := class_card_pos encode</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   have hz : 0 ≤ (T:ℝ)/Fintype.card E := by positivity</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   have hdec := heavyShape_decay_explicit H encode DL DR D T m f hsimple hDL hL hR</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     (branchTarget D (Fintype.card C) ((T:ℝ)/Fintype.card E)) (shapeRate (Fintype.card C)) hT</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     (branchTarget_pos _ _ _ hh hz) (shapeRate_pos _ hh).le</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>     (branchTarget_le_rate _ _ _ hh hz) (branchTarget_pair _ _ _ hh hz) hf</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   exact heavyShape_geometric_tail H encode _ T m _ (shapeRate_pos _ hh).le hdec</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     (shapeRate_class_factor _ hh).le</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> </span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> theorem largeShape_geometric_automatic (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D T k B : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     (hT : 0 &lt; T) (hf : ∀ c, 1 &lt; f c) :</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     eventProbability (largeShapeEvent H encode (automaticThresholds (E := E) DL DR D T f) T k B) ≤</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>       2*(Fintype.card R : ℝ)/2^k := by</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   apply largeShape_probability_le</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   intro j _</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>   exact heavyShape_geometric_automatic H encode DL DR D T (k+j) f hsimple hDL hL hR hT hf</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a> </span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a> /-- Component tail for the concrete threshold vector. The only combinatorial</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a> coverage premise is explicitly visible; no canonical probability bound or</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a> local decay inequality is assumed. D bounds base-piece left degrees, while</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a> d bounds sampled residual left degrees outside the degree exception. -/</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a> theorem largeComponent_polynomial_automatic_of_coverage (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D T d k B N c : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>     (hT : 0 &lt; T) (hf : ∀ c, 1 &lt; f c)</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     (hN : 0 &lt; N) (hLN : Fintype.card L ≤ N) (hRN : Fintype.card R ≤ N)</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     (hd : polynomialCutoff N c ≤ d+1) (hk : polynomialCutoff N c ≤ k)</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>     (hmean : ∀ u, Real.exp 1*T*(((leftSourceBucket encode u).card : ℝ)/Fintype.card E)/(d+1) ≤ 1/2)</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>     (hcoverage : largeHeavyTreeEvent encode (automaticThresholds (E := E) DL DR D T f) T k ⊆</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>       largeShapeEvent H encode (automaticThresholds (E := E) DL DR D T f) T k B) :</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     eventProbability (largeComponentEvent encode (automaticThresholds (E := E) DL DR D T f)</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>       T ((d+1)*(k+1))) ≤ 3/(N:ℝ)^c := by</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   apply largeComponent_polynomial_tail_of_coverage H encode _ T d k B N c hN hLN hRN hd hk hmean hcoverage</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   intro j _</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>   exact heavyShape_geometric_automatic H encode DL DR D T (k+j) f hsimple hDL hL hR hT hf</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a> </span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a> theorem expected_load_polynomial_automatic_of_coverage (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>     (encode : E → Arrival L R C) (DL DR : C → ℕ) (D T d k B N c : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>     (hT : 0 &lt; T) (hf : ∀ c, 1 &lt; f c)</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>     (hN : 0 &lt; N) (hLN : Fintype.card L ≤ N) (hRN : Fintype.card R ≤ N)</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>     (hd : polynomialCutoff N c ≤ d+1) (hk : polynomialCutoff N c ≤ k)</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>     (hmean : ∀ u, Real.exp 1*T*(((leftSourceBucket encode u).card : ℝ)/Fintype.card E)/(d+1) ≤ 1/2)</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>     (hcoverage : largeHeavyTreeEvent encode (automaticThresholds (E := E) DL DR D T f) T k ⊆</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a>       largeShapeEvent H encode (automaticThresholds (E := E) DL DR D T f) T k B) :</span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a>     expectedTotalMaxLoad encode (automaticThresholds (E := E) DL DR D T f) T ≤</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>       (∑ c, (automaticThresholds (E := E) DL DR D T f c : ℝ)) +</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a>       (2*(Nat.log 2 ((d+1)*(k+1))+1) : ℕ)*expectedReplayOpt encode T + 3*T/(N:ℝ)^c := by</span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a>   apply expected_load_polynomial_of_coverage H encode _ T d k B N c hN hLN hRN hd hk hmean hcoverage</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>   intro j _</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a>   exact heavyShape_geometric_automatic H encode DL DR D T (k+j) f hsimple hDL hL hR hT hf</span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a> </span>
+<span class="line" id="L142"><a class="num" href="#L142"> 142</a> end GraphChoices.Patterns</span></pre></html>

@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BlockDensityTailArithmetic.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · BlockDensityTailArithmetic.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.CompleteBlockDensity</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.LowerBound</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> </span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> /-- The count of vertex subsets cancels against the binomial density tail.</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> The remaining small-side factor makes the bound polynomially small in m. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> theorem block_size_pair_bound (m t a b k : ℕ) (hm : 0 &lt; m) (ht : 1 ≤ t)</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a>     (ha : 0 &lt; a) (hb : 0 &lt; b) (ham : a ≤ m) (hbtm : b ≤ t*m) (hk : 16 ≤ k)</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>     (hscale : Real.exp 1*(t:ℝ)*(2*Real.exp 1/(k:ℝ))^k ≤ 1/256) :</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     (m.choose a:ℝ)*((t*m).choose b:ℝ)*</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>       (2*Real.exp 1*(a:ℝ)*b/((m:ℝ)*k*(a+b)))^(k*(a+b)) ≤ 1/(m:ℝ)^8 := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   let z := min a b</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   let n := a+b</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hz : 0 &lt; z := lt_min ha hb</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hzm : z ≤ m := (min_le_left _ _).trans ham</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have hzn : z ≤ n := (min_le_left a b).trans (by dsimp [n]; omega)</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   have hmr : (0:ℝ) &lt; m := by exact_mod_cast hm</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   have hzr : (0:ℝ) &lt; z := by exact_mod_cast hz</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   have hkr : (0:ℝ) &lt; k := by exact_mod_cast (show 0 &lt; k by omega)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   have har : (0:ℝ) &lt; a := by exact_mod_cast ha</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   have hbr : (0:ℝ) &lt; b := by exact_mod_cast hb</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have htr : (1:ℝ) ≤ t := by exact_mod_cast ht</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   have hnr : (0:ℝ) &lt; n := by dsimp [n]; positivity</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   let C := Real.exp 1*t*m/z</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   let D := 2*Real.exp 1*z/((m:ℝ)*k)</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have hC : 0 ≤ C := by dsimp [C]; positivity</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   have hD : 0 ≤ D := by dsimp [D]; positivity</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   have hca : (m.choose a:ℝ) ≤ C^a := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     apply (choose_le_exp_div_pow m a).trans</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     apply pow_le_pow_left₀ (by positivity)</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     dsimp [C]</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     have hza : (z:ℝ) ≤ a := by dsimp only [z]; exact_mod_cast min_le_left a b</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     calc</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       _ ≤ Real.exp 1*m/z := div_le_div_of_nonneg_left (by positivity) hzr hza</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>       _ ≤ _ := by</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>         have hh := mul_le_mul_of_nonneg_right htr (show 0 ≤ Real.exp 1*m/z by positivity)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>         convert hh using 1 &lt;;&gt; ring</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   have hcb : ((t*m).choose b:ℝ) ≤ C^b := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     apply (choose_le_exp_div_pow (t*m) b).trans</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     apply pow_le_pow_left₀ (by positivity)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     dsimp [C]</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     push_cast</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     have hzb : (z:ℝ) ≤ b := by dsimp only [z]; exact_mod_cast min_le_right a b</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     convert div_le_div_of_nonneg_left (show 0 ≤ Real.exp 1*(t:ℝ)*m by positivity) hzr hzb using 1 &lt;;&gt; ring</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   have htail : 2*Real.exp 1*(a:ℝ)*b/((m:ℝ)*k*(a+b)) ≤ D := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     dsimp [D]</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     apply (div_le_div_iff₀ (by positivity : (0:ℝ)&lt;(m:ℝ)*k*(a+b)) (by positivity : (0:ℝ)&lt;(m:ℝ)*k)).mpr</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     have hab : (a:ℝ)*b ≤ (z:ℝ)*(a+b) := by</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       by_cases hh : a ≤ b</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       · have he : z = a := min_eq_left hh</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>         rw [he]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>         nlinarith</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>       · have he : z = b := min_eq_right (le_of_not_ge hh)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>         rw [he]</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         nlinarith</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     nlinarith [mul_nonneg (by positivity : 0 ≤ 2*Real.exp 1*m*k) (sub_nonneg.mpr hab)]</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   have hfactor : C*D^k = (Real.exp 1*(t:ℝ)*(2*Real.exp 1/(k:ℝ))^k)*((z:ℝ)/m)^(k-1) := by</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     have hk&#x27; : k = (k-1)+1 := by omega</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     have heq : D = (2*Real.exp 1/(k:ℝ))*((z:ℝ)/m) := by dsimp [D]; ring</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     have hzpow : ((z:ℝ)/m)^k = ((z:ℝ)/m)^(k-1)*((z:ℝ)/m) := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>       conv_lhs =&gt; rw [hk&#x27;]</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>       rw [pow_succ]</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     rw [heq, mul_pow, hzpow]</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     dsimp [C]</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     field_simp &lt;;&gt; ring</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   have hpow : ((z:ℝ)/m)^((k-1)*n) ≤ ((z:ℝ)/m)^8 := by</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     apply pow_le_pow_of_le_one (by positivity) ((div_le_one hmr).mpr (by exact_mod_cast hzm))</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     have hn : 2 ≤ n := by dsimp [n]; omega</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     have hkm : 15 ≤ k-1 := by omega</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     nlinarith</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   have hz8 : (z:ℝ)^8 ≤ (256:ℝ)^n := by</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     have hz2 : z ≤ 2^z := (Nat.lt_two_pow_self : z &lt; 2^z).le</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     have hh : z^8 ≤ 256^n := by</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>       calc</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>         _ ≤ (2^z)^8 := Nat.pow_le_pow_left hz2 _</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>         _ = 256^z := by rw [← pow_mul, Nat.mul_comm z 8, pow_mul]; norm_num</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>         _ ≤ _ := Nat.pow_le_pow_right (by norm_num) hzn</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     exact_mod_cast hh</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   calc</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     _ ≤ C^a*C^b*D^(k*n) := by</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>       apply mul_le_mul (mul_le_mul hca hcb (by positivity) (pow_nonneg hC _)) _ (by positivity) (by positivity)</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>       apply pow_le_pow_left₀ (by positivity) htail</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     _ = (C*D^k)^n := by rw [mul_pow, ← pow_mul, ← pow_add]</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>     _ ≤ ((1/256:ℝ)*((z:ℝ)/m)^(k-1))^n := by</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>       apply pow_le_pow_left₀ (by positivity)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       rw [hfactor]</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>       exact mul_le_mul_of_nonneg_right hscale (by positivity)</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>     _ = (1/256:ℝ)^n*((z:ℝ)/m)^((k-1)*n) := by rw [mul_pow, ← pow_mul]</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     _ ≤ (1/256:ℝ)^n*((z:ℝ)/m)^8 := mul_le_mul_of_nonneg_left hpow (by positivity)</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     _ ≤ 1/(m:ℝ)^8 := by</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>       rw [div_pow, div_pow, one_pow]</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>       have hh : (z:ℝ)^8/(256:ℝ)^n ≤ 1 := (div_le_one (by positivity)).mpr hz8</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>       calc</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>         _ = ((z:ℝ)^8/(256:ℝ)^n)/(m:ℝ)^8 := by ring</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>         _ ≤ _ := div_le_div_of_nonneg_right hh (by positivity)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a> </span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a> end GraphChoices.LowerBound</span></pre></html>

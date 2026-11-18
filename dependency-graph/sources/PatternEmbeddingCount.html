@@ -1,0 +1,83 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PatternEmbeddingCount.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PatternEmbeddingCount.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.AssignmentCount</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.Peeling</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.Fintype.Sum</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Data.Fintype.BigOperators</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> /-! Rooted class-labelled patterns in parent-before-child order, and a bound on</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> their graph assignments. Inconsistent bipartite side annotations simply have</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> no assignments. Injective embeddings form a subset of these assignments. -/</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> open Finset</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> variable {L R C : Type*} [Fintype L] [Fintype R]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> </span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> structure ParentPattern (C : Type*) (m : ℕ) where</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   parent : (i : Fin m) → Fin (i.val+1)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   cls : Fin m → C</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   childLeft : Fin m → Bool</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> noncomputable def patternMenu {m : ℕ} (p : ParentPattern C m)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     (H : C → Peeling.Graph L R) : (k : ℕ) → (Fin k → L ⊕ R) → Finset (L ⊕ R)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   | 0, _ =&gt; univ.image Sum.inr</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   | k+1, f =&gt; if hk : k &lt; m then</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       let i : Fin m := ⟨k,hk⟩</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       if p.childLeft i then</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>         match f (p.parent i) with</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>         | Sum.inl _ =&gt; ∅</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>         | Sum.inr v =&gt; (Peeling.rightNeighbors (H (p.cls i)) v).image Sum.inl</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       else</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>         match f (p.parent i) with</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>         | Sum.inl u =&gt; (Peeling.leftNeighbors (H (p.cls i)) u).image Sum.inr</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>         | Sum.inr _ =&gt; ∅</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     else ∅</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> def branchBound {m : ℕ} (p : ParentPattern C m) (D : ℕ) (DR : C → ℕ) : ℕ → ℕ</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   | 0 =&gt; Fintype.card R</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   | k+1 =&gt; if hk : k &lt; m then if p.childLeft ⟨k,hk⟩ then DR (p.cls ⟨k,hk⟩) else D else 0</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>  theorem patternMenu_card_le {m : ℕ} (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     (D : ℕ) (DR : C → ℕ)</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     (k : ℕ) (f : Fin k → L ⊕ R) :</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     (patternMenu p H k f).card ≤ branchBound (R := R) p D DR k := by</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   cases k with</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   | zero =&gt;</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     simpa only [patternMenu, branchBound, card_univ] using</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>       (card_image_le (s := (univ : Finset R)) (f := (Sum.inr : R → L ⊕ R)))</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   | succ k =&gt;</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     by_cases hk : k &lt; m</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     · cases hs : p.childLeft ⟨k,hk⟩</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>       · cases hv : f (p.parent ⟨k,hk⟩) with</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>         | inl u =&gt;</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>           simp only [patternMenu, branchBound, dif_pos hk, hs, Bool.false_eq_true, if_false, hv]</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>           exact card_image_le.trans (hL _ _)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         | inr v =&gt; simp [patternMenu, branchBound, hk, hs, hv]</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>       · cases hv : f (p.parent ⟨k,hk⟩) with</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>         | inl u =&gt; simp [patternMenu, branchBound, hk, hs, hv]</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>         | inr v =&gt;</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>           simp only [patternMenu, branchBound, dif_pos hk, hs, if_true, hv]</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>           exact card_image_le.trans (hR _ _)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     · simp [patternMenu, branchBound, hk]</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a> </span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> noncomputable def patternAssignments {m : ℕ} (p : ParentPattern C m) (H : C → Peeling.Graph L R) :</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     Finset (Fin (m+1) → L ⊕ R) := GraphChoices.menuAssignments (patternMenu p H) (m+1)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> </span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> /-- The fixed-pattern embedding count underlying Equation (8), before grouping</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> left vertices with equal edge classes. The right root has at most |R| choices. -/</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>  theorem patternAssignments_card_le {m : ℕ} (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (D : ℕ) (DR : C → ℕ)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c) :</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     (patternAssignments p H).card ≤ Fintype.card R *</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>       ∏ i : Fin m, if p.childLeft i then DR (p.cls i) else D := by</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   have hh := GraphChoices.menuAssignments_card_le (patternMenu p H)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     (branchBound (R := R) p D DR) (m+1) (fun k _ f =&gt; patternMenu_card_le p H D DR hL hR k f)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   unfold patternAssignments</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   apply hh.trans_eq</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   rw [prod_range_succ&#x27;]</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   rw [← Fin.prod_univ_eq_prod_range (fun k =&gt; branchBound (R := R) p D DR (k+1)) m]</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   simp only [branchBound, Fin.isLt, dif_pos]</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   rw [mul_comm]</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> </span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> end GraphChoices.Patterns</span></pre></html>

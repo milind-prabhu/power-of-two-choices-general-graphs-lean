@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ComponentTrees.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ComponentTrees.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ComponentGreedy</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Combinatorics.SimpleGraph.Acyclic</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Actual arrival components have spanning trees on exactly their vertex</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> sets. Every selected tree edge is backed by an original arrival occurrence.</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> Converting those trees to the counted canonical shape codes remains separate.</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> -/</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> namespace GraphChoices</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {V : Type*} [Fintype V] [DecidableEq V] {T : ℕ}</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> omit [DecidableEq V] in</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> theorem componentVertices_coe_eq_supp (I : Instance V T) (v : V) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     (componentVertices I v : Set V) = ((arrivalGraph I).connectedComponentMk v).supp := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   ext w</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   simp only [Finset.mem_coe, mem_componentVertices,</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     SimpleGraph.ConnectedComponent.mem_supp_iff, SimpleGraph.ConnectedComponent.eq]</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   exact SimpleGraph.reachable_comm</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> theorem component_induce_connected (I : Instance V T) (v : V) :</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     ((arrivalGraph I).induce (componentVertices I v : Set V)).Connected := by</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   rw [componentVertices_coe_eq_supp]</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   exact SimpleGraph.ConnectedComponent.connected_toSimpleGraph _</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> </span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> /-- Spanning-tree extraction from an actual component, including its exact</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> vertex count. Edges inherit original occurrence times, with no sampling premise. -/</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> theorem exists_component_spanning_tree (I : Instance V T) (v : V) :</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     ∃ H : SimpleGraph {w : V // w ∈ componentVertices I v},</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       H.IsTree ∧</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>       (∀ x y, H.Adj x y → ∃ t : Fin T,</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>         (I.left t = x.val ∧ I.right t = y.val) ∨</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>         (I.left t = y.val ∧ I.right t = x.val)) ∧</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>       Fintype.card {w : V // w ∈ componentVertices I v} = (componentVertices I v).card := by</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   classical</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   obtain ⟨H, hle, htree⟩ := (component_induce_connected I v).exists_isTree_le</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   refine ⟨H, htree, ?_, Fintype.card_coe _⟩</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   intro x y hxy</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   exact (hle hxy).2</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> </span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> end GraphChoices</span></pre></html>

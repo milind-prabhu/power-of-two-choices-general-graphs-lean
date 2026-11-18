@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BlockSampling.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · BlockSampling.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.SamplingTail</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! A lower-tail substitute for Lemma 3.3: a bucket hit in every independent</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> block has at least as many occurrences as there are blocks. Disjoint buckets&#x27;</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> block-success indicators have nonpositive pairwise covariance. -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> open Finset</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> theorem average_unit_indicator {Ω : Type*} [Fintype Ω] [DecidableEq Ω] (A : Finset Ω) :</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     average (fun ω =&gt; if ω ∈ A then (1 : ℝ) else 0) = eventProbability A := by</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   simp [average, eventProbability]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> theorem eventProbability_le_one {Ω : Type*} [Fintype Ω] (A : Finset Ω) :</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     eventProbability A ≤ 1 := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   unfold eventProbability</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   by_cases h : Fintype.card Ω = 0</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   · simp [h]</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   · apply (div_le_one (by exact_mod_cast Nat.pos_of_ne_zero h)).mpr</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     exact_mod_cast card_le_univ A</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> theorem eventProbability_compl {Ω : Type*} [Fintype Ω] [Nonempty Ω]</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     [DecidableEq Ω] (A : Finset Ω) :</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     eventProbability (univ \ A) = 1 - eventProbability A := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   simp only [eventProbability, card_sdiff, inter_univ, card_univ]</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   rw [Nat.cast_sub (card_le_univ A)]</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have h : (Fintype.card Ω : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   field_simp</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> theorem eventProbability_union_inter {Ω : Type*} [Fintype Ω] [DecidableEq Ω]</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     (A B : Finset Ω) :</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     eventProbability (A ∪ B) + eventProbability (A ∩ B) =</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>       eventProbability A + eventProbability B := by</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   unfold eventProbability</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   rw [← add_div, ← add_div]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   congr 1</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   exact_mod_cast card_union_add_card_inter A B</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> variable {E : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> </span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> def blockHitEvent (A : Finset E) (s : ℕ) : Finset (Fin s → E) :=</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   univ.filter fun ω =&gt; ∃ t, ω t ∈ A</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> theorem blockHitEvent_compl (A : Finset E) (s : ℕ) :</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     univ \ blockHitEvent A s = Fintype.piFinset (fun _ : Fin s =&gt; univ \ A) := by</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   ext ω</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   simp [blockHitEvent, Fintype.mem_piFinset]</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> </span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> theorem blockHit_probability (A : Finset E) (s : ℕ) :</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     eventProbability (blockHitEvent A s) =</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       1 - (1 - (A.card : ℝ) / Fintype.card E)^s := by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   have h := eventProbability_compl (blockHitEvent A s)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   rw [blockHitEvent_compl, probability_coordinate_constraints] at h</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   have hm : (Fintype.card E : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   have hc : ((univ \ A).card : ℝ) / Fintype.card E =</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>       1 - (A.card : ℝ) / Fintype.card E := by</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     rw [card_sdiff, inter_univ, card_univ, Nat.cast_sub (card_le_univ A)]</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     field_simp</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   simp only [hc, prod_const, card_univ, Fintype.card_fin] at h</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   linarith</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> </span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a> theorem blockHit_union (A B : Finset E) (s : ℕ) :</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     blockHitEvent A s ∪ blockHitEvent B s = blockHitEvent (A ∪ B) s := by</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   ext ω</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   simp only [mem_union, blockHitEvent, mem_filter, mem_univ, true_and, mem_union]</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   exact exists_or.symm</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a> </span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> theorem blockHit_disjoint_covariance (A B : Finset E) (s : ℕ) (hAB : Disjoint A B) :</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     eventProbability (blockHitEvent A s ∩ blockHitEvent B s) ≤</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       eventProbability (blockHitEvent A s) * eventProbability (blockHitEvent B s) := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   have hi := eventProbability_union_inter (blockHitEvent A s) (blockHitEvent B s)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   rw [blockHit_union] at hi</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   simp only [blockHit_probability] at hi ⊢</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   have ha : (0 : ℝ) ≤ 1 - (A.card : ℝ) / Fintype.card E := by</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     have h := eventProbability_le_one A</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     unfold eventProbability at h</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     linarith</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   have hb : (0 : ℝ) ≤ 1 - (B.card : ℝ) / Fintype.card E := by</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     have h := eventProbability_le_one B</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     unfold eventProbability at h</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     linarith</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   have hab : (0 : ℝ) ≤ 1 - ((A.card : ℝ) + B.card) / Fintype.card E := by</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     have h := eventProbability_le_one (A ∪ B)</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     simp only [eventProbability, card_union_of_disjoint hAB, Nat.cast_add] at h</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>     linarith</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   have hh : 1 - ((A.card : ℝ) + B.card) / Fintype.card E ≤</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       (1 - (A.card : ℝ) / Fintype.card E) * (1 - (B.card : ℝ) / Fintype.card E) := by</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>     have hprod : (0 : ℝ) ≤ ((A.card : ℝ) / Fintype.card E) *</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>         ((B.card : ℝ) / Fintype.card E) := by positivity</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     rw [add_div]</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>     nlinarith</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   have hp := pow_le_pow_left₀ hab hh s</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   rw [mul_pow] at hp</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>   simp only [card_union_of_disjoint hAB, Nat.cast_add] at hi</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   nlinarith</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a> </span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a> noncomputable def allBlocksEvent (A : Finset E) (k s : ℕ) :</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     Finset (Fin k → Fin s → E) := Fintype.piFinset fun _ =&gt; blockHitEvent A s</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a> </span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a> theorem allBlocks_probability (A : Finset E) (k s : ℕ) :</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     eventProbability (allBlocksEvent A k s) = (eventProbability (blockHitEvent A s))^k := by</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   rw [allBlocksEvent, probability_coordinate_constraints]</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>   simp [eventProbability, div_pow]</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a> </span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a> theorem allBlocks_inter (A B : Finset E) (k s : ℕ) :</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     allBlocksEvent A k s ∩ allBlocksEvent B k s =</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>       Fintype.piFinset (fun _ : Fin k =&gt; blockHitEvent A s ∩ blockHitEvent B s) := by</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   ext ω</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>   simp only [allBlocksEvent, mem_inter, Fintype.mem_piFinset]</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>   exact forall_and.symm</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> </span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a> theorem allBlocks_disjoint_covariance (A B : Finset E) (k s : ℕ) (hAB : Disjoint A B) :</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     eventProbability (allBlocksEvent A k s ∩ allBlocksEvent B k s) ≤</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>       eventProbability (allBlocksEvent A k s) * eventProbability (allBlocksEvent B k s) := by</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   rw [allBlocks_inter, probability_coordinate_constraints]</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   simp only [prod_const, card_univ, Fintype.card_fin]</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>   change (eventProbability (blockHitEvent A s ∩ blockHitEvent B s))^k ≤ _</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>   rw [allBlocks_probability, allBlocks_probability, ← mul_pow]</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   exact pow_le_pow_left₀ (eventProbability_nonneg _) (blockHit_disjoint_covariance A B s hAB) k</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a> </span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a> theorem bernoulli_miss_bound (p : ℝ) (hp : 0 ≤ p) (hp1 : p ≤ 1) (s : ℕ) :</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>     (1-p)^s * (1+s*p) ≤ 1 := by</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>   induction s with</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>   | zero =&gt; simp</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>   | succ s ih =&gt;</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     have hh : (1-p)*(1+((s+1 : ℕ) : ℝ)*p) ≤ 1+s*p := by</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>       push_cast</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>       nlinarith [mul_nonneg (by positivity : (0 : ℝ) ≤ (s:ℝ)+1) (sq_nonneg p)]</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     calc</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>       _ = (1-p)^s * ((1-p)*(1+((s+1 : ℕ) : ℝ)*p)) := by rw [pow_succ]; ring</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>       _ ≤ (1-p)^s * (1+s*p) := mul_le_mul_of_nonneg_left hh (pow_nonneg (by linarith) _)</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>       _ ≤ 1 := ih</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a> </span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a> /-- A direct binomial lower bound, valid without an asymptotic quantile lemma. -/</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a> theorem blockHit_probability_lower (A : Finset E) (s : ℕ) :</span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a>     ((s:ℝ)*((A.card : ℝ)/Fintype.card E)) /</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>       (1+(s:ℝ)*((A.card : ℝ)/Fintype.card E)) ≤ eventProbability (blockHitEvent A s) := by</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a>   have hp : (0 : ℝ) ≤ (A.card : ℝ)/Fintype.card E := by positivity</span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a>   have hp1 : (A.card : ℝ)/Fintype.card E ≤ 1 := eventProbability_le_one A</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>   rw [blockHit_probability]</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a>   apply (div_le_iff₀ (by positivity : (0 : ℝ) &lt; 1+(s:ℝ)*((A.card : ℝ)/Fintype.card E))).mpr</span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a>   have h := bernoulli_miss_bound _ hp hp1 s</span>
+<span class="line" id="L142"><a class="num" href="#L142"> 142</a>   nlinarith</span>
+<span class="line" id="L143"><a class="num" href="#L143"> 143</a> </span>
+<span class="line" id="L144"><a class="num" href="#L144"> 144</a> theorem blockHit_probability_lower_of_mean (A : Finset E) (s : ℕ) (x : ℝ)</span>
+<span class="line" id="L145"><a class="num" href="#L145"> 145</a>     (hx : 0 ≤ x) (hx1 : x ≤ 1)</span>
+<span class="line" id="L146"><a class="num" href="#L146"> 146</a>     (hmean : x ≤ (s:ℝ)*((A.card : ℝ)/Fintype.card E)) :</span>
+<span class="line" id="L147"><a class="num" href="#L147"> 147</a>     x/2 ≤ eventProbability (blockHitEvent A s) := by</span>
+<span class="line" id="L148"><a class="num" href="#L148"> 148</a>   have hm : (0 : ℝ) ≤ (s:ℝ)*((A.card : ℝ)/Fintype.card E) := by positivity</span>
+<span class="line" id="L149"><a class="num" href="#L149"> 149</a>   apply le_trans _ (blockHit_probability_lower A s)</span>
+<span class="line" id="L150"><a class="num" href="#L150"> 150</a>   apply (le_div_iff₀ (by positivity : (0 : ℝ) &lt; 1+(s:ℝ)*((A.card : ℝ)/Fintype.card E))).mpr</span>
+<span class="line" id="L151"><a class="num" href="#L151"> 151</a>   nlinarith [mul_nonneg (sub_nonneg.mpr hmean) (sub_nonneg.mpr hx1)]</span>
+<span class="line" id="L152"><a class="num" href="#L152"> 152</a> </span>
+<span class="line" id="L153"><a class="num" href="#L153"> 153</a> end GraphChoices</span></pre></html>

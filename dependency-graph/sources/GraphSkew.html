@@ -1,0 +1,143 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GraphSkew.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · GraphSkew.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Peeling</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.SkewExpansion</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.Finset.Powerset</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Data.Real.Archimedean</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> import Mathlib.Tactic.Positivity</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> /-! A finite maximum log-skewness over actual bipartite subgraphs, and the</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> bridge from this parameter to hereditary expansion and terminating peeling.</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> Admissibility explicitly excludes zero degrees and nonpositive log denominators.</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> -/</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> open Finset</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> noncomputable def minLeftDegree (F : Graph L R) (A : Finset L) : ℕ :=</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   if h : A.Nonempty then A.inf&#x27; h (leftDegree F) else 0</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> </span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>  theorem minLeftDegree_le (F : Graph L R) {A : Finset L} {u : L} (hu : u ∈ A) :</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     minLeftDegree F A ≤ leftDegree F u := by</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   rw [minLeftDegree, dif_pos ((show A.Nonempty from ⟨u,hu⟩))]</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   exact inf&#x27;_le _ hu</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> </span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>  theorem le_minLeftDegree (F : Graph L R) {A : Finset L} (hA : A.Nonempty)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     (k : ℕ) (hk : ∀ u ∈ A, k ≤ leftDegree F u) : k ≤ minLeftDegree F A := by</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   rw [minLeftDegree, dif_pos hA]</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   exact le_inf&#x27; hA (leftDegree F) hk</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> def neighborSet (F : Graph L R) (A : Finset L) : Finset R :=</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   GraphChoices.neighbors (fun u v =&gt; (u,v) ∈ F) A</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> noncomputable def skewValue (F : Graph L R) (A : Finset L) (d n : ℝ) : ℝ :=</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   GraphChoices.localLogSkewness A.card (neighborSet F A).card (minLeftDegree F A) d n</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> noncomputable def SkewAdmissible (F : Graph L R) (A : Finset L) (d n : ℝ) : Prop :=</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   A.Nonempty ∧ (neighborSet F A).Nonempty ∧ (neighborSet F A).card ≤ A.card ∧</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     0 &lt; minLeftDegree F A ∧ 1 &lt; d * (Real.log n)^2 / minLeftDegree F A</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> noncomputable def skewValues (G : Graph L R) (d n : ℝ) : Finset ℝ := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   classical</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   exact insert 0 (((G.powerset ×ˢ (univ : Finset L).powerset).filter</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     fun p =&gt; SkewAdmissible p.1 p.2 d n).image fun p =&gt; skewValue p.1 p.2 d n)</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> noncomputable def graphLogSkewness (G : Graph L R) (d n : ℝ) : ℝ :=</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   (skewValues G d n).sup&#x27; (by</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     classical</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     simp [skewValues]) id</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> </span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>  theorem graphLogSkewness_nonneg (G : Graph L R) (d n : ℝ) :</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     0 ≤ graphLogSkewness G d n := by</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   classical</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   unfold graphLogSkewness</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   exact le_sup&#x27; id (by simp [skewValues])</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> </span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>  theorem skewValue_le_graphLogSkewness {G F : Graph L R} (hF : F ⊆ G)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     (A : Finset L) (d n : ℝ) (ha : SkewAdmissible F A d n) :</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     skewValue F A d n ≤ graphLogSkewness G d n := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   classical</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   unfold graphLogSkewness</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   apply le_sup&#x27; id</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   apply mem_insert_of_mem</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   apply mem_image.mpr</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   refine ⟨(F,A), ?_, rfl⟩</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   simp [hF, ha]</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> noncomputable def scaleCapacity (G : Graph L R) (d n f : ℝ) : ℕ :=</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   ⌈(f * Real.log n)^(2 * graphLogSkewness G d n)⌉₊</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> </span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>  theorem scaleCapacity_pos (G : Graph L R) (d n f : ℝ)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (hf : 1 ≤ f) (hn : 1 &lt; Real.log n) : 1 ≤ scaleCapacity G d n f := by</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   have hb : 1 ≤ f * Real.log n := by nlinarith</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>   have hp : (1:ℝ) ≤ (f * Real.log n)^(2 * graphLogSkewness G d n) :=</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     Real.one_le_rpow hb (mul_nonneg (by norm_num) (graphLogSkewness_nonneg G d n))</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   have hc := Nat.le_ceil ((f * Real.log n)^(2 * graphLogSkewness G d n))</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   exact_mod_cast hp.trans hc</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a> </span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a> /-- Bounded log-skewness supplies the actual Hall expansion premise in every</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> residual graph. The left-degree hypothesis is the preprocessing degree bound. -/</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>  theorem peelingExpansion_of_graphLogSkewness (G : Graph L R) (k : ℕ) (d n f : ℝ)</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     (hd : 0 &lt; d) (hf : 1 ≤ f) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n)</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     (hcut : d / f^2 ≤ (k+1 : ℕ)) :</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     PeelingExpansion G k (scaleCapacity G d n f) := by</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>   classical</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>   intro F hF A hA</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   by_cases hAempty : A = ∅</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>   · simp [hAempty]</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   have hAne : A.Nonempty := nonempty_iff_ne_empty.mpr hAempty</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>   have hkmin : k+1 ≤ minLeftDegree F A :=</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>     le_minLeftDegree F hAne (k+1) (fun u hu =&gt; hA u hu)</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>   have hmin : 0 &lt; minLeftDegree F A := by omega</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>   obtain ⟨u, hu⟩ := hAne</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   have hAne : A.Nonempty := ⟨u,hu⟩</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>   have hdmin : (0:ℝ) &lt; minLeftDegree F A := by exact_mod_cast hmin</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>   have hminmax : (minLeftDegree F A : ℝ) ≤ d * Real.log n := by</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     have hh := (minLeftDegree_le F hu).trans (leftDegree_mono hF u)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>     have hreal : (minLeftDegree F A : ℝ) ≤ leftDegree G u := by exact_mod_cast hh</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>     exact hreal.trans (hleft u)</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hden : 1 &lt; d * (Real.log n)^2 / minLeftDegree F A := by</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>     apply (lt_div_iff₀ hdmin).mpr</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     have hh : d * Real.log n &lt; d * (Real.log n)^2 := by</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>       nlinarith [mul_pos hd (mul_pos (by linarith : 0 &lt; Real.log n) (by linarith : 0 &lt; Real.log n - 1))]</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>     linarith</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>   have hNne : (neighborSet F A).Nonempty := by</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     have hdu : 0 &lt; leftDegree F u := (Nat.zero_le k).trans_lt (hA u hu)</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     obtain ⟨v,hv⟩ := card_pos.mp hdu</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     refine ⟨v, ?_⟩</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>     simp only [leftNeighbors, mem_filter, mem_univ, true_and] at hv</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     simp only [neighborSet, GraphChoices.neighbors, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>     exact ⟨u,hu,hv⟩</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>   by_cases hbal : A.card ≤ (neighborSet F A).card</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>   · have hcap := scaleCapacity_pos G d n f hf hn</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     change A.card ≤ scaleCapacity G d n f * (neighborSet F A).card</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     exact hbal.trans (by nlinarith)</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   · have hadm : SkewAdmissible F A d n :=</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>       ⟨hAne, hNne, by omega, hmin, hden⟩</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>     have hskew := skewValue_le_graphLogSkewness hF A d n hadm</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     have hdeg : d / f^2 ≤ (minLeftDegree F A : ℝ) :=</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>       hcut.trans (by exact_mod_cast hkmin)</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>     have hexp := GraphChoices.expansion_at_scale</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>       (a := (A.card : ℝ)) (b := ((neighborSet F A).card : ℝ))</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>       (d := (minLeftDegree F A : ℝ)) (D := d) (n := n) (f := f)</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a>       (by exact_mod_cast hAne.card_pos) (by exact_mod_cast hNne.card_pos) hdmin</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>       (by linarith) (by linarith) (graphLogSkewness_nonneg G d n) hdeg hden hskew</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>     have hceil := Nat.le_ceil ((f * Real.log n)^(2 * graphLogSkewness G d n))</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     have hbnonneg : (0:ℝ) ≤ (neighborSet F A).card := Nat.cast_nonneg _</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>     have hh := hexp.trans (mul_le_mul_of_nonneg_left hceil hbnonneg)</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a>     change A.card ≤ scaleCapacity G d n f * (neighborSet F A).card</span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a>     rw [Nat.mul_comm]</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a>     exact_mod_cast hh</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a> </span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a> /-- One full extraction round, including finite termination, derived from the</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a> maximum over concrete log-skewness witnesses. -/</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>  theorem exists_graph_skew_piece (G : Graph L R) (k D : ℕ) (d n f : ℝ)</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a>     (hd : 0 &lt; d) (hf : 1 ≤ f) (hn : 1 &lt; Real.log n)</span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d * Real.log n)</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>     (hcut : d / f^2 ≤ (k+1 : ℕ)) (hD : ∀ u, leftDegree G u ≤ D) :</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a>     ∃ P : Graph L R, P ⊆ G ∧</span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a>       (∀ u, leftDegree (G \ P) u ≤ k) ∧</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>       (∀ v, rightDegree P v ≤ D * scaleCapacity G d n f) := by</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a>   exact exists_peeling_piece G k _ D hD</span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a>     (peelingExpansion_of_graphLogSkewness G k d n f hd hf hn hleft hcut)</span>
+<span class="line" id="L142"><a class="num" href="#L142"> 142</a> </span>
+<span class="line" id="L143"><a class="num" href="#L143"> 143</a> end GraphChoices.Peeling</span></pre></html>

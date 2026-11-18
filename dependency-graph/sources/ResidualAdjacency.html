@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ResidualAdjacency.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ResidualAdjacency.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ListArrivalGraph</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ResidualTreeBound</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Every edge of the actual residual graph has an original sampled time and</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> base-edge label. This connects graph witnesses to the occurrence-based events</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> used in the checked probability estimates. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>   [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   {T : ℕ}</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> theorem mem_residual_sample_iff (encode : E → Arrival L R C) (α : C → ℕ)</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     (ω : Fin T → E) (e : Arrival L R C) :</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     e ∈ residualArrivals (trace α (sampleArrivals encode ω)) ↔</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>       ∃ t : Fin T, encode (ω t) = e ∧ residualTime α encode ω t := by</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   constructor</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   · intro he</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     obtain ⟨ev, hev, ha⟩ := List.mem_map.mp he</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     obtain ⟨htrace, hres⟩ := List.mem_filter.mp hev</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     have hfalse : ev.threshold = false := by simpa using hres</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     obtain ⟨i, htime, _⟩ := trace_mem_arrival α (sampleArrivals encode ω) ev htrace</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     let t : Fin T := ⟨ev.time, by</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       have hi := i.isLt</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       have hlen := sampleArrivals_length encode ω</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       omega⟩</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     have hs := sample_event_arrival α encode ω ev htrace t rfl</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     exact ⟨t, hs.symm.trans ha, ev, htrace, rfl, hfalse⟩</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   · rintro ⟨t, he, ev, hev, ht, hres⟩</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     apply List.mem_map.mpr</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     refine ⟨ev, List.mem_filter.mpr ⟨hev, by simpa [hres]⟩, ?_⟩</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     exact (sample_event_arrival α encode ω ev hev t ht).trans he</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> theorem residual_adj_iff_time (encode : E → Arrival L R C) (α : C → ℕ)</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     (ω : Fin T → E) (x y : L ⊕ R) :</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     (arrivalGraph (residualInstance α (sampleArrivals encode ω))).Adj x y ↔</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>       x ≠ y ∧ ∃ t : Fin T, residualTime α encode ω t ∧</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>         ((Sum.inl (encode (ω t)).left = x ∧ Sum.inr (encode (ω t)).right = y) ∨</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>          (Sum.inl (encode (ω t)).left = y ∧ Sum.inr (encode (ω t)).right = x)) := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   rw [residualInstance, replay_adj_iff]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   constructor</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   · rintro ⟨hne, e, he, hxy⟩</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     obtain ⟨t, ht, hres⟩ := (mem_residual_sample_iff encode α ω e).mp he</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     exact ⟨hne, t, hres, by simpa only [ht] using hxy⟩</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   · rintro ⟨hne, t, hres, hxy⟩</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     exact ⟨hne, encode (ω t), (mem_residual_sample_iff encode α ω _).mpr ⟨t, rfl, hres⟩, hxy⟩</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> </span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> theorem residual_adj_inl_inr_iff_time (encode : E → Arrival L R C) (α : C → ℕ)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (ω : Fin T → E) (u : L) (v : R) :</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (arrivalGraph (residualInstance α (sampleArrivals encode ω))).Adj (Sum.inl u) (Sum.inr v) ↔</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       ∃ t : Fin T, residualTime α encode ω t ∧</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>         (encode (ω t)).left = u ∧ (encode (ω t)).right = v := by</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   rw [residual_adj_iff_time]</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   simp</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> </span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a> end GraphChoices.ThresholdGreedy</span></pre></html>

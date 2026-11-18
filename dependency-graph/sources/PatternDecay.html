@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PatternDecay.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PatternDecay.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.PatternEventBound</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.BalancedProduct</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Cancellation of branching factors against threshold-witness probabilities</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> for a left-heavy fixed pattern. Local numerical hypotheses are explicit; the</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> paper&#x27;s chosen thresholds must still be shown to satisfy them. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open ThresholdGreedy</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   {T m : ℕ}</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> </span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>  theorem weighted_branch_identity (p : ParentPattern C m) (D z : ℝ) (DR γ : C → ℝ) :</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>     (∏ i : Fin m, if p.childLeft i then DR (p.cls i) else D) *</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>       (z^m * ∏ j : LeftChildren p, γ (p.cls j.val)) =</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     ∏ i : Fin m, if p.childLeft i then DR (p.cls i)*z*γ (p.cls i) else D*z := by</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   classical</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   rw [GraphChoices.subtype_product_as_ite (fun i : Fin m =&gt; p.childLeft i = true) (fun i =&gt; γ (p.cls i))]</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   have hz : z^m = ∏ _i : Fin m, z := by simp</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   rw [hz, ← prod_mul_distrib, ← prod_mul_distrib]</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   apply prod_congr rfl</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   intro i _</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   cases h : p.childLeft i &lt;;&gt; simp [h, mul_assoc]</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> noncomputable def bucketDecay (α : C → ℕ) (DL : C → ℕ) (T : ℕ) (c : C) : ℝ :=</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   (Real.exp 1 * T * (DL c : ℝ) / Fintype.card E / α c)^(α c)</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> </span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a> /-- A fixed left-heavy pattern has geometric probability decay when the local</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> threshold tails beat their right branching factors. This combines actual</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> execution witnesses and the concrete graph-embedding count. -/</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>  theorem residualPattern_probability_decay (p : ParentPattern C m) (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     (encode : E → Arrival L R C) (α : C → ℕ) (DL DR : C → ℕ) (D : ℕ)</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     (b r : ℝ) (hb : 0 ≤ b) (hr : 0 ≤ r) (hbr : b ≤ r)</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     (hpair : (D : ℝ)*((T:ℝ)/Fintype.card E)*b ≤ r^2)</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     (hlocal : ∀ c, (DR c : ℝ)*((T:ℝ)/Fintype.card E)*bucketDecay (E := E) α DL T c ≤ b)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (hheavy : m ≤ 2*(univ.filter fun i : Fin m =&gt; p.childLeft i = true).card) :</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     eventProbability (residualPatternEvent p H encode α T) ≤ (Fintype.card R : ℝ)*r^m := by</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   classical</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   have hp := residualPattern_probability_le (T := T) p H encode α DL DR D hsimple hDL hL hR</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   have heq :</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>       ((Fintype.card R * (∏ i : Fin m, if p.childLeft i then DR (p.cls i) else D) : ℕ) : ℝ) *</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>         patternProbabilityFactor (E := E) p α DL T =</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>       (Fintype.card R : ℝ) * (∏ i : Fin m, if p.childLeft i then</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>         (DR (p.cls i) : ℝ)*((T:ℝ)/Fintype.card E)*bucketDecay (E := E) α DL T (p.cls i)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>         else (D:ℝ)*((T:ℝ)/Fintype.card E)) := by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     simp only [Nat.cast_mul, Nat.cast_prod, Nat.cast_ite, patternProbabilityFactor]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     rw [mul_assoc]</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     exact congrArg (fun x : ℝ =&gt; (Fintype.card R : ℝ)*x)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>       (weighted_branch_identity p (D:ℝ) ((T:ℝ)/Fintype.card E)</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         (fun c =&gt; (DR c : ℝ)) (bucketDecay (E := E) α DL T))</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   rw [heq] at hp</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   calc</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     _ ≤ _ := hp</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     _ ≤ (Fintype.card R : ℝ) * (∏ i : Fin m, if p.childLeft i then b else (D:ℝ)*((T:ℝ)/Fintype.card E)) := by</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>       apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>       apply prod_le_prod</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>       · intro i _</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>         split_ifs &lt;;&gt; (try dsimp only [bucketDecay]) &lt;;&gt; positivity</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>       · intro i _</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>         split_ifs</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>         · exact hlocal _</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>         · exact le_rfl</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     _ ≤ (Fintype.card R : ℝ) * r^m := by</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>       simpa only [Fintype.card_fin] using GraphChoices.two_class_product_bound (fun i : Fin m =&gt; p.childLeft i = true)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>         _ b r (by positivity) hb hr hpair hbr (by simpa using hheavy)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a> </span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a> end GraphChoices.Patterns</span></pre></html>

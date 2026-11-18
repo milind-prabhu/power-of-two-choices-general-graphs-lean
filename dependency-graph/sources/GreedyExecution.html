@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GreedyExecution.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · GreedyExecution.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Greedy</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! A bridge from a state-by-state execution to the indexed Greedy relation.</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> The increment invariant is proved equivalent to counting assigned occurrences.</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> -/</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> namespace GraphChoices</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> open Finset</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> variable {V : Type*} [Fintype V] [DecidableEq V] {T : ℕ}</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>  theorem prefixLoad_succ (I : Instance V T) (a : Orientation T) (t : Fin T) (v : V) :</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     prefixLoad I a (t.val+1) v = prefixLoad I a t.val v + if destination I a t = v then 1 else 0 := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   classical</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   have htime (s : Fin T) : s.val &lt; t.val+1 ↔ s.val &lt; t.val ∨ s = t := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     constructor</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>     · intro hs</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>       by_cases heq : s.val = t.val</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>       · exact Or.inr (Fin.ext heq)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>       · exact Or.inl (by omega)</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     · rintro (h | rfl) &lt;;&gt; omega</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   have hnot : t ∉ univ.filter (fun s : Fin T =&gt; s.val &lt; t.val ∧ destination I a s = v) := by simp</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   by_cases hd : destination I a t = v</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   · have heq : (univ.filter fun s : Fin T =&gt; s.val &lt; t.val+1 ∧ destination I a s = v) =</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>         insert t (univ.filter fun s : Fin T =&gt; s.val &lt; t.val ∧ destination I a s = v) := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>       ext s</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       simp only [mem_filter, mem_univ, true_and, mem_insert, htime]</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>       constructor</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       · rintro ⟨h,hs⟩</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>         rcases h with h | rfl</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>         · exact Or.inr ⟨h,hs⟩</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>         · exact Or.inl rfl</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>       · rintro (rfl | h)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>         · exact ⟨Or.inr rfl,hd⟩</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>         · exact ⟨Or.inl h.1,h.2⟩</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     simp only [prefixLoad, heq, card_insert_of_notMem hnot, if_pos hd]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   · have heq : (univ.filter fun s : Fin T =&gt; s.val &lt; t.val+1 ∧ destination I a s = v) =</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>         univ.filter (fun s : Fin T =&gt; s.val &lt; t.val ∧ destination I a s = v) := by</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>       ext s</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>       simp only [mem_filter, mem_univ, true_and, htime]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>       constructor</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>       · rintro ⟨h,hs⟩</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>         rcases h with h | rfl</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>         · exact ⟨h,hs⟩</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>         · exact False.elim (hd hs)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>       · intro h; exact ⟨Or.inl h.1,h.2⟩</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     simp only [prefixLoad, heq, if_neg hd, Nat.add_zero]</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> </span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>  theorem execution_counts_prefix (I : Instance V T) (a : Orientation T) (x : ℕ → V → ℕ)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     (hzero : ∀ v, x 0 v = 0)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (hstep : ∀ t : Fin T, ∀ v, x (t.val+1) v = x t.val v + if destination I a t = v then 1 else 0)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (k : ℕ) (hk : k ≤ T) (v : V) : x k v = prefixLoad I a k v := by</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   induction k with</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   | zero =&gt; simp [hzero, prefixLoad]</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   | succ k ih =&gt;</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     let t : Fin T := ⟨k,by omega⟩</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     have hs := hstep t v</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     have hp := prefixLoad_succ I a t v</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     have hi := ih (by omega)</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     simpa only [t, hi, hp] using hs</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a> </span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>  theorem isGreedy_of_execution (I : Instance V T) (a : Orientation T) (x : ℕ → V → ℕ)</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     (hzero : ∀ v, x 0 v = 0)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     (hstep : ∀ t : Fin T, ∀ v, x (t.val+1) v = x t.val v + if destination I a t = v then 1 else 0)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     (hchoice : ∀ t : Fin T, ∀ v, (v = I.left t ∨ v = I.right t) →</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>       x t.val (destination I a t) ≤ x t.val v) : IsGreedy I a := by</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   intro t v hv</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   rw [← execution_counts_prefix I a x hzero hstep t.val (Nat.le_of_lt t.isLt) _,</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     ← execution_counts_prefix I a x hzero hstep t.val (Nat.le_of_lt t.isLt) _]</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   exact hchoice t v hv</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a> </span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>  theorem execution_final_load (I : Instance V T) (a : Orientation T) (x : ℕ → V → ℕ)</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     (hzero : ∀ v, x 0 v = 0)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     (hstep : ∀ t : Fin T, ∀ v, x (t.val+1) v = x t.val v + if destination I a t = v then 1 else 0)</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     (v : V) : x T v = load I a v := by</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   rw [execution_counts_prefix I a x hzero hstep T le_rfl v]</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   unfold prefixLoad load</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   congr 1</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   ext t</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   simp [t.isLt]</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a> </span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a> end GraphChoices</span></pre></html>

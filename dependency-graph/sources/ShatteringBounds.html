@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ShatteringBounds.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ShatteringBounds.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ShapePatterns</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ThresholdDecay</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Probability tails for the canonical left-heavy tree family, derived from</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> explicit local threshold conditions. The deterministic coverage of arbitrary</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> large connected components by this family remains a separate graph theorem.</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> -/</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open Finset</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> open ThresholdGreedy</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> variable {E L R C : Type*} [Fintype E] [DecidableEq E] [Nonempty E]</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   [Fintype L] [Fintype R] [Fintype C] [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   {T m : ℕ}</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>  theorem heavyShape_decay_of_thresholds (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     (encode : E → Arrival L R C) (α : C → ℕ) (DL DR : C → ℕ) (D : ℕ) (f : C → ℝ)</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     (hsimple : Function.Injective fun e =&gt; ((encode e).left,(encode e).right))</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     (hDL : ∀ u c, (sourceBucket encode u c).card ≤ DL c)</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     (hL : ∀ c u, Peeling.leftDegree (H c) u ≤ D)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     (hR : ∀ c v, Peeling.rightDegree (H c) v ≤ DR c)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     (b r : ℝ) (hT : 0 &lt; T) (hb : 0 &lt; b) (hr : 0 ≤ r) (hbr : b ≤ r)</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     (hpair : (D : ℝ)*((T:ℝ)/Fintype.card E)*b ≤ r^2)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     (hf : ∀ c, 1 &lt; f c)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     (hbase : ∀ c, Real.exp 1*T*(DL c : ℝ)/Fintype.card E/α c ≤ 1/f c)</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     (hthreshold : ∀ c, 0 &lt; DR c →</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>       Real.log (((DR c : ℝ)*((T:ℝ)/Fintype.card E))/b) / Real.log (f c) ≤ (α c : ℝ)) :</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     eventProbability (heavyShapeEvent H encode α T m) ≤</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       (Fintype.card R : ℝ)*(4*(Fintype.card C : ℝ)*r)^m := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   apply heavyShape_probability_le H encode α T m _ r (Nat.cast_nonneg _) hr</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   intro s hs</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   exact residualPattern_decay_of_thresholds (shapePattern s) H encode α DL DR D f</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     hsimple hDL hL hR b r hT hb hr hbr hpair hf hbase hthreshold hs</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>  theorem heavyShape_geometric_tail (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     (encode : E → Arrival L R C) (α : C → ℕ) (T m : ℕ) (r : ℝ) (hr : 0 ≤ r)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     (hdecay : eventProbability (heavyShapeEvent H encode α T m) ≤</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>       (Fintype.card R : ℝ)*(4*(Fintype.card C : ℝ)*r)^m)</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     (hsmall : 4*(Fintype.card C : ℝ)*r ≤ 1/2) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     eventProbability (heavyShapeEvent H encode α T m) ≤ (Fintype.card R : ℝ)/2^m := by</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   calc</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     _ ≤ (Fintype.card R : ℝ)*(4*(Fintype.card C : ℝ)*r)^m := hdecay</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     _ ≤ (Fintype.card R : ℝ)*((1:ℝ)/2)^m :=</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>       mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hsmall m) (Nat.cast_nonneg _)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     _ = _ := by rw [div_pow]; ring</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> </span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> /-- An explicit inverse-polynomial failure probability for the canonical</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a> heavy-tree event. The exponent condition is exact and uses no asymptotic O. -/</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>  theorem heavyShape_polynomial_tail (H : C → Peeling.Graph L R)</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     (encode : E → Arrival L R C) (α : C → ℕ) (T m N c : ℕ) (hN : 0 &lt; N)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     (hR : Fintype.card R ≤ N)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     (hprob : eventProbability (heavyShapeEvent H encode α T m) ≤ (Fintype.card R : ℝ)/2^m)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (hexponent : N^(c+1) ≤ 2^m) :</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     eventProbability (heavyShapeEvent H encode α T m) ≤ 1/(N:ℝ)^c := by</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   have hNr : (0:ℝ) &lt; N := by exact_mod_cast hN</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   have hexp : (N:ℝ)^(c+1) ≤ (2:ℝ)^m := by exact_mod_cast hexponent</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   calc</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     _ ≤ (Fintype.card R : ℝ)/2^m := hprob</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     _ ≤ (N:ℝ)/2^m := div_le_div_of_nonneg_right (by exact_mod_cast hR) (by positivity)</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     _ ≤ (N:ℝ)/(N:ℝ)^(c+1) := div_le_div_of_nonneg_left hNr.le (by positivity) hexp</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     _ = _ := by rw [pow_succ]; field_simp</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a> </span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a> end GraphChoices.Patterns</span></pre></html>

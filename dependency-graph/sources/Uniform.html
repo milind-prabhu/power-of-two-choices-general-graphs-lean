@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Uniform.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · Uniform.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Model</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Real.Basic</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.Fintype.BigOperators</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Tactic.FieldSimp</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> import Mathlib.Tactic.Positivity</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> </span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> /-! An exact finite probability space: every function Fin T → E is equally</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> likely. Thus edge samples are independent and uniform, with replacement.</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> Expectations are finite averages, so no measure-theoretic assumptions are hidden. -/</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> namespace GraphChoices</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> open Finset</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> noncomputable def average {Ω : Type*} [Fintype Ω] (f : Ω → ℝ) : ℝ :=</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   (∑ ω, f ω) / Fintype.card Ω</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> </span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>  theorem average_mono {Ω : Type*} [Fintype Ω] {f g : Ω → ℝ} (h : ∀ ω, f ω ≤ g ω) :</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     average f ≤ average g := by</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   unfold average</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   exact div_le_div_of_nonneg_right (sum_le_sum fun ω _ =&gt; h ω) (Nat.cast_nonneg _)</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a> </span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>  theorem average_sum {Ω K : Type*} [Fintype Ω] [Fintype K] (f : K → Ω → ℝ) :</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>     average (fun ω =&gt; ∑ k, f k ω) = ∑ k, average (f k) := by</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   unfold average</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   simp only [div_eq_mul_inv, sum_mul]</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   rw [sum_comm]</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a> </span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>  theorem average_mul {Ω : Type*} [Fintype Ω] (c : ℝ) (f : Ω → ℝ) :</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     average (fun ω =&gt; c * f ω) = c * average f := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   simp only [average, ← mul_sum]</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   ring</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> </span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>  theorem average_const {Ω : Type*} [Fintype Ω] [Nonempty Ω] (c : ℝ) :</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     average (fun _ : Ω =&gt; c) = c := by</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   simp [average, Fintype.card_ne_zero]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> </span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> variable {E : Type*} [Fintype E] [DecidableEq E] [Nonempty E] {T : ℕ}</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> omit [Nonempty E] in</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>  theorem sample_fiber_card (t : Fin T) (e : E) :</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     (univ.filter fun ω : Fin T → E =&gt; ω t = e).card = Fintype.card E ^ (T-1) := by</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   simpa using Fintype.card_filter_piFinset_const_eq_of_mem</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     (ι := Fin T) (univ : Finset E) t (mem_univ e)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> </span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> omit [Nonempty E] in</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>  theorem sum_coordinate (t : Fin T) (f : E → ℝ) :</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     (∑ ω : Fin T → E, f (ω t)) =</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>       (Fintype.card E : ℝ)^(T-1) * ∑ e, f e := by</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   calc</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     _ = ∑ e : E, ∑ ω ∈ (univ.filter fun ω : Fin T → E =&gt; ω t = e), f (ω t) :=</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       (sum_fiberwise univ (fun ω : Fin T → E =&gt; ω t) (fun ω =&gt; f (ω t))).symm</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>     _ = ∑ e : E, (Fintype.card E : ℝ)^(T-1) * f e := by</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>       apply sum_congr rfl</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>       intro e _</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>       calc</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         _ = ∑ _ω ∈ (univ.filter fun ω : Fin T → E =&gt; ω t = e), f e := by</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>           apply sum_congr rfl</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>           intro ω hω</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>           rw [(mem_filter.mp hω).2]</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>         _ = _ := by simp [sample_fiber_card, nsmul_eq_mul]</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     _ = _ := by rw [mul_sum]</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a> </span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a> /-- Each coordinate of the product space is exactly uniform. -/</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>  theorem average_coordinate (t : Fin T) (f : E → ℝ) :</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>     average (fun ω : Fin T → E =&gt; f (ω t)) = average f := by</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   unfold average</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   rw [sum_coordinate]</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   have hT : T = (T-1)+1 := by have := t.isLt; omega</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>   have hm : (Fintype.card E : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   simp only [Fintype.card_fun, Fintype.card_fin, Nat.cast_pow]</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   have heq : (Fintype.card E : ℝ)^T = (Fintype.card E : ℝ)^(T-1) * Fintype.card E := by</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     nth_rw 1 [hT]</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>     rw [pow_succ]</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>   rw [heq]</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   field_simp</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a> </span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a> /-- A base graph is represented by a finite, nonempty set of edge labels.</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a> Taking E to be the edges of a simple graph gives exactly the paper&#x27;s model. -/</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> structure BaseGraph (V E : Type*) where</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   left : E → V</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   right : E → V</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a> </span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> variable {V : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> </span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> def BaseGraph.sample (G : BaseGraph V E) (ω : Fin T → E) : Instance V T where</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>   left t := G.left (ω t)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>   right t := G.right (ω t)</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> </span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> def BaseGraph.internalEdges (G : BaseGraph V E) (S : Finset V) : Finset E :=</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>   univ.filter fun e =&gt; G.left e ∈ S ∧ G.right e ∈ S</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a> </span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a> noncomputable def expectedOpt (G : BaseGraph V E) (T : ℕ) : ℝ :=</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   average (fun ω : Fin T → E =&gt; (opt (G.sample ω) : ℝ))</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> </span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a> omit [Fintype V] in</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>  theorem average_internalCount (G : BaseGraph V E) (S : Finset V) (T : ℕ) :</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>     average (fun ω : Fin T → E =&gt; (internalCount (G.sample ω) S : ℝ)) =</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>       T * ((G.internalEdges S).card : ℝ) / Fintype.card E := by</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hsum (ω : Fin T → E) : (internalCount (G.sample ω) S : ℝ) =</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>       ∑ t : Fin T, if G.left (ω t) ∈ S ∧ G.right (ω t) ∈ S then (1:ℝ) else 0 := by</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     simp only [internalCount, BaseGraph.sample, card_eq_sum_ones, sum_filter, Nat.cast_sum, Nat.cast_ite, Nat.cast_one, Nat.cast_zero]</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   simp_rw [hsum]</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a>   rw [average_sum]</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>   have hk (k : Fin T) :</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>       average (fun ω : Fin T → E =&gt; if G.left (ω k) ∈ S ∧ G.right (ω k) ∈ S then (1:ℝ) else 0) =</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>       average (fun e : E =&gt; if G.left e ∈ S ∧ G.right e ∈ S then (1:ℝ) else 0) :=</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     average_coordinate k (fun e : E =&gt; if G.left e ∈ S ∧ G.right e ∈ S then (1:ℝ) else 0)</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   simp_rw [hk]</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>   simp [average, BaseGraph.internalEdges, sum_boole, mul_div_assoc]</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a> </span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a> /-- Density lower bound for every subset and every number of arrivals.</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a> Equivalent to (16) after substituting d_av = 2|E|/n and maximizing over S. -/</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>  theorem expected_density_lower_bound (G : BaseGraph V E) (S : Finset V) (T : ℕ) :</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     T * ((G.internalEdges S).card : ℝ) / Fintype.card E ≤</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>       S.card * expectedOpt G T := by</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   rw [← average_internalCount]</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>   unfold expectedOpt</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>   rw [← average_mul]</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   apply average_mono</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   intro ω</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   exact_mod_cast density_le_opt (G.sample ω) S</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a> </span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a> omit [DecidableEq E] in</span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a>  theorem expectedOpt_ge_one (G : BaseGraph V E) (T : ℕ) (hT : 0 &lt; T) :</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a>     1 ≤ expectedOpt G T := by</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>   rw [← average_const (Ω := Fin T → E) (1:ℝ)]</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>   exact average_mono fun ω =&gt; by exact_mod_cast opt_pos (G.sample ω) hT</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a> </span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a> end GraphChoices</span></pre></html>

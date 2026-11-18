@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ResidualOptimum.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ResidualOptimum.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ReplayGreedyAdapter</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.Density</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Algebra.BigOperators.Fin</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> </span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> /-! Removing arrival occurrences cannot increase the offline optimum. This is</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> proved via the exact density criterion and applied to the extracted residual</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> sequence, completing the benchmark bridge for ordinary residual Greedy. -/</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> namespace GraphChoices</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open Finset</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>  theorem countP_ofFn_eq_sum {A : Type*} {n : ℕ} (f : Fin n → A) (P : A → Bool) :</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     (List.ofFn f).countP P = ∑ i, if P (f i) then 1 else 0 := by</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   induction n with</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   | zero =&gt; simp</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   | succ n ih =&gt;</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     rw [List.ofFn_succ, List.countP_cons, ih, Fin.sum_univ_succ]</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     simp only [Nat.add_comm]</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>  theorem card_filter_list_indices {A : Type*} (es : List A) (P : A → Bool) :</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     (univ.filter fun i : Fin es.length =&gt; P (es.get i) = true).card = es.countP P := by</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   have hh := countP_ofFn_eq_sum es.get P</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   rw [List.ofFn_get] at hh</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   simp only [card_eq_sum_ones, sum_filter]</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   exact hh.symm</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> </span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>  theorem opt_le_of_internalCount_le {V : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>     {S T : ℕ} (J : Instance V S) (I : Instance V T)</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     (h : ∀ A, internalCount J A ≤ internalCount I A) : opt J ≤ opt I := by</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   apply (opt_le_iff_density J _).2</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   intro A</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   exact (h A).trans (density_le_opt I A)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a> </span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> end GraphChoices</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> </span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> namespace GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> open Finset</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> variable {L R C : Type*} [Fintype L] [Fintype R]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   [DecidableEq L] [DecidableEq R] [DecidableEq C]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> </span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>  theorem replay_internalCount (es : List (Arrival L R C)) (A : Finset (L ⊕ R)) :</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     internalCount (replayInstance es) A =</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>       es.countP (fun e =&gt; decide (Sum.inl e.left ∈ A ∧ Sum.inr e.right ∈ A)) := by</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   simpa only [internalCount, replayInstance, decide_eq_true_eq] using</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     GraphChoices.card_filter_list_indices es</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>       (fun e =&gt; decide (Sum.inl e.left ∈ A ∧ Sum.inr e.right ∈ A))</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a> </span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>  theorem replay_opt_mono_sublist (xs ys : List (Arrival L R C)) (h : xs.Sublist ys) :</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     opt (replayInstance xs) ≤ opt (replayInstance ys) := by</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   apply GraphChoices.opt_le_of_internalCount_le</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   intro A</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   rw [replay_internalCount, replay_internalCount]</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   have hh := (h.filter (fun e =&gt; decide (Sum.inl e.left ∈ A ∧ Sum.inr e.right ∈ A))).length_le</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>   simpa only [List.countP_eq_length_filter] using hh</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a> </span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>  theorem residual_sublist (α : C → ℕ) (es : List (Arrival L R C)) :</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     (residualArrivals (trace α es)).Sublist es := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   have hh := List.Sublist.map Event.arrival (List.filter_sublist</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>     (l := trace α es) (p := fun ev =&gt; !ev.threshold))</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   simpa only [residualArrivals, trace, traceFrom_arrivals] using hh</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> </span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>  theorem residual_opt_le_full (α : C → ℕ) (es : List (Arrival L R C)) :</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     opt (replayInstance (residualArrivals (trace α es))) ≤ opt (replayInstance es) :=</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   replay_opt_mono_sublist _ _ (residual_sublist α es)</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> </span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>  theorem residual_left_competitive_full (α : C → ℕ) (es : List (Arrival L R C))</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>     (u : L) (hres : 0 &lt; (residualArrivals (trace α es)).length) :</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>     (run α es).greedyLeft u &lt;</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>       2 * opt (replayInstance es) * (Nat.log 2 (Fintype.card (L ⊕ R)) + 1) := by</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>   apply (residual_left_competitive α es u hres).trans_le</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>   exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (residual_opt_le_full α es))</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a> </span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>  theorem residual_right_competitive_full (α : C → ℕ) (es : List (Arrival L R C))</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     (v : R) (hres : 0 &lt; (residualArrivals (trace α es)).length) :</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     (run α es).greedyRight v &lt;</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>       2 * opt (replayInstance es) * (Nat.log 2 (Fintype.card (L ⊕ R)) + 1) := by</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   apply (residual_right_competitive α es v hres).trans_le</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (residual_opt_le_full α es))</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> </span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a> end GraphChoices.ThresholdGreedy</span></pre></html>

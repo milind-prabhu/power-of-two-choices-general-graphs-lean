@@ -1,0 +1,6385 @@
+{
+  "basis": "Explicit local Lean file imports; not theorem proof references.",
+  "status": "Every displayed module built; every named result passed the axiom audit.",
+  "theoremCount": 578,
+  "moduleCount": 101,
+  "fullEdges": [
+    [
+      "Model",
+      "AssignmentCount"
+    ],
+    [
+      "ExplicitThresholdBudget",
+      "AutomaticBudget"
+    ],
+    [
+      "AutomaticThresholds",
+      "AutomaticBudget"
+    ],
+    [
+      "ExplicitThresholds",
+      "AutomaticThresholds"
+    ],
+    [
+      "LargeShapeTail",
+      "AutomaticThresholds"
+    ],
+    [
+      "PolynomialShattering",
+      "AutomaticThresholds"
+    ],
+    [
+      "Model",
+      "BalancedProduct"
+    ],
+    [
+      "RandomGreedy",
+      "BinomialLowerTail"
+    ],
+    [
+      "Model",
+      "Bipartite"
+    ],
+    [
+      "ShortHorizonGreedy",
+      "BipartiteAllHorizons"
+    ],
+    [
+      "OccupancySecondMoment",
+      "BlockDensity"
+    ],
+    [
+      "PreparedDecomposition",
+      "BlockDensity"
+    ],
+    [
+      "CompleteBlockDensity",
+      "BlockDensityTailArithmetic"
+    ],
+    [
+      "SamplingTail",
+      "BlockSampling"
+    ],
+    [
+      "DecomposedAlgorithm",
+      "BudgetSimplification"
+    ],
+    [
+      "CanonicalForest",
+      "CanonicalCoverage"
+    ],
+    [
+      "AutomaticThresholds",
+      "CanonicalCoverage"
+    ],
+    [
+      "ForestIndices",
+      "CanonicalForest"
+    ],
+    [
+      "Model",
+      "CapacityMatching"
+    ],
+    [
+      "GreedyPropagationProbability",
+      "CompleteBlockDensity"
+    ],
+    [
+      "BlockDensityTailArithmetic",
+      "CompleteBlockTail"
+    ],
+    [
+      "ResidualComponents",
+      "ComponentExpectation"
+    ],
+    [
+      "ResidualTreeBound",
+      "ComponentExpectation"
+    ],
+    [
+      "Greedy",
+      "ComponentGreedy"
+    ],
+    [
+      "ListArrivalGraph",
+      "ComponentPruning"
+    ],
+    [
+      "ComponentPruning",
+      "ComponentTreeEvents"
+    ],
+    [
+      "ShapeCoverage",
+      "ComponentTreeEvents"
+    ],
+    [
+      "LargeShapeTail",
+      "ComponentTreeEvents"
+    ],
+    [
+      "ComponentGreedy",
+      "ComponentTrees"
+    ],
+    [
+      "CanonicalCoverage",
+      "ConcreteShattering"
+    ],
+    [
+      "PreparedDecomposition",
+      "DecomposedAlgorithm"
+    ],
+    [
+      "Peeling",
+      "Decomposition"
+    ],
+    [
+      "CapacityMatching",
+      "Density"
+    ],
+    [
+      "Density",
+      "Examples"
+    ],
+    [
+      "ThresholdGreedy",
+      "Examples"
+    ],
+    [
+      "ThresholdWitnesses",
+      "ExecutionIndex"
+    ],
+    [
+      "DecomposedAlgorithm",
+      "ExpectedDensity"
+    ],
+    [
+      "PreprocessedCompetitive",
+      "ExpectedMaxHits"
+    ],
+    [
+      "ExplicitThresholds",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "SkewDecomposition",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "ThresholdBudget",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "ShatteringBounds",
+      "ExplicitThresholds"
+    ],
+    [
+      "LabelledForest",
+      "ForestIndices"
+    ],
+    [
+      "Peeling",
+      "GraphSkew"
+    ],
+    [
+      "SkewExpansion",
+      "GraphSkew"
+    ],
+    [
+      "Model",
+      "Greedy"
+    ],
+    [
+      "LayeredLowerGraph",
+      "GreedyBatchPropagation"
+    ],
+    [
+      "RandomGreedy",
+      "GreedyCoinMarginals"
+    ],
+    [
+      "Greedy",
+      "GreedyExecution"
+    ],
+    [
+      "LowerOfflineOptimum",
+      "GreedyLowerBound"
+    ],
+    [
+      "LowerGraphDegrees",
+      "GreedyLowerBound"
+    ],
+    [
+      "GreedyCoinMarginals",
+      "GreedyLowerBound"
+    ],
+    [
+      "GreedyBatchPropagation",
+      "GreedyPropagationProbability"
+    ],
+    [
+      "SkewHorizonLower",
+      "HorizonDecomposition"
+    ],
+    [
+      "LeftEndpointPolicy",
+      "HorizonDecomposition"
+    ],
+    [
+      "SamplingTail",
+      "InjectedWitnesses"
+    ],
+    [
+      "BudgetSimplification",
+      "IteratedLogBounds"
+    ],
+    [
+      "ShapeCoverage",
+      "LabelledForest"
+    ],
+    [
+      "ShatteringBounds",
+      "LargeShapeTail"
+    ],
+    [
+      "ThresholdBudget",
+      "LargeShapeTail"
+    ],
+    [
+      "BinomialLowerTail",
+      "LayeredLowerGraph"
+    ],
+    [
+      "ExpectedMaxHits",
+      "LeftEndpointPolicy"
+    ],
+    [
+      "ResidualDegree",
+      "ListArrivalGraph"
+    ],
+    [
+      "TreePruning",
+      "ListArrivalGraph"
+    ],
+    [
+      "LowerFamilyParameters",
+      "LowerFamilyLogBounds"
+    ],
+    [
+      "BlockDensityTailArithmetic",
+      "LowerFamilyParameters"
+    ],
+    [
+      "LayeredLowerGraph",
+      "LowerGraphDegrees"
+    ],
+    [
+      "LowerFamilyLogBounds",
+      "LowerGraphDegrees"
+    ],
+    [
+      "CompleteBlockTail",
+      "LowerOfflineOptimum"
+    ],
+    [
+      "LowerFamilyParameters",
+      "LowerOfflineOptimum"
+    ],
+    [
+      "OriginalGraphPreprocessing",
+      "MainProof"
+    ],
+    [
+      "BipartiteAllHorizons",
+      "MainProof"
+    ],
+    [
+      "BlockSampling",
+      "OccupancySecondMoment"
+    ],
+    [
+      "ComponentExpectation",
+      "OccupancySecondMoment"
+    ],
+    [
+      "SourceRelabel",
+      "OriginalGraphPreprocessing"
+    ],
+    [
+      "ResidualAdjacency",
+      "PatternCoverage"
+    ],
+    [
+      "ShapePatterns",
+      "PatternCoverage"
+    ],
+    [
+      "PatternEventBound",
+      "PatternDecay"
+    ],
+    [
+      "BalancedProduct",
+      "PatternDecay"
+    ],
+    [
+      "AssignmentCount",
+      "PatternEmbeddingCount"
+    ],
+    [
+      "Peeling",
+      "PatternEmbeddingCount"
+    ],
+    [
+      "PatternEmbeddingCount",
+      "PatternEventBound"
+    ],
+    [
+      "ResidualTreeBound",
+      "PatternEventBound"
+    ],
+    [
+      "InjectedWitnesses",
+      "PatternWitnessBound"
+    ],
+    [
+      "CapacityMatching",
+      "Peeling"
+    ],
+    [
+      "SkewDecomposition",
+      "PieceEncoding"
+    ],
+    [
+      "PreprocessedShattering",
+      "PieceEncoding"
+    ],
+    [
+      "ComponentTreeEvents",
+      "PolynomialShattering"
+    ],
+    [
+      "PieceEncoding",
+      "PreparedDecomposition"
+    ],
+    [
+      "AutomaticBudget",
+      "PreparedDecomposition"
+    ],
+    [
+      "ThresholdPolicy",
+      "PreparedDecomposition"
+    ],
+    [
+      "IteratedLogBounds",
+      "PreprocessedComparison"
+    ],
+    [
+      "ExpectedDensity",
+      "PreprocessedComparison"
+    ],
+    [
+      "SkewLowerBound",
+      "PreprocessedCompetitive"
+    ],
+    [
+      "RealLoglogComparison",
+      "PreprocessedCompetitive"
+    ],
+    [
+      "ConcreteShattering",
+      "PreprocessedShattering"
+    ],
+    [
+      "Bipartite",
+      "Preprocessing"
+    ],
+    [
+      "Uniform",
+      "Preprocessing"
+    ],
+    [
+      "Density",
+      "Preprocessing"
+    ],
+    [
+      "MainProof",
+      "RandomGreedy"
+    ],
+    [
+      "HorizonDecomposition",
+      "RateCompetitive"
+    ],
+    [
+      "PreprocessedComparison",
+      "RealLoglogComparison"
+    ],
+    [
+      "GreedyExecution",
+      "ReplayGreedyAdapter"
+    ],
+    [
+      "ResidualReplay",
+      "ReplayGreedyAdapter"
+    ],
+    [
+      "ListArrivalGraph",
+      "ResidualAdjacency"
+    ],
+    [
+      "ResidualTreeBound",
+      "ResidualAdjacency"
+    ],
+    [
+      "ComponentGreedy",
+      "ResidualComponents"
+    ],
+    [
+      "ResidualOptimum",
+      "ResidualComponents"
+    ],
+    [
+      "ComponentExpectation",
+      "ResidualDegree"
+    ],
+    [
+      "SamplingTail",
+      "ResidualDegree"
+    ],
+    [
+      "ReplayGreedyAdapter",
+      "ResidualOptimum"
+    ],
+    [
+      "Density",
+      "ResidualOptimum"
+    ],
+    [
+      "ThresholdGreedy",
+      "ResidualReplay"
+    ],
+    [
+      "ExecutionIndex",
+      "ResidualTreeBound"
+    ],
+    [
+      "WitnessEncoding",
+      "ResidualTreeBound"
+    ],
+    [
+      "BlockDensity",
+      "SampleRestriction"
+    ],
+    [
+      "WitnessProbability",
+      "SamplingTail"
+    ],
+    [
+      "PatternCoverage",
+      "ShapeCoverage"
+    ],
+    [
+      "PatternDecay",
+      "ShapePatterns"
+    ],
+    [
+      "ShapePatterns",
+      "ShatteringBounds"
+    ],
+    [
+      "ThresholdDecay",
+      "ShatteringBounds"
+    ],
+    [
+      "RateCompetitive",
+      "ShortHorizonGreedy"
+    ],
+    [
+      "SubgraphOccupancy",
+      "SkewBlockArithmetic"
+    ],
+    [
+      "GraphSkew",
+      "SkewDecomposition"
+    ],
+    [
+      "Decomposition",
+      "SkewDecomposition"
+    ],
+    [
+      "SkewLowerBound",
+      "SkewHorizonLower"
+    ],
+    [
+      "SkewBlockArithmetic",
+      "SkewLowerBound"
+    ],
+    [
+      "ExpectedDensity",
+      "SkewLowerBound"
+    ],
+    [
+      "ShortHorizonGreedy",
+      "SourceRelabel"
+    ],
+    [
+      "SampleRestriction",
+      "SubgraphOccupancy"
+    ],
+    [
+      "Preprocessing",
+      "Targets"
+    ],
+    [
+      "ThresholdGreedy",
+      "ThresholdBudget"
+    ],
+    [
+      "PatternDecay",
+      "ThresholdDecay"
+    ],
+    [
+      "Model",
+      "ThresholdGreedy"
+    ],
+    [
+      "CanonicalCoverage",
+      "ThresholdPolicy"
+    ],
+    [
+      "Targets",
+      "ThresholdPolicy"
+    ],
+    [
+      "ResidualReplay",
+      "ThresholdWitnesses"
+    ],
+    [
+      "ComponentTrees",
+      "TreePruning"
+    ],
+    [
+      "Model",
+      "Uniform"
+    ],
+    [
+      "PatternWitnessBound",
+      "WitnessEncoding"
+    ],
+    [
+      "Uniform",
+      "WitnessProbability"
+    ]
+  ],
+  "reducedEdges": [
+    [
+      "Model",
+      "AssignmentCount"
+    ],
+    [
+      "ExplicitThresholdBudget",
+      "AutomaticBudget"
+    ],
+    [
+      "AutomaticThresholds",
+      "AutomaticBudget"
+    ],
+    [
+      "ExplicitThresholds",
+      "AutomaticThresholds"
+    ],
+    [
+      "PolynomialShattering",
+      "AutomaticThresholds"
+    ],
+    [
+      "Model",
+      "BalancedProduct"
+    ],
+    [
+      "RandomGreedy",
+      "BinomialLowerTail"
+    ],
+    [
+      "Model",
+      "Bipartite"
+    ],
+    [
+      "ShortHorizonGreedy",
+      "BipartiteAllHorizons"
+    ],
+    [
+      "OccupancySecondMoment",
+      "BlockDensity"
+    ],
+    [
+      "PreparedDecomposition",
+      "BlockDensity"
+    ],
+    [
+      "CompleteBlockDensity",
+      "BlockDensityTailArithmetic"
+    ],
+    [
+      "SamplingTail",
+      "BlockSampling"
+    ],
+    [
+      "DecomposedAlgorithm",
+      "BudgetSimplification"
+    ],
+    [
+      "CanonicalForest",
+      "CanonicalCoverage"
+    ],
+    [
+      "AutomaticThresholds",
+      "CanonicalCoverage"
+    ],
+    [
+      "ForestIndices",
+      "CanonicalForest"
+    ],
+    [
+      "Model",
+      "CapacityMatching"
+    ],
+    [
+      "GreedyPropagationProbability",
+      "CompleteBlockDensity"
+    ],
+    [
+      "BlockDensityTailArithmetic",
+      "CompleteBlockTail"
+    ],
+    [
+      "ResidualComponents",
+      "ComponentExpectation"
+    ],
+    [
+      "ResidualTreeBound",
+      "ComponentExpectation"
+    ],
+    [
+      "Greedy",
+      "ComponentGreedy"
+    ],
+    [
+      "ListArrivalGraph",
+      "ComponentPruning"
+    ],
+    [
+      "ComponentPruning",
+      "ComponentTreeEvents"
+    ],
+    [
+      "ShapeCoverage",
+      "ComponentTreeEvents"
+    ],
+    [
+      "LargeShapeTail",
+      "ComponentTreeEvents"
+    ],
+    [
+      "ComponentGreedy",
+      "ComponentTrees"
+    ],
+    [
+      "CanonicalCoverage",
+      "ConcreteShattering"
+    ],
+    [
+      "PreparedDecomposition",
+      "DecomposedAlgorithm"
+    ],
+    [
+      "Peeling",
+      "Decomposition"
+    ],
+    [
+      "CapacityMatching",
+      "Density"
+    ],
+    [
+      "Density",
+      "Examples"
+    ],
+    [
+      "ThresholdGreedy",
+      "Examples"
+    ],
+    [
+      "ThresholdWitnesses",
+      "ExecutionIndex"
+    ],
+    [
+      "DecomposedAlgorithm",
+      "ExpectedDensity"
+    ],
+    [
+      "PreprocessedCompetitive",
+      "ExpectedMaxHits"
+    ],
+    [
+      "ExplicitThresholds",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "SkewDecomposition",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "ThresholdBudget",
+      "ExplicitThresholdBudget"
+    ],
+    [
+      "ShatteringBounds",
+      "ExplicitThresholds"
+    ],
+    [
+      "LabelledForest",
+      "ForestIndices"
+    ],
+    [
+      "Peeling",
+      "GraphSkew"
+    ],
+    [
+      "SkewExpansion",
+      "GraphSkew"
+    ],
+    [
+      "Model",
+      "Greedy"
+    ],
+    [
+      "LayeredLowerGraph",
+      "GreedyBatchPropagation"
+    ],
+    [
+      "RandomGreedy",
+      "GreedyCoinMarginals"
+    ],
+    [
+      "Greedy",
+      "GreedyExecution"
+    ],
+    [
+      "LowerOfflineOptimum",
+      "GreedyLowerBound"
+    ],
+    [
+      "LowerGraphDegrees",
+      "GreedyLowerBound"
+    ],
+    [
+      "GreedyCoinMarginals",
+      "GreedyLowerBound"
+    ],
+    [
+      "GreedyBatchPropagation",
+      "GreedyPropagationProbability"
+    ],
+    [
+      "SkewHorizonLower",
+      "HorizonDecomposition"
+    ],
+    [
+      "LeftEndpointPolicy",
+      "HorizonDecomposition"
+    ],
+    [
+      "SamplingTail",
+      "InjectedWitnesses"
+    ],
+    [
+      "BudgetSimplification",
+      "IteratedLogBounds"
+    ],
+    [
+      "ShapeCoverage",
+      "LabelledForest"
+    ],
+    [
+      "ShatteringBounds",
+      "LargeShapeTail"
+    ],
+    [
+      "ThresholdBudget",
+      "LargeShapeTail"
+    ],
+    [
+      "BinomialLowerTail",
+      "LayeredLowerGraph"
+    ],
+    [
+      "ExpectedMaxHits",
+      "LeftEndpointPolicy"
+    ],
+    [
+      "ResidualDegree",
+      "ListArrivalGraph"
+    ],
+    [
+      "TreePruning",
+      "ListArrivalGraph"
+    ],
+    [
+      "LowerFamilyParameters",
+      "LowerFamilyLogBounds"
+    ],
+    [
+      "BlockDensityTailArithmetic",
+      "LowerFamilyParameters"
+    ],
+    [
+      "LowerFamilyLogBounds",
+      "LowerGraphDegrees"
+    ],
+    [
+      "CompleteBlockTail",
+      "LowerOfflineOptimum"
+    ],
+    [
+      "LowerFamilyParameters",
+      "LowerOfflineOptimum"
+    ],
+    [
+      "OriginalGraphPreprocessing",
+      "MainProof"
+    ],
+    [
+      "BipartiteAllHorizons",
+      "MainProof"
+    ],
+    [
+      "BlockSampling",
+      "OccupancySecondMoment"
+    ],
+    [
+      "ComponentExpectation",
+      "OccupancySecondMoment"
+    ],
+    [
+      "SourceRelabel",
+      "OriginalGraphPreprocessing"
+    ],
+    [
+      "ResidualAdjacency",
+      "PatternCoverage"
+    ],
+    [
+      "ShapePatterns",
+      "PatternCoverage"
+    ],
+    [
+      "PatternEventBound",
+      "PatternDecay"
+    ],
+    [
+      "BalancedProduct",
+      "PatternDecay"
+    ],
+    [
+      "AssignmentCount",
+      "PatternEmbeddingCount"
+    ],
+    [
+      "Peeling",
+      "PatternEmbeddingCount"
+    ],
+    [
+      "PatternEmbeddingCount",
+      "PatternEventBound"
+    ],
+    [
+      "ResidualTreeBound",
+      "PatternEventBound"
+    ],
+    [
+      "InjectedWitnesses",
+      "PatternWitnessBound"
+    ],
+    [
+      "CapacityMatching",
+      "Peeling"
+    ],
+    [
+      "SkewDecomposition",
+      "PieceEncoding"
+    ],
+    [
+      "PreprocessedShattering",
+      "PieceEncoding"
+    ],
+    [
+      "ComponentTreeEvents",
+      "PolynomialShattering"
+    ],
+    [
+      "PieceEncoding",
+      "PreparedDecomposition"
+    ],
+    [
+      "AutomaticBudget",
+      "PreparedDecomposition"
+    ],
+    [
+      "ThresholdPolicy",
+      "PreparedDecomposition"
+    ],
+    [
+      "IteratedLogBounds",
+      "PreprocessedComparison"
+    ],
+    [
+      "ExpectedDensity",
+      "PreprocessedComparison"
+    ],
+    [
+      "SkewLowerBound",
+      "PreprocessedCompetitive"
+    ],
+    [
+      "RealLoglogComparison",
+      "PreprocessedCompetitive"
+    ],
+    [
+      "ConcreteShattering",
+      "PreprocessedShattering"
+    ],
+    [
+      "Bipartite",
+      "Preprocessing"
+    ],
+    [
+      "Uniform",
+      "Preprocessing"
+    ],
+    [
+      "Density",
+      "Preprocessing"
+    ],
+    [
+      "MainProof",
+      "RandomGreedy"
+    ],
+    [
+      "HorizonDecomposition",
+      "RateCompetitive"
+    ],
+    [
+      "PreprocessedComparison",
+      "RealLoglogComparison"
+    ],
+    [
+      "GreedyExecution",
+      "ReplayGreedyAdapter"
+    ],
+    [
+      "ResidualReplay",
+      "ReplayGreedyAdapter"
+    ],
+    [
+      "ListArrivalGraph",
+      "ResidualAdjacency"
+    ],
+    [
+      "ComponentGreedy",
+      "ResidualComponents"
+    ],
+    [
+      "ResidualOptimum",
+      "ResidualComponents"
+    ],
+    [
+      "ComponentExpectation",
+      "ResidualDegree"
+    ],
+    [
+      "ReplayGreedyAdapter",
+      "ResidualOptimum"
+    ],
+    [
+      "Density",
+      "ResidualOptimum"
+    ],
+    [
+      "ThresholdGreedy",
+      "ResidualReplay"
+    ],
+    [
+      "ExecutionIndex",
+      "ResidualTreeBound"
+    ],
+    [
+      "WitnessEncoding",
+      "ResidualTreeBound"
+    ],
+    [
+      "BlockDensity",
+      "SampleRestriction"
+    ],
+    [
+      "WitnessProbability",
+      "SamplingTail"
+    ],
+    [
+      "PatternCoverage",
+      "ShapeCoverage"
+    ],
+    [
+      "PatternDecay",
+      "ShapePatterns"
+    ],
+    [
+      "ShapePatterns",
+      "ShatteringBounds"
+    ],
+    [
+      "ThresholdDecay",
+      "ShatteringBounds"
+    ],
+    [
+      "RateCompetitive",
+      "ShortHorizonGreedy"
+    ],
+    [
+      "SubgraphOccupancy",
+      "SkewBlockArithmetic"
+    ],
+    [
+      "GraphSkew",
+      "SkewDecomposition"
+    ],
+    [
+      "Decomposition",
+      "SkewDecomposition"
+    ],
+    [
+      "SkewLowerBound",
+      "SkewHorizonLower"
+    ],
+    [
+      "SkewBlockArithmetic",
+      "SkewLowerBound"
+    ],
+    [
+      "ExpectedDensity",
+      "SkewLowerBound"
+    ],
+    [
+      "ShortHorizonGreedy",
+      "SourceRelabel"
+    ],
+    [
+      "SampleRestriction",
+      "SubgraphOccupancy"
+    ],
+    [
+      "Preprocessing",
+      "Targets"
+    ],
+    [
+      "ThresholdGreedy",
+      "ThresholdBudget"
+    ],
+    [
+      "PatternDecay",
+      "ThresholdDecay"
+    ],
+    [
+      "Model",
+      "ThresholdGreedy"
+    ],
+    [
+      "CanonicalCoverage",
+      "ThresholdPolicy"
+    ],
+    [
+      "Targets",
+      "ThresholdPolicy"
+    ],
+    [
+      "ResidualReplay",
+      "ThresholdWitnesses"
+    ],
+    [
+      "ComponentTrees",
+      "TreePruning"
+    ],
+    [
+      "Model",
+      "Uniform"
+    ],
+    [
+      "PatternWitnessBound",
+      "WitnessEncoding"
+    ],
+    [
+      "Uniform",
+      "WitnessProbability"
+    ]
+  ],
+  "nodes": [
+    {
+      "id": "AssignmentCount",
+      "file": "GraphChoices/AssignmentCount.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.appendChoice",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.menuAssignments",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.MenuValid",
+          "kind": "def",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.mem_menuAssignments_iff",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.menuAssignments_card_le",
+          "kind": "theorem",
+          "line": 40
+        }
+      ],
+      "summary": "Counting sequentially generated assignments by their available choices. Menus may depend on every preceding choice. No independence is assumed.",
+      "sha256": "87057f4094399a58a6fae476855be5f29db715cdb2608b1de1afa369339b3f22"
+    },
+    {
+      "id": "AutomaticBudget",
+      "file": "GraphChoices/AutomaticBudget.lean",
+      "imports": [
+        "ExplicitThresholdBudget",
+        "AutomaticThresholds"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.extendFinZero",
+          "kind": "def",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Patterns.sufficientThreshold_fin_scale_budget",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.count,",
+          "kind": "class",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.Patterns.automaticThresholds_budget",
+          "kind": "theorem",
+          "line": 34
+        }
+      ],
+      "summary": "The finite-index budget for the exact automatic threshold vector used by the execution and shattering theorems. All rate and branching parameters are the same definitions, rather than independently chosen numerical certificates.",
+      "sha256": "29e0505b54e715e8242d2c5586a334969d99821da862e7b1b452972ceccb0ec2"
+    },
+    {
+      "id": "AutomaticThresholds",
+      "file": "GraphChoices/AutomaticThresholds.lean",
+      "imports": [
+        "ExplicitThresholds",
+        "LargeShapeTail",
+        "PolynomialShattering"
+      ],
+      "theorems": 11,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.shapeRate",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.Patterns.branchTarget",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.shapeRate_pos",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.Patterns.shapeRate_le_one",
+          "kind": "theorem",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.Patterns.shapeRate_class_factor",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.Patterns.branchTarget_pos",
+          "kind": "theorem",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.Patterns.branchTarget_le_rate",
+          "kind": "theorem",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.Patterns.branchTarget_pair",
+          "kind": "theorem",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.Patterns.class_card_pos",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.Patterns.automaticThresholds",
+          "kind": "def",
+          "line": 64
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShape_geometric_automatic",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.Patterns.largeShape_geometric_automatic",
+          "kind": "theorem",
+          "line": 88
+        },
+        {
+          "name": "GraphChoices.Patterns.largeComponent_polynomial_automatic_of_coverage",
+          "kind": "theorem",
+          "line": 105
+        },
+        {
+          "name": "GraphChoices.Patterns.expected_load_polynomial_automatic_of_coverage",
+          "kind": "theorem",
+          "line": 123
+        }
+      ],
+      "summary": "Concrete rate and branching parameters remove the remaining numerical decay premises from the canonical-shape tail. These are finite explicit thresholds; end-to-end component coverage and asymptotic analysis are separate.",
+      "sha256": "e3477a5baed272e48f5ac95619e815f85169d43eab0bae3941270892a0eed354"
+    },
+    {
+      "id": "BalancedProduct",
+      "file": "GraphChoices/BalancedProduct.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.paired_power_bound",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.two_class_product_bound",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.subtype_product_as_ite",
+          "kind": "theorem",
+          "line": 40
+        }
+      ],
+      "summary": "Pairing branching factors in a left-heavy witness. At least as many small factors as large ones suffice for geometric decay, even when a large factor exceeds one.",
+      "sha256": "2f8979c7434973a3f13670ee3badd73059f592674ee6ee2088e82c9650d23842"
+    },
+    {
+      "id": "BinomialLowerTail",
+      "file": "GraphChoices/BinomialLowerTail.lean",
+      "imports": [
+        "RandomGreedy"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.average_pow_hits",
+          "kind": "theorem",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.hitLowerTail_probability",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.coordinate_event_probability",
+          "kind": "theorem",
+          "line": 64
+        }
+      ],
+      "summary": "",
+      "sha256": "73e21a4027113aa808868bc64dbc7029ff86ee4649450279f7a048588f147e88"
+    },
+    {
+      "id": "Bipartite",
+      "file": "GraphChoices/Bipartite.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.flip",
+          "kind": "def",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.splitInstance",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.transport",
+          "kind": "def",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.transport_involutive",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.collapse_destination",
+          "kind": "theorem",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.collapse_load",
+          "kind": "theorem",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.split_maxLoad_le",
+          "kind": "theorem",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.collapse_maxLoad_le",
+          "kind": "theorem",
+          "line": 58
+        },
+        {
+          "name": "GraphChoices.split_opt_le",
+          "kind": "theorem",
+          "line": 67
+        },
+        {
+          "name": "GraphChoices.opt_le_two_split_opt",
+          "kind": "theorem",
+          "line": 75
+        },
+        {
+          "name": "GraphChoices.competitive_transfer",
+          "kind": "theorem",
+          "line": 84
+        }
+      ],
+      "summary": "Samplewise orientation and optimum comparisons for the vertex-copy construction in Lemma 2.4. The comparisons hold for every reference orientation, not just a density-minimizing one.",
+      "sha256": "acf8172f3b0a98b6e21bae29791bd31c8a2d78ab39427a3b5875f7746f038b32"
+    },
+    {
+      "id": "BipartiteAllHorizons",
+      "file": "GraphChoices/BipartiteAllHorizons.lean",
+      "imports": [
+        "ShortHorizonGreedy"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.expected_total_arrivals_bound",
+          "kind": "theorem",
+          "line": 5
+        },
+        {
+          "name": "GraphChoices.loglogFactor_square_bound",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_bipartite_policy_all_horizons",
+          "kind": "theorem",
+          "line": 42
+        }
+      ],
+      "summary": "",
+      "sha256": "d524c09965cbed6a8a53022da76972d155a61a2d763fe480e40b3eee4fa037e9"
+    },
+    {
+      "id": "BlockDensity",
+      "file": "GraphChoices/BlockDensity.lean",
+      "imports": [
+        "OccupancySecondMoment",
+        "PreparedDecomposition"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.average_equiv",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.blockFlatten",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.blockFlatten_apply",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.bipartiteBase",
+          "kind": "def",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.block_success_density",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.expectedOpt_block_lower",
+          "kind": "theorem",
+          "line": 91
+        }
+      ],
+      "summary": "The block occupancy argument applied to actual sampled bipartite graphs. Every successful left vertex supplies one distinct arrival per block, giving a concrete dense vertex set.",
+      "sha256": "363320e22e2353f3ef6c69e1a4b55dd91805a0c95f74763978fb819fcbadcd4a"
+    },
+    {
+      "id": "BlockDensityTailArithmetic",
+      "file": "GraphChoices/BlockDensityTailArithmetic.lean",
+      "imports": [
+        "CompleteBlockDensity"
+      ],
+      "theorems": 1,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.block_size_pair_bound",
+          "kind": "theorem",
+          "line": 7
+        }
+      ],
+      "summary": "",
+      "sha256": "f10a7536c00508e533902e57811922d58eb831696c875798975d22fa8bba11d4"
+    },
+    {
+      "id": "BlockSampling",
+      "file": "GraphChoices/BlockSampling.lean",
+      "imports": [
+        "SamplingTail"
+      ],
+      "theorems": 14,
+      "declarations": [
+        {
+          "name": "GraphChoices.average_unit_indicator",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.eventProbability_le_one",
+          "kind": "theorem",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.eventProbability_compl",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.eventProbability_union_inter",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.blockHitEvent",
+          "kind": "def",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.blockHitEvent_compl",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.blockHit_probability",
+          "kind": "theorem",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.blockHit_union",
+          "kind": "theorem",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.blockHit_disjoint_covariance",
+          "kind": "theorem",
+          "line": 67
+        },
+        {
+          "name": "GraphChoices.allBlocksEvent",
+          "kind": "def",
+          "line": 96
+        },
+        {
+          "name": "GraphChoices.allBlocks_probability",
+          "kind": "theorem",
+          "line": 99
+        },
+        {
+          "name": "GraphChoices.allBlocks_inter",
+          "kind": "theorem",
+          "line": 104
+        },
+        {
+          "name": "GraphChoices.allBlocks_disjoint_covariance",
+          "kind": "theorem",
+          "line": 111
+        },
+        {
+          "name": "GraphChoices.bernoulli_miss_bound",
+          "kind": "theorem",
+          "line": 120
+        },
+        {
+          "name": "GraphChoices.blockHit_probability_lower",
+          "kind": "theorem",
+          "line": 134
+        },
+        {
+          "name": "GraphChoices.blockHit_probability_lower_of_mean",
+          "kind": "theorem",
+          "line": 144
+        }
+      ],
+      "summary": "A lower-tail substitute for Lemma 3.3: a bucket hit in every independent block has at least as many occurrences as there are blocks. Disjoint buckets' block-success indicators have nonpositive pairwise covariance.",
+      "sha256": "4cb0307049911d1984c5ae376cd960a16f63f03e21868a0d087c349d9f2ba32a"
+    },
+    {
+      "id": "BudgetSimplification",
+      "file": "GraphChoices/BudgetSimplification.lean",
+      "imports": [
+        "DecomposedAlgorithm"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.log_reference_branch_bound",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Patterns.scalar_budget_le",
+          "kind": "theorem",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.budget_simplified",
+          "kind": "theorem",
+          "line": 68
+        }
+      ],
+      "summary": "The exact automatic threshold budget has the expected bilinear growth in reference density, log-skewness and the log-log scale. Explicit constants are kept throughout; no asymptotic or benchmark comparison is assumed.",
+      "sha256": "c777f5f68d994819246e477545928ef2f1f08f19c6fabed9f99163a789115ed5"
+    },
+    {
+      "id": "CanonicalCoverage",
+      "file": "GraphChoices/CanonicalCoverage.lean",
+      "imports": [
+        "CanonicalForest",
+        "AutomaticThresholds"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.largeHeavyTree_subset_largeShape",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.largeComponent_polynomial_automatic",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.Patterns.expected_load_polynomial_automatic",
+          "kind": "theorem",
+          "line": 82
+        }
+      ],
+      "summary": "Coverage of every actual geometric heavy tree by the counted canonical family. This discharges the hcoverage premise in the earlier conditional shattering and expectation theorems.",
+      "sha256": "b92f47596124c869d83ee2e73c8d5e9f2c576eefdb0c9e2f7b9240bc2b0c1fd2"
+    },
+    {
+      "id": "CanonicalForest",
+      "file": "GraphChoices/CanonicalForest.lean",
+      "imports": [
+        "ForestIndices"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.exists_canonical_embedding",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Patterns.left_index_card",
+          "kind": "theorem",
+          "line": 67
+        }
+      ],
+      "summary": "A canonical geometric shape encoding for every finite connected graph, with a prescribed right root and an exact bijection of vertex sets.",
+      "sha256": "780557cf6b0de4915074b73d5787dac23df6b971c2bd5e151061957934b74502"
+    },
+    {
+      "id": "CapacityMatching",
+      "file": "GraphChoices/CapacityMatching.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 1,
+      "declarations": [
+        {
+          "name": "GraphChoices.neighbors",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.exists_capacity_matching",
+          "kind": "theorem",
+          "line": 17
+        }
+      ],
+      "summary": "The capacitated Hall step in Lemma 3.7. The expansion premise is explicit; it is not assumed to hold for every graph. The preceding analytic module proves the numerical rearrangement that supplies this premise from skewness.",
+      "sha256": "98954eca0d73c8c435744e6b789bbbce6498eddece96de3cd21f51d50822ab43"
+    },
+    {
+      "id": "CompleteBlockDensity",
+      "file": "GraphChoices/CompleteBlockDensity.lean",
+      "imports": [
+        "GreedyPropagationProbability"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.blockBase",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.LowerBound.blockAllowed",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.LowerBound.blockAllowed_card",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.LowerBound.blockLeftSet",
+          "kind": "def",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.LowerBound.blockRightSet",
+          "kind": "def",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.LowerBound.sum_block_sets_le",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.LowerBound.internalCount_block_sum",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.LowerBound.opt_le_of_block_density",
+          "kind": "theorem",
+          "line": 58
+        }
+      ],
+      "summary": "",
+      "sha256": "8c9f5836073bf4a4d73afbc2e92e3a40a72ebd99bf45723e1e92f28c81f203d6"
+    },
+    {
+      "id": "CompleteBlockTail",
+      "file": "GraphChoices/CompleteBlockTail.lean",
+      "imports": [
+        "BlockDensityTailArithmetic"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.sizeDensityEvent",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.LowerBound.sizeDensityEvent_probability",
+          "kind": "theorem",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.LowerBound.badBlockDensity",
+          "kind": "def",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.LowerBound.badBlockDensity_probability",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.LowerBound.not_badBlockDensity",
+          "kind": "theorem",
+          "line": 68
+        }
+      ],
+      "summary": "",
+      "sha256": "79b5a9a88b45998c82bdce0b1babd2e05d37bc23095d59b3b40e7c0449cde865"
+    },
+    {
+      "id": "ComponentExpectation",
+      "file": "GraphChoices/ComponentExpectation.lean",
+      "imports": [
+        "ResidualComponents",
+        "ResidualTreeBound"
+      ],
+      "theorems": 6,
+      "declarations": [
+        {
+          "name": "GraphChoices.average_add",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.average_indicator",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.average_le_good_add_bad",
+          "kind": "theorem",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeComponentEvent",
+          "kind": "def",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.not_mem_largeComponentEvent",
+          "kind": "theorem",
+          "line": 50
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expectedReplayOpt",
+          "kind": "def",
+          "line": 58
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expectedTotalMaxLoad",
+          "kind": "def",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expected_load_le_component_tail",
+          "kind": "theorem",
+          "line": 66
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expected_load_of_component_tail",
+          "kind": "theorem",
+          "line": 103
+        }
+      ],
+      "summary": "Turn a tail for actual residual component sizes into an expected load bound. Exceptional samples cost at most T times their probability. This module does not assume or claim a proved component-shattering estimate.",
+      "sha256": "d5abbe7ea2509ede2a2cac12aa6a7eb68f4e087ad94f8c511125f7c70d9fe56b"
+    },
+    {
+      "id": "ComponentGreedy",
+      "file": "GraphChoices/ComponentGreedy.lean",
+      "imports": [
+        "Greedy"
+      ],
+      "theorems": 10,
+      "declarations": [
+        {
+          "name": "GraphChoices.EdgeClosed",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.endpoints_mem_of_destination_mem",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.localHighVertices",
+          "kind": "def",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.localHighArrivals",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.localHighArrivals_internal",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.greedy_local_layer_bound",
+          "kind": "theorem",
+          "line": 42
+        },
+        {
+          "name": "GraphChoices.greedy_local_layers_decay",
+          "kind": "theorem",
+          "line": 73
+        },
+        {
+          "name": "GraphChoices.greedy_load_lt_of_closed",
+          "kind": "theorem",
+          "line": 92
+        },
+        {
+          "name": "GraphChoices.arrivalGraph",
+          "kind": "def",
+          "line": 104
+        },
+        {
+          "name": "GraphChoices.componentVertices",
+          "kind": "def",
+          "line": 113
+        },
+        {
+          "name": "GraphChoices.mem_componentVertices",
+          "kind": "theorem",
+          "line": 118
+        },
+        {
+          "name": "GraphChoices.self_mem_componentVertices",
+          "kind": "theorem",
+          "line": 124
+        },
+        {
+          "name": "GraphChoices.arrival_endpoints_reachable",
+          "kind": "theorem",
+          "line": 129
+        },
+        {
+          "name": "GraphChoices.componentVertices_closed",
+          "kind": "theorem",
+          "line": 135
+        },
+        {
+          "name": "GraphChoices.greedy_component_competitive",
+          "kind": "theorem",
+          "line": 143
+        }
+      ],
+      "summary": "Greedy restricted to an edge-closed set. The logarithm depends on the number of vertices in that set; the benchmark remains the full optimum. No arrival occurrence is discarded or identified in the counting argument.",
+      "sha256": "8df01b6b2ba3aa0a298b23b4b122695b5a602dd1a1a59749510ba65c9fc31c3b"
+    },
+    {
+      "id": "ComponentPruning",
+      "file": "GraphChoices/ComponentPruning.lean",
+      "imports": [
+        "ListArrivalGraph"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.connected_both_colors",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.component_induce_degree",
+          "kind": "theorem",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_component_left_heavy_tree",
+          "kind": "theorem",
+          "line": 54
+        }
+      ],
+      "summary": "The pruning theorem applied to an actual replay component. Both graph degrees and bipartite sides are proved to agree with the implementation's list neighborhoods; no component-to-tree hypothesis is assumed.",
+      "sha256": "6a7469ee286e4d9efacf831fb90f80b8a787c3311699e50f2d313f270413ae2a"
+    },
+    {
+      "id": "ComponentTreeEvents",
+      "file": "GraphChoices/ComponentTreeEvents.lean",
+      "imports": [
+        "ComponentPruning",
+        "ShapeCoverage",
+        "LargeShapeTail"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.eventProbability_union_le",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.HasLargeHeavyTree",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeHeavyTreeEvent",
+          "kind": "def",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeLeftDegreeEvent",
+          "kind": "def",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeComponent_subset_degree_or_tree",
+          "kind": "theorem",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeLeftDegree_probability_le",
+          "kind": "theorem",
+          "line": 74
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.largeComponent_probability_le_tree_tail",
+          "kind": "theorem",
+          "line": 82
+        },
+        {
+          "name": "GraphChoices.Patterns.largeComponent_tail_of_canonical_coverage",
+          "kind": "theorem",
+          "line": 105
+        }
+      ],
+      "summary": "Actual large components force either a large left degree or a large left-heavy subtree. The outstanding canonical-enumeration step is kept as an explicit containment premise when combining this with canonical-shape tails.",
+      "sha256": "7c41650a4b7fdbe3c43ce85721a67263a6872497811d23d000207785285be416"
+    },
+    {
+      "id": "ComponentTrees",
+      "file": "GraphChoices/ComponentTrees.lean",
+      "imports": [
+        "ComponentGreedy"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.componentVertices_coe_eq_supp",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.component_induce_connected",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.exists_component_spanning_tree",
+          "kind": "theorem",
+          "line": 26
+        }
+      ],
+      "summary": "Actual arrival components have spanning trees on exactly their vertex sets. Every selected tree edge is backed by an original arrival occurrence. Converting those trees to the counted canonical shape codes remains separate.",
+      "sha256": "434c086e39d09876b22ee504718c1066a8dab56213fe42a90c2ab08d3b6e756b"
+    },
+    {
+      "id": "ConcreteShattering",
+      "file": "GraphChoices/ConcreteShattering.lean",
+      "imports": [
+        "CanonicalCoverage"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.sampledDegreeCutoff",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.sampledDegreeCutoff_ge",
+          "kind": "theorem",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.Patterns.sampledDegreeCutoff_mean",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.Patterns.concrete_component_tail",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.Patterns.concrete_expected_load",
+          "kind": "theorem",
+          "line": 62
+        },
+        {
+          "name": "GraphChoices.Patterns.sampledDegreeCutoff_le_three_cutoffs",
+          "kind": "theorem",
+          "line": 79
+        },
+        {
+          "name": "GraphChoices.Patterns.largeComponentEvent_antitone",
+          "kind": "theorem",
+          "line": 91
+        },
+        {
+          "name": "GraphChoices.Patterns.log_squared_component_tail",
+          "kind": "theorem",
+          "line": 102
+        },
+        {
+          "name": "GraphChoices.Patterns.log_squared_expected_load",
+          "kind": "theorem",
+          "line": 123
+        }
+      ],
+      "summary": "Completely instantiated finite component tails. The sampled-degree cutoff is chosen from an actual source-bucket bound and the logarithmic polynomial cutoff, so neither a mean inequality nor a canonical-coverage premise is left.",
+      "sha256": "cb57f86c43c609f7cf934f89e2901eafd683ac9814251e8938e37de57ce2c231"
+    },
+    {
+      "id": "DecomposedAlgorithm",
+      "file": "GraphChoices/DecomposedAlgorithm.lean",
+      "imports": [
+        "PreparedDecomposition"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.component_tail",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.expected_cost_at_vertex_horizon",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_decomposed_online_policy",
+          "kind": "theorem",
+          "line": 56
+        }
+      ],
+      "summary": "A quantitative expected-cost theorem for an actual online policy built from the proved decomposition of a concrete preprocessed bipartite graph. No per-piece degree, sampling-tail, or tree-coverage premise is assumed. The final asymptotic lower-bound comparison remains separate.",
+      "sha256": "e74dd9d4a5fbee70ab58538bd77116d2f2593553c1623f10fdf1c68f06468c8b"
+    },
+    {
+      "id": "Decomposition",
+      "file": "GraphChoices/Decomposition.lean",
+      "imports": [
+        "Peeling"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.unionPieces",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.Peeling.finalBudget",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceBudgets",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingRun",
+          "kind": "inductive",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.Peeling.mem_subset_unionPieces",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_peeling_run",
+          "kind": "theorem",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingRun.length_eq",
+          "kind": "theorem",
+          "line": 57
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingRun.degree_bounds",
+          "kind": "theorem",
+          "line": 64
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingRun.final_degree_bound",
+          "kind": "theorem",
+          "line": 72
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingRun.partition_properties",
+          "kind": "theorem",
+          "line": 81
+        },
+        {
+          "name": "GraphChoices.Peeling.graph_empty_of_left_degrees_zero",
+          "kind": "theorem",
+          "line": 101
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_edge_partition",
+          "kind": "theorem",
+          "line": 112
+        }
+      ],
+      "summary": "Iteration of the proved peeling round: every finite valid schedule yields edge-disjoint pieces with their per-round degree bounds. A final cutoff of zero gives an exact edge partition, not just a collection of partial subgraphs.",
+      "sha256": "0e487bccdde709ccba06417e7ac725c9ddd95ad11604e61fa738ee6667746091"
+    },
+    {
+      "id": "Density",
+      "file": "GraphChoices/Density.lean",
+      "imports": [
+        "CapacityMatching"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.exists_orientation_iff_density",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.opt_le_iff_density",
+          "kind": "theorem",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.density",
+          "kind": "def",
+          "line": 49
+        },
+        {
+          "name": "GraphChoices.maxDensity",
+          "kind": "def",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.density_nonneg",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.density_le_nat_iff",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.maxDensity_le_nat_iff",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.maxDensity_nonneg",
+          "kind": "theorem",
+          "line": 75
+        },
+        {
+          "name": "GraphChoices.opt_eq_ceil_maxDensity",
+          "kind": "theorem",
+          "line": 79
+        }
+      ],
+      "summary": "Exact integer density characterization of the offline optimum, Section 2.2. The upper bound is proved by capacitated Hall, rather than assumed.",
+      "sha256": "58c00584f37ef1c79f4d141a046396df9ea49466117028959b3f70d619c46f4d"
+    },
+    {
+      "id": "Examples",
+      "file": "GraphChoices/Examples.lean",
+      "imports": [
+        "Density",
+        "ThresholdGreedy"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Examples.repeated",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.Examples.repeated_opt",
+          "kind": "theorem",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Examples.oneEdge",
+          "kind": "def",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.Examples.threshold_execution",
+          "kind": "theorem",
+          "line": 25
+        }
+      ],
+      "summary": "Small exact regression examples. All use kernel-reduced `decide`; no native decider or external solver is used.",
+      "sha256": "dac0c3ee039b2ad38786f8183b7ef7b23c142b8d0dba7eabc004dd05dddee5e5"
+    },
+    {
+      "id": "ExecutionIndex",
+      "file": "GraphChoices/ExecutionIndex.lean",
+      "imports": [
+        "ThresholdWitnesses"
+      ],
+      "theorems": 10,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_mem_spec",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace_mem_arrival",
+          "kind": "theorem",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.step_counter_mono",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.runFrom_counter_mono",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.run_counter_mono_append",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_event_final_saturated",
+          "kind": "theorem",
+          "line": 50
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.finiteThresholdTimes",
+          "kind": "def",
+          "line": 62
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.mem_finiteThresholdTimes",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.finiteThresholdTimes_card",
+          "kind": "theorem",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace_event_eq_of_time",
+          "kind": "theorem",
+          "line": 98
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.finiteThresholdTimes_buckets_disjoint",
+          "kind": "theorem",
+          "line": 103
+        }
+      ],
+      "summary": "Links time-labelled execution events to their original input occurrences, and represents actual threshold witness times as finite subsets of Fin T.",
+      "sha256": "06ab32421fbf2b5a42ac45ca614629dd895828275a6ccab86b57727c56ea6234"
+    },
+    {
+      "id": "ExpectedDensity",
+      "file": "GraphChoices/ExpectedDensity.lean",
+      "imports": [
+        "DecomposedAlgorithm"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.BaseGraph.baseDensity",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.BaseGraph.maxBaseDensity",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.BaseGraph.referenceCap",
+          "kind": "def",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.expectedOpt_nonneg",
+          "kind": "theorem",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.BaseGraph.baseDensity_nonneg",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.BaseGraph.maxBaseDensity_nonneg",
+          "kind": "theorem",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.expected_density_ratio",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.expected_max_density_lower_bound",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.expected_edge_rate_le_two_opt",
+          "kind": "theorem",
+          "line": 58
+        },
+        {
+          "name": "GraphChoices.expected_reference_cap_bound",
+          "kind": "theorem",
+          "line": 76
+        },
+        {
+          "name": "GraphChoices.BaseGraph.referenceCap_le_edges",
+          "kind": "theorem",
+          "line": 84
+        },
+        {
+          "name": "GraphChoices.BaseGraph.total_edges_le_card_mul_referenceCap",
+          "kind": "theorem",
+          "line": 98
+        }
+      ],
+      "summary": "Expected density lower bounds, maximized over all concrete vertex sets, including the rounding cost of an integer reference capacity. These are statements about the full source sampling model, not a presumed benchmark.",
+      "sha256": "f0596866b612c6840f0214f91178d656996c6692b4d002c6fd8fa97780afbbfe"
+    },
+    {
+      "id": "ExpectedMaxHits",
+      "file": "GraphChoices/ExpectedMaxHits.lean",
+      "imports": [
+        "PreprocessedCompetitive"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.exp_average_le",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.average_two_pow_hits",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.average_two_pow_hits_le",
+          "kind": "theorem",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.expected_max_hits",
+          "kind": "theorem",
+          "line": 59
+        }
+      ],
+      "summary": "An expectation version of the maximum-binomial bound. Jensen and the exact finite exponential moment avoid any horizon-dependent failure term.",
+      "sha256": "d231df20e9c53c749d04bab4140a7f96be45cdafbd10c80c1fa630538fcc36f0"
+    },
+    {
+      "id": "ExplicitThresholdBudget",
+      "file": "GraphChoices/ExplicitThresholdBudget.lean",
+      "imports": [
+        "ExplicitThresholds",
+        "SkewDecomposition",
+        "ThresholdBudget"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.sufficientThreshold_upper",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.log_branching_bound",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.log_branching_requirement",
+          "kind": "theorem",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.scale_log",
+          "kind": "theorem",
+          "line": 53
+        },
+        {
+          "name": "GraphChoices.inverse_shifted_powers_sum_le_one",
+          "kind": "theorem",
+          "line": 57
+        },
+        {
+          "name": "GraphChoices.inverse_scale_logs_sum_le",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.sufficientThreshold_scale_budget",
+          "kind": "theorem",
+          "line": 86
+        },
+        {
+          "name": "GraphChoices.decomposition_threshold_budget",
+          "kind": "theorem",
+          "line": 124
+        }
+      ],
+      "summary": "Quantitative budget for the concrete sufficient thresholds at doubly exponential scales. The logarithmic numerical condition is derived from a multiplicative right-branching bound, rather than assumed as a conclusion.",
+      "sha256": "8f94c1866b9087a5d83c9d994ced7b0df9fe9c0448069bd6a8952fe1fde2746d"
+    },
+    {
+      "id": "ExplicitThresholds",
+      "file": "GraphChoices/ExplicitThresholds.lean",
+      "imports": [
+        "ShatteringBounds"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.sufficientThreshold",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.sufficientThreshold_pos",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.sufficientThreshold_dominates",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.sufficientThreshold_base",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.sufficientThreshold_log",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.Patterns.explicitThresholds",
+          "kind": "def",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShape_decay_explicit",
+          "kind": "theorem",
+          "line": 47
+        }
+      ],
+      "summary": "An explicit rounded threshold satisfying both local numerical conditions. This finite formula is not yet bounded by the paper's asymptotic budget.",
+      "sha256": "ab5f077da1fcdd78280dfc4a7fefbe2e143ced5b619abdd61380d0f545781c94"
+    },
+    {
+      "id": "ForestIndices",
+      "file": "GraphChoices/ForestIndices.lean",
+      "imports": [
+        "LabelledForest"
+      ],
+      "theorems": 6,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.map_numNodes",
+          "kind": "theorem",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.Patterns.eraseForest",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Patterns.eraseForest_numNodes",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Patterns.forestValue",
+          "kind": "def",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.Patterns.parentPos",
+          "kind": "def",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.Patterns.sidePos",
+          "kind": "def",
+          "line": 32
+        },
+        {
+          "name": "GraphChoices.Patterns.forestValue_eq_get",
+          "kind": "theorem",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.Patterns.forestParent_eq_parentPos",
+          "kind": "theorem",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.Patterns.forestSide_eq_sidePos",
+          "kind": "theorem",
+          "line": 76
+        },
+        {
+          "name": "GraphChoices.Patterns.forest_index_spec",
+          "kind": "theorem",
+          "line": 93
+        }
+      ],
+      "summary": "Preorder indices of a labelled forest and their agreement with the previously counted unlabelled shape representation.",
+      "sha256": "cf56ae10651b52ffdf1c4e9f37d95ceca784fd7ef6195e9852417e018534e1d8"
+    },
+    {
+      "id": "GraphSkew",
+      "file": "GraphChoices/GraphSkew.lean",
+      "imports": [
+        "Peeling",
+        "SkewExpansion"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.minLeftDegree",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Peeling.minLeftDegree_le",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.Peeling.le_minLeftDegree",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.Peeling.neighborSet",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.Peeling.skewValue",
+          "kind": "def",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.Peeling.SkewAdmissible",
+          "kind": "def",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Peeling.skewValues",
+          "kind": "def",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.Peeling.graphLogSkewness",
+          "kind": "def",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.Peeling.graphLogSkewness_nonneg",
+          "kind": "theorem",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.Peeling.skewValue_le_graphLogSkewness",
+          "kind": "theorem",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.Peeling.scaleCapacity",
+          "kind": "def",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.Peeling.scaleCapacity_pos",
+          "kind": "theorem",
+          "line": 68
+        },
+        {
+          "name": "GraphChoices.Peeling.peelingExpansion_of_graphLogSkewness",
+          "kind": "theorem",
+          "line": 78
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_graph_skew_piece",
+          "kind": "theorem",
+          "line": 133
+        }
+      ],
+      "summary": "A finite maximum log-skewness over actual bipartite subgraphs, and the bridge from this parameter to hereditary expansion and terminating peeling. Admissibility explicitly excludes zero degrees and nonpositive log denominators.",
+      "sha256": "56b63b2003e72ae978a56dc430b375df0ab7db462d57094a176f61276400371d"
+    },
+    {
+      "id": "Greedy",
+      "file": "GraphChoices/Greedy.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.prefixLoad",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.IsGreedy",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.prefixLoad_le_load",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.prefixLoad_strict",
+          "kind": "theorem",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.low_arrivals_le",
+          "kind": "theorem",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.highVertices",
+          "kind": "def",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.highArrivals",
+          "kind": "def",
+          "line": 64
+        },
+        {
+          "name": "GraphChoices.highArrivals_internal",
+          "kind": "theorem",
+          "line": 67
+        },
+        {
+          "name": "GraphChoices.load_le_low_add_high",
+          "kind": "theorem",
+          "line": 78
+        },
+        {
+          "name": "GraphChoices.greedy_layer_bound",
+          "kind": "theorem",
+          "line": 99
+        },
+        {
+          "name": "GraphChoices.greedy_layers_decay",
+          "kind": "theorem",
+          "line": 120
+        },
+        {
+          "name": "GraphChoices.greedy_maxLoad_lt",
+          "kind": "theorem",
+          "line": 138
+        },
+        {
+          "name": "GraphChoices.greedy_competitive",
+          "kind": "theorem",
+          "line": 165
+        }
+      ],
+      "summary": "A quantitative version of Fact 3.6, for every arrival sequence and either legal tie choice. The proof uses a doubling inequality for high-load layers.",
+      "sha256": "4c71e2a212f15aee75c2f673262a20beff512dbb25ae58d56ada815a3c2503b2"
+    },
+    {
+      "id": "GreedyBatchPropagation",
+      "file": "GraphChoices/GreedyBatchPropagation.lean",
+      "imports": [
+        "LayeredLowerGraph"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.RandomGreedy.batch_forces_load",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.LowerBound.markedBucket",
+          "kind": "def",
+          "line": 55
+        },
+        {
+          "name": "GraphChoices.LowerBound.markedBucket_card",
+          "kind": "theorem",
+          "line": 58
+        },
+        {
+          "name": "GraphChoices.LowerBound.markedBucket_source",
+          "kind": "theorem",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.LowerBound.allBatchesGood",
+          "kind": "def",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.LowerBound.propagation",
+          "kind": "theorem",
+          "line": 73
+        }
+      ],
+      "summary": "",
+      "sha256": "30075ae61e872de766a158e6ce35ff10039cdad3cd7423d32655ee331e439a51"
+    },
+    {
+      "id": "GreedyCoinMarginals",
+      "file": "GraphChoices/GreedyCoinMarginals.lean",
+      "imports": [
+        "RandomGreedy"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.RandomGreedy.choice_at_tie",
+          "kind": "theorem",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.fair_tie_probability",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.coin_expectedOpt",
+          "kind": "theorem",
+          "line": 22
+        }
+      ],
+      "summary": "",
+      "sha256": "2158f3487c97cf16487ab1ca576d1706b02930d0f660ca779d4a5db9124d5d0c"
+    },
+    {
+      "id": "GreedyExecution",
+      "file": "GraphChoices/GreedyExecution.lean",
+      "imports": [
+        "Greedy"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.prefixLoad_succ",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.execution_counts_prefix",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.isGreedy_of_execution",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.execution_final_load",
+          "kind": "theorem",
+          "line": 70
+        }
+      ],
+      "summary": "A bridge from a state-by-state execution to the indexed Greedy relation. The increment invariant is proved equivalent to counting assigned occurrences.",
+      "sha256": "d31cac179334658bc90fdaa3e424275100ac995a4deb10e37f3bf571f9d53333"
+    },
+    {
+      "id": "GreedyLowerBound",
+      "file": "GraphChoices/GreedyLowerBound.lean",
+      "imports": [
+        "LowerOfflineOptimum",
+        "LowerGraphDegrees",
+        "GreedyCoinMarginals"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.family_greedy_lower",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_optimum_bound",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_optimum_loglog",
+          "kind": "theorem",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.LowerBound.eventProbability_pullback",
+          "kind": "theorem",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_greedy_high_probability",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_competitive_gap",
+          "kind": "theorem",
+          "line": 75
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_log_load_threshold",
+          "kind": "theorem",
+          "line": 105
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_greedy_logarithmic_high_probability",
+          "kind": "theorem",
+          "line": 115
+        },
+        {
+          "name": "GraphChoices.LowerBound.greedyLowerBound",
+          "kind": "theorem",
+          "line": 132
+        }
+      ],
+      "summary": "Theorem 1.2, with explicit integer parameters, actual vertex horizon, independent fair random tie-breaking, a high-probability load lower bound, an expected offline upper bound and the stated mild degree irregularity.",
+      "sha256": "1d256efe02728271fdf9408d11eb2500ac8523db15e4a517ee73954343fdc380"
+    },
+    {
+      "id": "GreedyPropagationProbability",
+      "file": "GraphChoices/GreedyPropagationProbability.lean",
+      "imports": [
+        "GreedyBatchPropagation"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.badBatches",
+          "kind": "def",
+          "line": 6
+        },
+        {
+          "name": "GraphChoices.LowerBound.badBatches_probability",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.LowerBound.goodBatches_maxLoad",
+          "kind": "theorem",
+          "line": 49
+        },
+        {
+          "name": "GraphChoices.LowerBound.expectedGreedy_lower",
+          "kind": "theorem",
+          "line": 61
+        }
+      ],
+      "summary": "",
+      "sha256": "fc8058c8f300baec10d35a04d556b369df14bf73fb9ecb190631991301a9e8d7"
+    },
+    {
+      "id": "HorizonDecomposition",
+      "file": "GraphChoices/HorizonDecomposition.lean",
+      "imports": [
+        "SkewHorizonLower",
+        "LeftEndpointPolicy"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.mass_at_horizon",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.budget_simplified_horizon",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.budget_loglog_horizon",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.component_tail_horizon",
+          "kind": "theorem",
+          "line": 63
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.expected_cost_horizon",
+          "kind": "theorem",
+          "line": 85
+        }
+      ],
+      "summary": "The same decomposition policy at the actual arrival rate, with vertex bound N separate from horizon T.",
+      "sha256": "87da60a97758bae63234ef05ef86092217e5c32bf4d93e493988d7f8459117c2"
+    },
+    {
+      "id": "InjectedWitnesses",
+      "file": "GraphChoices/InjectedWitnesses.lean",
+      "imports": [
+        "SamplingTail"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.requirementsEvent",
+          "kind": "def",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.constraintsAt",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.constraintsAt_selected",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.requirementsEvent_eq_pi",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.requirements_probability",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.injected_witness_union_bound",
+          "kind": "theorem",
+          "line": 68
+        }
+      ],
+      "summary": "Exact probabilities for injectively assigned witness time steps. This is the independence step in the pattern bound: every required occurrence must have a distinct time, including repeated labels of the same base edge.",
+      "sha256": "226afccae91f8dab910860068e5cfa7329d92c2ff22a8b9cb1b39acc1a2ef012"
+    },
+    {
+      "id": "IteratedLogBounds",
+      "file": "GraphChoices/IteratedLogBounds.lean",
+      "imports": [
+        "BudgetSimplification"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.iteratedLog",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.iteratedLog_pos",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.nat_log_mul_two_pow",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.nat_log_square_bound",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.numberRounds_le_iteratedLog",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.real_loglog_le_iteratedLog",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.greedy_multiplier_le_iteratedLog",
+          "kind": "theorem",
+          "line": 67
+        },
+        {
+          "name": "GraphChoices.exceptional_error_le_three",
+          "kind": "theorem",
+          "line": 81
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.budget_loglog",
+          "kind": "theorem",
+          "line": 96
+        }
+      ],
+      "summary": "Explicit integer log-log bounds for the number of decomposition classes and the Greedy multiplier after component shattering.",
+      "sha256": "9022ebe067e1fb3c1c89cc63e73f2e4bfa5ae70161776cf8f17ea3763497c000"
+    },
+    {
+      "id": "LabelledForest",
+      "file": "GraphChoices/LabelledForest.lean",
+      "imports": [
+        "ShapeCoverage"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.forestLabels",
+          "kind": "def",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Patterns.ForestValid",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Patterns.forestLabels_length",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Patterns.forest_grow",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.Patterns.walk_mem_of_closed",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.Patterns.exists_spanning_labelled_forest",
+          "kind": "theorem",
+          "line": 64
+        }
+      ],
+      "summary": "A spanning first-child/next-sibling forest in every finite connected graph. Maximality is over the bounded node count, not an assumed enumeration. The distinguished root is external to the binary forest.",
+      "sha256": "836c80d0facf3f01d890140f37d538714ada263e0b0d1c410958ddc89fb8c177"
+    },
+    {
+      "id": "LargeShapeTail",
+      "file": "GraphChoices/LargeShapeTail.lean",
+      "imports": [
+        "ShatteringBounds",
+        "ThresholdBudget"
+      ],
+      "theorems": 1,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.largeShapeEvent",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Patterns.largeShape_probability_le",
+          "kind": "theorem",
+          "line": 17
+        }
+      ],
+      "summary": "Union over tree sizes as well as shapes. This avoids assuming that a large left-heavy tree contains a left-heavy subtree of an exact chosen size. Coverage by the canonical encoding is still a separate deterministic step.",
+      "sha256": "a9e0d9c7f38fd5117e74bed3e608a9f4588782bda10bedc326cae89d457fb930"
+    },
+    {
+      "id": "LayeredLowerGraph",
+      "file": "GraphChoices/LayeredLowerGraph.lean",
+      "imports": [
+        "BinomialLowerTail"
+      ],
+      "theorems": 10,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.Vertices",
+          "kind": "abbrev",
+          "line": 6
+        },
+        {
+          "name": "GraphChoices.LowerBound.Blocks",
+          "kind": "abbrev",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.LowerBound.Edges",
+          "kind": "abbrev",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.LowerBound.leftVertex",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.LowerBound.childGroup",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.LowerBound.rightVertex",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.LowerBound.graph",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.LowerBound.leftVertex_injective",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.LowerBound.rightVertex_injective",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.LowerBound.graph_isSimple",
+          "kind": "theorem",
+          "line": 49
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum",
+          "kind": "def",
+          "line": 69
+        },
+        {
+          "name": "GraphChoices.LowerBound.card_blocks",
+          "kind": "theorem",
+          "line": 71
+        },
+        {
+          "name": "GraphChoices.LowerBound.card_vertices",
+          "kind": "theorem",
+          "line": 74
+        },
+        {
+          "name": "GraphChoices.LowerBound.card_edges",
+          "kind": "theorem",
+          "line": 79
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_succ",
+          "kind": "theorem",
+          "line": 83
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_shift",
+          "kind": "theorem",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_pos",
+          "kind": "theorem",
+          "line": 89
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_upper",
+          "kind": "theorem",
+          "line": 94
+        }
+      ],
+      "summary": "",
+      "sha256": "d279da344091d5cc1409b83853cbb5daa444c9c43a91e23058a21c0af4fcf277"
+    },
+    {
+      "id": "LeftEndpointPolicy",
+      "file": "GraphChoices/LeftEndpointPolicy.lean",
+      "imports": [
+        "ExpectedMaxHits"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.leftBucket",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.Peeling.leftBucket_card",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Peeling.allLeft_maxLoad",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.Peeling.allLeft_expectedCost",
+          "kind": "theorem",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.Peeling.allLeft_reference_bound",
+          "kind": "theorem",
+          "line": 65
+        }
+      ],
+      "summary": "",
+      "sha256": "9c712eae015c5ae927b4737be72d54079eb90d317f9c804b781693f72fb37dfe"
+    },
+    {
+      "id": "ListArrivalGraph",
+      "file": "GraphChoices/ListArrivalGraph.lean",
+      "imports": [
+        "ResidualDegree",
+        "TreePruning"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.isLeft",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.mem_listLeftNeighbors",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_adj_iff",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_adj_sides",
+          "kind": "theorem",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_adj_inl_inr",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_left_degree",
+          "kind": "theorem",
+          "line": 51
+        }
+      ],
+      "summary": "Agreement between the graph of a replay, distinct list neighborhoods, and the bipartite side annotation needed by component pruning. Multiplicities are forgotten only in graph adjacency; the original list keeps every occurrence.",
+      "sha256": "1297dfc3a58d952807090e28ac527083011a42a4a69afb69a894b8d8821f636f"
+    },
+    {
+      "id": "LowerFamilyLogBounds",
+      "file": "GraphChoices/LowerFamilyLogBounds.lean",
+      "imports": [
+        "LowerFamilyParameters"
+      ],
+      "theorems": 6,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.branching_log",
+          "kind": "theorem",
+          "line": 6
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_elementary_logs",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_log_bounds",
+          "kind": "theorem",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_log_large",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.LowerBound.branching_large",
+          "kind": "theorem",
+          "line": 78
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_propagation_error",
+          "kind": "theorem",
+          "line": 83
+        }
+      ],
+      "summary": "",
+      "sha256": "e04119373d790b173454566d88a337002849fee4413b6c324176348f2bf0e012"
+    },
+    {
+      "id": "LowerFamilyParameters",
+      "file": "GraphChoices/LowerFamilyParameters.lean",
+      "imports": [
+        "BlockDensityTailArithmetic"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.branching",
+          "kind": "def",
+          "line": 6
+        },
+        {
+          "name": "GraphChoices.LowerBound.width",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.LowerBound.batchLength",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.LowerBound.size",
+          "kind": "def",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.LowerBound.densityThreshold",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.LowerBound.size_eq_vertices",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.LowerBound.size_eq_batches",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_geometric_upper",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.LowerBound.layerSum_le_width",
+          "kind": "theorem",
+          "line": 30
+        },
+        {
+          "name": "GraphChoices.LowerBound.densityThreshold_scale",
+          "kind": "theorem",
+          "line": 35
+        },
+        {
+          "name": "GraphChoices.LowerBound.densityThreshold_upper",
+          "kind": "theorem",
+          "line": 72
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_parameter_bounds",
+          "kind": "theorem",
+          "line": 80
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_edges_nonempty",
+          "kind": "theorem",
+          "line": 108
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_rate_bounds",
+          "kind": "theorem",
+          "line": 117
+        }
+      ],
+      "summary": "",
+      "sha256": "c11ff09e375979a5b932404999eca838a17d1a63779f2f845e3132650335437a"
+    },
+    {
+      "id": "LowerGraphDegrees",
+      "file": "GraphChoices/LowerGraphDegrees.lean",
+      "imports": [
+        "LayeredLowerGraph",
+        "LowerFamilyLogBounds"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.baseDegree",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.LowerBound.block_degree_upper",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.LowerBound.rightVertex_covers_positive",
+          "kind": "theorem",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.LowerBound.vertex_block_cover",
+          "kind": "theorem",
+          "line": 58
+        },
+        {
+          "name": "GraphChoices.LowerBound.graph_degree_lower",
+          "kind": "theorem",
+          "line": 71
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_degree_range",
+          "kind": "theorem",
+          "line": 87
+        }
+      ],
+      "summary": "",
+      "sha256": "5564decd78d1a7d8ee669cb121b6bda8ead03dceecfb65dcb53ebf64788153d3"
+    },
+    {
+      "id": "LowerOfflineOptimum",
+      "file": "GraphChoices/LowerOfflineOptimum.lean",
+      "imports": [
+        "CompleteBlockTail",
+        "LowerFamilyParameters"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.LowerBound.expectedOpt_complete_blocks",
+          "kind": "theorem",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.LowerBound.family_offline_bound",
+          "kind": "theorem",
+          "line": 34
+        }
+      ],
+      "summary": "",
+      "sha256": "19d4641595b69c09acb5cbf358f6489631394b0423bf62ba752fca534a958dc4"
+    },
+    {
+      "id": "MainProof",
+      "file": "GraphChoices/MainProof.lean",
+      "imports": [
+        "OriginalGraphPreprocessing",
+        "BipartiteAllHorizons"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.exists_competitive_policy",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.mainTheorem",
+          "kind": "theorem",
+          "line": 42
+        }
+      ],
+      "summary": "Theorem 1.1: a deterministic nonanticipating O(log log n)-competitive policy for every nonempty simple base graph and every arrival horizon.",
+      "sha256": "d7d8afc4cde6a5b039580844f201b989e0d64a3e82e3bb8c1fe587574b99c97d"
+    },
+    {
+      "id": "Model",
+      "file": "GraphChoices/Model.lean",
+      "imports": [],
+      "theorems": 18,
+      "declarations": [
+        {
+          "name": "GraphChoices.Instance",
+          "kind": "structure",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.Instance.ext",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.Orientation",
+          "kind": "abbrev",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.destination",
+          "kind": "def",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.load",
+          "kind": "def",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.maxLoad",
+          "kind": "def",
+          "line": 42
+        },
+        {
+          "name": "GraphChoices.internalCount",
+          "kind": "def",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.assignedCount",
+          "kind": "def",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.destination_endpoint",
+          "kind": "theorem",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.load_le_maxLoad",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.maxLoad_le_iff",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.load_le_length",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.maxLoad_le_length",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.assignedCount_eq_sum",
+          "kind": "theorem",
+          "line": 75
+        },
+        {
+          "name": "GraphChoices.total_load",
+          "kind": "theorem",
+          "line": 84
+        },
+        {
+          "name": "GraphChoices.internalCount_le_assignedCount",
+          "kind": "theorem",
+          "line": 90
+        },
+        {
+          "name": "GraphChoices.density_obstruction",
+          "kind": "theorem",
+          "line": 98
+        },
+        {
+          "name": "GraphChoices.opt",
+          "kind": "def",
+          "line": 107
+        },
+        {
+          "name": "GraphChoices.exists_opt_orientation",
+          "kind": "theorem",
+          "line": 111
+        },
+        {
+          "name": "GraphChoices.opt_le_maxLoad",
+          "kind": "theorem",
+          "line": 116
+        },
+        {
+          "name": "GraphChoices.exists_exact_opt",
+          "kind": "theorem",
+          "line": 119
+        },
+        {
+          "name": "GraphChoices.opt_le_length",
+          "kind": "theorem",
+          "line": 124
+        },
+        {
+          "name": "GraphChoices.density_le_opt",
+          "kind": "theorem",
+          "line": 127
+        },
+        {
+          "name": "GraphChoices.total_le_card_mul_opt",
+          "kind": "theorem",
+          "line": 132
+        },
+        {
+          "name": "GraphChoices.opt_pos",
+          "kind": "theorem",
+          "line": 135
+        },
+        {
+          "name": "GraphChoices.multiplicity_le_two_opt",
+          "kind": "theorem",
+          "line": 143
+        }
+      ],
+      "summary": "# Samplewise graph balancing (Definition 2.1) An instance is an indexed sequence of pairs. Parallel occurrences are kept separate. Loops are allowed in this general model, so all the lemmas also apply to the loopless simple base graphs in the paper.",
+      "sha256": "20acdf579ca3b31327576c781d2a5ab876c4a573764b820ad6d154542d2b9c54"
+    },
+    {
+      "id": "OccupancySecondMoment",
+      "file": "GraphChoices/OccupancySecondMoment.lean",
+      "imports": [
+        "BlockSampling",
+        "ComponentExpectation"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.average_sub",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.average_div",
+          "kind": "theorem",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.successNumber",
+          "kind": "def",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.successNumber_nonneg",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.average_successNumber",
+          "kind": "theorem",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.average_indicator_product",
+          "kind": "theorem",
+          "line": 32
+        },
+        {
+          "name": "GraphChoices.successNumber_second_moment",
+          "kind": "theorem",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.density_quadratic_lower",
+          "kind": "theorem",
+          "line": 68
+        },
+        {
+          "name": "GraphChoices.expected_density_of_second_moment",
+          "kind": "theorem",
+          "line": 85
+        }
+      ],
+      "summary": "Pairwise occupancy bounds suffice for expected density. The quadratic minorant below replaces a high-probability negative-association argument.",
+      "sha256": "fd6faae881d99a72295f7e3f70c841d719dca676b509bb64c0ac9f3199e3a1bc"
+    },
+    {
+      "id": "OriginalGraphPreprocessing",
+      "file": "GraphChoices/OriginalGraphPreprocessing.lean",
+      "imports": [
+        "SourceRelabel"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.orientedPair",
+          "kind": "def",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.splitGraph",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.orientedPair_injective",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.splitEdgeEquiv",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.splitEdgeEquiv_left",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.splitEdgeEquiv_right",
+          "kind": "theorem",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.exists_preprocessed_split",
+          "kind": "theorem",
+          "line": 42
+        }
+      ],
+      "summary": "The oriented vertex-copy construction as a concrete simple bipartite edge set, together with its proved degree certificate and label bijection.",
+      "sha256": "e9b29c22dddea584755a1d478fc42716b26fd459c3554e098fa9c9d859af7d28"
+    },
+    {
+      "id": "PatternCoverage",
+      "file": "GraphChoices/PatternCoverage.lean",
+      "imports": [
+        "ResidualAdjacency",
+        "ShapePatterns"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.menuValid_of_pointwise",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.Patterns.edgeData_labels_injective",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Patterns.edgeData_mem_assignments",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.Patterns.mem_residualPatternEvent_of_data",
+          "kind": "theorem",
+          "line": 110
+        }
+      ],
+      "summary": "From an injective vertex enumeration with parent edges to a counted pattern event. The parent-before-child inequalities prove that edge labels cannot repeat, even when consecutive tree edges reverse bipartite direction. Constructing the canonical enumeration of every finite tree remains separate.",
+      "sha256": "42d6b5b5b7e7bfda71981cf04b4f490736713654adbd867688227ee6e954cd43"
+    },
+    {
+      "id": "PatternDecay",
+      "file": "GraphChoices/PatternDecay.lean",
+      "imports": [
+        "PatternEventBound",
+        "BalancedProduct"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.weighted_branch_identity",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.bucketDecay",
+          "kind": "def",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.Patterns.residualPattern_probability_decay",
+          "kind": "theorem",
+          "line": 32
+        }
+      ],
+      "summary": "Cancellation of branching factors against threshold-witness probabilities for a left-heavy fixed pattern. Local numerical hypotheses are explicit; the paper's chosen thresholds must still be shown to satisfy them.",
+      "sha256": "0c45fa7b908898d6dd00eb9943c5318b11455e3bf1bbbfbc6d2dc90f7e90b490"
+    },
+    {
+      "id": "PatternEmbeddingCount",
+      "file": "GraphChoices/PatternEmbeddingCount.lean",
+      "imports": [
+        "AssignmentCount",
+        "Peeling"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.ParentPattern",
+          "kind": "structure",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.patternMenu",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Patterns.branchBound",
+          "kind": "def",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Patterns.patternMenu_card_le",
+          "kind": "theorem",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.Patterns.patternAssignments",
+          "kind": "def",
+          "line": 63
+        },
+        {
+          "name": "GraphChoices.Patterns.patternAssignments_card_le",
+          "kind": "theorem",
+          "line": 68
+        }
+      ],
+      "summary": "Rooted class-labelled patterns in parent-before-child order, and a bound on their graph assignments. Inconsistent bipartite side annotations simply have no assignments. Injective embeddings form a subset of these assignments.",
+      "sha256": "fa96de5728834498f5ccdd157a78916520b3e65c8abdec2ed4e9648c2314ee0b"
+    },
+    {
+      "id": "PatternEventBound",
+      "file": "GraphChoices/PatternEventBound.lean",
+      "imports": [
+        "PatternEmbeddingCount",
+        "ResidualTreeBound"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.childIndex",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Patterns.parentIndex",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.Patterns.EdgeData",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Patterns.embeddingSet",
+          "kind": "def",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.Patterns.embedding_projection_inj",
+          "kind": "theorem",
+          "line": 35
+        },
+        {
+          "name": "GraphChoices.Patterns.embeddingSet_card_le",
+          "kind": "theorem",
+          "line": 55
+        },
+        {
+          "name": "GraphChoices.Patterns.LeftChildren",
+          "kind": "abbrev",
+          "line": 63
+        },
+        {
+          "name": "GraphChoices.Patterns.embedding_left_buckets_distinct",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.Patterns.patternProbabilityFactor",
+          "kind": "def",
+          "line": 80
+        },
+        {
+          "name": "GraphChoices.Patterns.embedding_probability_le",
+          "kind": "theorem",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.Patterns.residualPatternEvent",
+          "kind": "def",
+          "line": 107
+        },
+        {
+          "name": "GraphChoices.Patterns.residualPattern_probability_le",
+          "kind": "theorem",
+          "line": 113
+        }
+      ],
+      "summary": "Combines the fixed-pattern assignment count with the actual residual-tree probability bound. Embeddings carry real base-edge labels; uniqueness follows from the base graph having at most one label per bipartite endpoint pair.",
+      "sha256": "93254eefdff67673de2bb715fd8612fe0d413ab0ea4a435fe289f74c4e8cb709"
+    },
+    {
+      "id": "PatternWitnessBound",
+      "file": "GraphChoices/PatternWitnessBound.lean",
+      "imports": [
+        "InjectedWitnesses"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.TimeChoice",
+          "kind": "abbrev",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.TimeWitness",
+          "kind": "abbrev",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.WitnessSlot",
+          "kind": "abbrev",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.witnessTime",
+          "kind": "def",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.slotAllowed",
+          "kind": "def",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.timeChoice_card",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.timeWitness_card",
+          "kind": "theorem",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.slot_probability_product",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.patternWitnessEvent",
+          "kind": "def",
+          "line": 49
+        },
+        {
+          "name": "GraphChoices.patternWitness_probability_le",
+          "kind": "theorem",
+          "line": 56
+        },
+        {
+          "name": "GraphChoices.patternWitness_probability_le_exp",
+          "kind": "theorem",
+          "line": 75
+        }
+      ],
+      "summary": "Joint witness bound of the form used in Equations (10)--(12). Tree slots require fixed base edges. Each threshold bucket chooses an unordered set of alpha_j time steps. Only globally injective assignments are retained, so all required occurrences are distinct and the product probability is justified. The graph-to-witness encoding and pattern-embedding count are separate results.",
+      "sha256": "92235f98e446feafacd0564110adf5d65cac4dca5764aed9987b3883c701c2be"
+    },
+    {
+      "id": "Peeling",
+      "file": "GraphChoices/Peeling.lean",
+      "imports": [
+        "CapacityMatching"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.Graph",
+          "kind": "abbrev",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Peeling.leftNeighbors",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Peeling.rightNeighbors",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.Peeling.leftDegree",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Peeling.rightDegree",
+          "kind": "def",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.Peeling.leftNeighbors_mono",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.Peeling.leftDegree_mono",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.Peeling.leftDegree_sdiff",
+          "kind": "theorem",
+          "line": 32
+        },
+        {
+          "name": "GraphChoices.Peeling.rightDegree_union_le",
+          "kind": "theorem",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingExpansion",
+          "kind": "def",
+          "line": 46
+        },
+        {
+          "name": "GraphChoices.Peeling.PeelingExpansion.mono",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_active_matching",
+          "kind": "theorem",
+          "line": 57
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_peeling_piece",
+          "kind": "theorem",
+          "line": 123
+        }
+      ],
+      "summary": "The finite graph-theoretic peeling step behind Lemma 3.7. This module proves extraction and termination from a hereditary neighborhood-expansion condition. The analytic-to-graph certificate is kept as an explicit premise.",
+      "sha256": "5b89944e78dafc49999b6f7efe1cb5f41d8fbd12e582fb1a9c8361286198f630"
+    },
+    {
+      "id": "PieceEncoding",
+      "file": "GraphChoices/PieceEncoding.lean",
+      "imports": [
+        "SkewDecomposition",
+        "PreprocessedShattering"
+      ],
+      "theorems": 14,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.mem_unionPieces_iff",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_piece_index",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceClass",
+          "kind": "def",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceClass_mem",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceEncode",
+          "kind": "def",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceEncode_simple",
+          "kind": "theorem",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceEncode_source",
+          "kind": "theorem",
+          "line": 42
+        },
+        {
+          "name": "GraphChoices.Peeling.piece_sourceBucket_card_le",
+          "kind": "theorem",
+          "line": 46
+        },
+        {
+          "name": "GraphChoices.Peeling.piece_leftSourceBucket_card_le",
+          "kind": "theorem",
+          "line": 67
+        },
+        {
+          "name": "GraphChoices.Peeling.maxLeftDegree",
+          "kind": "def",
+          "line": 83
+        },
+        {
+          "name": "GraphChoices.Peeling.maxRightDegree",
+          "kind": "def",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.Peeling.leftDegree_le_max",
+          "kind": "theorem",
+          "line": 87
+        },
+        {
+          "name": "GraphChoices.Peeling.rightDegree_le_max",
+          "kind": "theorem",
+          "line": 90
+        },
+        {
+          "name": "GraphChoices.Peeling.maxLeftDegree_le",
+          "kind": "theorem",
+          "line": 93
+        },
+        {
+          "name": "GraphChoices.Peeling.nat_sup_cast_le",
+          "kind": "theorem",
+          "line": 96
+        },
+        {
+          "name": "GraphChoices.Peeling.maxLeftDegree_real_le",
+          "kind": "theorem",
+          "line": 107
+        },
+        {
+          "name": "GraphChoices.Peeling.maxRightDegree_real_le",
+          "kind": "theorem",
+          "line": 111
+        },
+        {
+          "name": "GraphChoices.Peeling.piece_maxLeftDegree_le",
+          "kind": "theorem",
+          "line": 115
+        }
+      ],
+      "summary": "Actual edge classes and degree certificates from an exact finite graph partition. Edge labels are the base graph's concrete endpoint pairs, so simplicity and all bucket bounds are proved rather than assumed.",
+      "sha256": "3af485e236fb06ec24371229d9315303f853854e13a53ec493679b3ac9680a90"
+    },
+    {
+      "id": "PolynomialShattering",
+      "file": "GraphChoices/PolynomialShattering.lean",
+      "imports": [
+        "ComponentTreeEvents"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.polynomialCutoff",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.polynomialCutoff_pos",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.polynomialCutoff_power",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.geometric_tail_le_polynomial",
+          "kind": "theorem",
+          "line": 20
+        },
+        {
+          "name": "GraphChoices.Patterns.largeComponent_polynomial_tail_of_coverage",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.Patterns.expected_load_polynomial_of_coverage",
+          "kind": "theorem",
+          "line": 66
+        }
+      ],
+      "summary": "Explicit logarithmic cutoffs, inverse-polynomial failure probabilities, and the expected-load consequence. The canonical-coverage containment remains an explicit premise, so these are not unconditional shattering theorems.",
+      "sha256": "141d809af3f3ab200ce9597417395697746ffef29303958a43f4b353bae05941"
+    },
+    {
+      "id": "PreparedDecomposition",
+      "file": "GraphChoices/PreparedDecomposition.lean",
+      "imports": [
+        "PieceEncoding",
+        "AutomaticBudget",
+        "ThresholdPolicy"
+      ],
+      "theorems": 14,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition",
+          "kind": "structure",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_preparedDecomposition",
+          "kind": "theorem",
+          "line": 30
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.encode",
+          "kind": "def",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.DL",
+          "kind": "def",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.DR",
+          "kind": "def",
+          "line": 50
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.thresholds",
+          "kind": "def",
+          "line": 53
+        },
+        {
+          "name": "GraphChoices.Peeling.graphBase",
+          "kind": "def",
+          "line": 57
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.policy",
+          "kind": "def",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.budget",
+          "kind": "def",
+          "line": 64
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.source",
+          "kind": "theorem",
+          "line": 69
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.simple",
+          "kind": "theorem",
+          "line": 73
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.bucket_bound",
+          "kind": "theorem",
+          "line": 77
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.global_bucket_bound",
+          "kind": "theorem",
+          "line": 81
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.piece_left_cap",
+          "kind": "theorem",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.piece_right_cap",
+          "kind": "theorem",
+          "line": 89
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.max_degree_preprocessing",
+          "kind": "theorem",
+          "line": 92
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.vertex_count_pos",
+          "kind": "theorem",
+          "line": 96
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.scale_gt_one",
+          "kind": "theorem",
+          "line": 102
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.class_count_pos",
+          "kind": "theorem",
+          "line": 109
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.reference_cap_pos",
+          "kind": "theorem",
+          "line": 112
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.threshold_budget",
+          "kind": "theorem",
+          "line": 120
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.mass_at_vertex_horizon",
+          "kind": "theorem",
+          "line": 128
+        }
+      ],
+      "summary": "The structural partition as an operational input to Threshold-Greedy. The stored bounds are derived from the proved decomposition, and the source edge labels, classes and degree certificates all use that exact partition.",
+      "sha256": "234df6a85db7e306536158df3d9dbb820696ea4500fd28a85268b9434507eabb"
+    },
+    {
+      "id": "PreprocessedComparison",
+      "file": "GraphChoices/PreprocessedComparison.lean",
+      "imports": [
+        "IteratedLogBounds",
+        "ExpectedDensity"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.graph_card_le_square",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Peeling.average_le_two_referenceCap",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.reference_cap_le_square",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.reference_density_bound",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.expected_cost_density_skew",
+          "kind": "theorem",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.competitive_of_skew_lower_bound",
+          "kind": "theorem",
+          "line": 90
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_preprocessed_density_skew_policy",
+          "kind": "theorem",
+          "line": 102
+        }
+      ],
+      "summary": "The finite preprocessed online policy has log-log expected cost times E[OPT] plus the actual graph log-skewness. The subsequent SkewLowerBound module proves the benchmark comparison needed to absorb that last graph parameter into E[OPT] in the preprocessed regime.",
+      "sha256": "a582ad9d96ca62ba2755f3863679e7d7a23c7ba048aa614c65be099f01ff8a85"
+    },
+    {
+      "id": "PreprocessedCompetitive",
+      "file": "GraphChoices/PreprocessedCompetitive.lean",
+      "imports": [
+        "SkewLowerBound",
+        "RealLoglogComparison"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.loglogFactor_ge_one",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.small_log_vertex_bound",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.expectedCost_le_horizon",
+          "kind": "theorem",
+          "line": 29
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.expected_cost_competitive",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_preprocessed_competitive_policy",
+          "kind": "theorem",
+          "line": 66
+        }
+      ],
+      "summary": "The end-to-end competitive guarantee for the preprocessed graph at the vertex horizon. Skewness is now proved bounded by the benchmark, and small sizes use the deterministic horizon bound.",
+      "sha256": "1a4b9d3cf8a3e9b8c17382250c09c966dd481aaecf29e60c8363987ed5eb6a4b"
+    },
+    {
+      "id": "PreprocessedShattering",
+      "file": "GraphChoices/PreprocessedShattering.lean",
+      "imports": [
+        "ConcreteShattering"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.real_log_le_nat_log_shift",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Patterns.preprocessing_mean_bound",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.Patterns.preprocessed_mean_below_cutoff",
+          "kind": "theorem",
+          "line": 35
+        },
+        {
+          "name": "GraphChoices.Patterns.preprocessed_log_squared_component_tail",
+          "kind": "theorem",
+          "line": 56
+        }
+      ],
+      "summary": "The sampled-degree mean at the paper's preprocessing scale. This gives log-squared shattering directly from M \u2264 d log N and 2|E| = N d for T \u2264 N.",
+      "sha256": "dd7ec5f6a363b885d83df2887db3cbaeeb70cfdaf5c3cb8e0f09cfde98cbcf4e"
+    },
+    {
+      "id": "Preprocessing",
+      "file": "GraphChoices/Preprocessing.lean",
+      "imports": [
+        "Bipartite",
+        "Uniform",
+        "Density"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.BaseGraph.split",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.split_sample",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.split_expectedOpt_le",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.expectedOpt_le_two_split",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.expectedCost",
+          "kind": "def",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.expected_competitive_transfer",
+          "kind": "theorem",
+          "line": 48
+        },
+        {
+          "name": "GraphChoices.exists_left_degree_bounded_split",
+          "kind": "theorem",
+          "line": 70
+        }
+      ],
+      "summary": "The expected-competitive part of Lemma 2.4 and the bounded-left-degree orientation used by the preprocessing. Edge labels are preserved by the split, so the two product sampling spaces are literally the same.",
+      "sha256": "dab515fcaa17882941e6b8456b30c6bf7304d6dd91e3ab4e643e9766cfe52e19"
+    },
+    {
+      "id": "RandomGreedy",
+      "file": "GraphChoices/RandomGreedy.lean",
+      "imports": [
+        "MainProof"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.RandomGreedy.choice",
+          "kind": "def",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.target",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.step",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.run",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.policy",
+          "kind": "def",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.coinGraph",
+          "kind": "def",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.state",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.run_append",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.state_zero",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.state_step",
+          "kind": "theorem",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.state_eq_prefixLoad",
+          "kind": "theorem",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.state_mono",
+          "kind": "theorem",
+          "line": 49
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.choice_favours_left",
+          "kind": "theorem",
+          "line": 57
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.policy_isGreedy",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.RandomGreedy.expectedLoad",
+          "kind": "def",
+          "line": 81
+        }
+      ],
+      "summary": "Ordinary Greedy with a fresh independent fair coin for ties. The source alphabet E \u00d7 Bool records both the edge and the otherwise unused coin.",
+      "sha256": "2e67c89081ec218d2cd96a15dbf0fa6d740022cbdd337b9bbcd55b1b1d6d30e0"
+    },
+    {
+      "id": "RateCompetitive",
+      "file": "GraphChoices/RateCompetitive.lean",
+      "imports": [
+        "HorizonDecomposition"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.rateReference",
+          "kind": "def",
+          "line": 7
+        },
+        {
+          "name": "GraphChoices.Peeling.rateReference_bounds",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_rate_competitive_policy",
+          "kind": "theorem",
+          "line": 48
+        }
+      ],
+      "summary": "",
+      "sha256": "b4806c1d29b30418d516e5b44e1c30d40b5f3a0d3831329a91b212de3226ca49"
+    },
+    {
+      "id": "RealLoglogComparison",
+      "file": "GraphChoices/RealLoglogComparison.lean",
+      "imports": [
+        "PreprocessedComparison"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.nat_log_le_twice_real_log",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.iteratedLog_le_real_factor",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.expected_cost_real_loglog",
+          "kind": "theorem",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.Peeling.PreparedDecomposition.real_competitive_of_skew_lower_bound",
+          "kind": "theorem",
+          "line": 71
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_preprocessed_real_loglog_policy",
+          "kind": "theorem",
+          "line": 90
+        }
+      ],
+      "summary": "Comparison with the bounded-at-small-n real log-log factor used by the main target. This completes the asymptotic conversion for the preprocessed N-arrival policy while retaining the skewness term explicitly for later benchmark comparison.",
+      "sha256": "09384254bc73a9de75e7ff1f0ac1fd68ab5794991a22b97ed7df7b5a05d79889"
+    },
+    {
+      "id": "ReplayGreedyAdapter",
+      "file": "GraphChoices/ReplayGreedyAdapter.lean",
+      "imports": [
+        "GreedyExecution",
+        "ResidualReplay"
+      ],
+      "theorems": 11,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.zeroGreedy",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyVertexLoad",
+          "kind": "def",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyTarget",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyVertexLoad_step",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyTarget_min",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyRun_append",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyRun_take_succ",
+          "kind": "theorem",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replayInstance",
+          "kind": "def",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replayOrientation",
+          "kind": "def",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replayState",
+          "kind": "def",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_destination",
+          "kind": "theorem",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_zero",
+          "kind": "theorem",
+          "line": 59
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_increment",
+          "kind": "theorem",
+          "line": 62
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_isGreedy",
+          "kind": "theorem",
+          "line": 68
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_final_load",
+          "kind": "theorem",
+          "line": 79
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_left_competitive",
+          "kind": "theorem",
+          "line": 87
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_right_competitive",
+          "kind": "theorem",
+          "line": 101
+        }
+      ],
+      "summary": "The ordinary residual replay is an actual indexed Greedy orientation. Its counted loads equal the implemented state, so the checked adversarial Greedy theorem applies directly to Threshold-Greedy's residual execution.",
+      "sha256": "1cb64566f1712b9dfa10106262270ecec4dd19a14e84da52d695466ebb7540c0"
+    },
+    {
+      "id": "ResidualAdjacency",
+      "file": "GraphChoices/ResidualAdjacency.lean",
+      "imports": [
+        "ListArrivalGraph",
+        "ResidualTreeBound"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.mem_residual_sample_iff",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_adj_iff_time",
+          "kind": "theorem",
+          "line": 33
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_adj_inl_inr_iff_time",
+          "kind": "theorem",
+          "line": 47
+        }
+      ],
+      "summary": "Every edge of the actual residual graph has an original sampled time and base-edge label. This connects graph witnesses to the occurrence-based events used in the checked probability estimates.",
+      "sha256": "4d52c918ac86669e7c82473fcf558090f6c1f00d20d6b80d39df5cbaf3cd7787"
+    },
+    {
+      "id": "ResidualComponents",
+      "file": "GraphChoices/ResidualComponents.lean",
+      "imports": [
+        "ComponentGreedy",
+        "ResidualOptimum"
+      ],
+      "theorems": 8,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.residualVertexLoad",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residualInstance",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_vertex_load_eq",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_vertex_load_le_length",
+          "kind": "theorem",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_vertex_component_bound",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_vertex_bound_of_small_components",
+          "kind": "theorem",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.totalVertexLoad",
+          "kind": "def",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.totalMaxLoad",
+          "kind": "def",
+          "line": 55
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.total_vertex_le_threshold_add_residual",
+          "kind": "theorem",
+          "line": 59
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.totalMaxLoad_le_budget_add_length",
+          "kind": "theorem",
+          "line": 66
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.totalMaxLoad_of_small_components",
+          "kind": "theorem",
+          "line": 74
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.totalMaxLoad_of_square_components",
+          "kind": "theorem",
+          "line": 85
+        }
+      ],
+      "summary": "Component-local bounds for the actual Threshold-Greedy state. A bound on all residual component sizes gives a deterministic bound on the full load, including thresholds, against the full sample's offline optimum.",
+      "sha256": "ca7678225da49a4b44f73f96a6f3ad7bdb700509d4d5e8f718ba6475e076979e"
+    },
+    {
+      "id": "ResidualDegree",
+      "file": "GraphChoices/ResidualDegree.lean",
+      "imports": [
+        "ComponentExpectation",
+        "SamplingTail"
+      ],
+      "theorems": 6,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.listLeftNeighbors",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.listLeftNeighbors_card_le",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.listLeftNeighbors_mono",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_left_neighbors_subset",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.leftSourceBucket",
+          "kind": "def",
+          "line": 30
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.sample_left_count_eq_hits",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_left_degree_le_hits",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_left_degree_tail",
+          "kind": "theorem",
+          "line": 53
+        }
+      ],
+      "summary": "The degree condition used in the right-leaf pruning reduction: deleting threshold occurrences cannot increase any sampled left neighborhood. Its probability tail follows in the same i.i.d. space as the pattern bounds.",
+      "sha256": "1dbf9a88f99361957afeec1321b7e3510fc004425c0bd22570206db968bf8a4d"
+    },
+    {
+      "id": "ResidualOptimum",
+      "file": "GraphChoices/ResidualOptimum.lean",
+      "imports": [
+        "ReplayGreedyAdapter",
+        "Density"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.countP_ofFn_eq_sum",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.card_filter_list_indices",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.opt_le_of_internalCount_le",
+          "kind": "theorem",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_internalCount",
+          "kind": "theorem",
+          "line": 40
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.replay_opt_mono_sublist",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_sublist",
+          "kind": "theorem",
+          "line": 55
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_opt_le_full",
+          "kind": "theorem",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_left_competitive_full",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_right_competitive_full",
+          "kind": "theorem",
+          "line": 72
+        }
+      ],
+      "summary": "Removing arrival occurrences cannot increase the offline optimum. This is proved via the exact density criterion and applied to the extracted residual sequence, completing the benchmark bridge for ordinary residual Greedy.",
+      "sha256": "e025ec140a1b437a5913def3de7049c99e3b766275e1262471b3698585a8cbaf"
+    },
+    {
+      "id": "ResidualReplay",
+      "file": "GraphChoices/ResidualReplay.lean",
+      "imports": [
+        "ThresholdGreedy"
+      ],
+      "theorems": 14,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.Event",
+          "kind": "structure",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom",
+          "kind": "def",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace",
+          "kind": "def",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdArrivals",
+          "kind": "def",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residualArrivals",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.GreedyLoads",
+          "kind": "structure",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.project",
+          "kind": "def",
+          "line": 35
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyStep",
+          "kind": "def",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.greedyRun",
+          "kind": "def",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.project_threshold_step",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.project_residual_step",
+          "kind": "theorem",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_replay_from",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_replay",
+          "kind": "theorem",
+          "line": 78
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.threshold_counter_exact_from",
+          "kind": "theorem",
+          "line": 84
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.threshold_counter_exact",
+          "kind": "theorem",
+          "line": 110
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_has_threshold_witnesses",
+          "kind": "theorem",
+          "line": 114
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_arrivals",
+          "kind": "theorem",
+          "line": 121
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_times",
+          "kind": "theorem",
+          "line": 127
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_unique_times",
+          "kind": "theorem",
+          "line": 134
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace_partition",
+          "kind": "theorem",
+          "line": 141
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_append",
+          "kind": "theorem",
+          "line": 147
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.threshold_residual_times_disjoint",
+          "kind": "theorem",
+          "line": 158
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace_threshold_residual_disjoint",
+          "kind": "theorem",
+          "line": 173
+        }
+      ],
+      "summary": "Occurrence-preserving execution logs and exact replay of residual arrivals by a single ordinary Greedy process. Repeated edges carry distinct time labels.",
+      "sha256": "29fe6b97cd814b9fdac4d0f069952a5f40a81186fe2e6191ae36c9238939aa13"
+    },
+    {
+      "id": "ResidualTreeBound",
+      "file": "GraphChoices/ResidualTreeBound.lean",
+      "imports": [
+        "ExecutionIndex",
+        "WitnessEncoding"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.sampleArrivals",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.sampleArrivals_length",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residualTime",
+          "kind": "def",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.sample_event_arrival",
+          "kind": "theorem",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.fixedResidualEvent",
+          "kind": "def",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.sourceBucket",
+          "kind": "def",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.mem_fixedResidualEvent_iff",
+          "kind": "theorem",
+          "line": 42
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.fixedResidualEvent_subset_witness",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.fixedResidual_probability_le",
+          "kind": "theorem",
+          "line": 103
+        }
+      ],
+      "summary": "The fixed-residual-tree event is contained in the counted joint witness event. The proof uses actual execution counters and time labels, not an assumed witness-encoding hypothesis. Tree geometry is only needed later for counting embeddings and ensuring that left-vertex buckets are distinct.",
+      "sha256": "5f93b274e3dadf039a0f99d792b254e170d0eeeda5e80335227304c9004552cd"
+    },
+    {
+      "id": "SampleRestriction",
+      "file": "GraphChoices/SampleRestriction.lean",
+      "imports": [
+        "BlockDensity"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.Instance.restrict",
+          "kind": "def",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.opt_restrict_le",
+          "kind": "theorem",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.average_product_fst",
+          "kind": "theorem",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.appendSamples",
+          "kind": "def",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.appendSamples_left",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.average_prefix",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.expectedOpt_mono_horizon",
+          "kind": "theorem",
+          "line": 58
+        }
+      ],
+      "summary": "Uniform sampling is preserved by a prefix restriction; the offline optimum is monotone when arrivals are added.",
+      "sha256": "5c82a5504ec21105215c242f4b934963d9a98bce7fe2f7397a311bcc4bbcdb51"
+    },
+    {
+      "id": "SamplingTail",
+      "file": "GraphChoices/SamplingTail.lean",
+      "imports": [
+        "WitnessProbability"
+      ],
+      "theorems": 7,
+      "declarations": [
+        {
+          "name": "GraphChoices.hitCount",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.hitTailEvent",
+          "kind": "def",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.requiredHitsEvent",
+          "kind": "def",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.requiredHits_probability",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.hitTail_subset_witness_union",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.hitTail_probability_le",
+          "kind": "theorem",
+          "line": 52
+        },
+        {
+          "name": "GraphChoices.choose_le_exp_div_pow",
+          "kind": "theorem",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.hitTail_probability_le_exp",
+          "kind": "theorem",
+          "line": 89
+        },
+        {
+          "name": "GraphChoices.hitTail_probability_le_geometric",
+          "kind": "theorem",
+          "line": 99
+        },
+        {
+          "name": "GraphChoices.some_bucket_tail_bound",
+          "kind": "theorem",
+          "line": 106
+        }
+      ],
+      "summary": "An explicit binomial upper tail proved directly in the finite i.i.d. sampling model, by selecting distinct witness time steps and union-bounding.",
+      "sha256": "6135148551789393f464887aed4018be4d9ad0192b49b7d9df68d5dcf4076a7a"
+    },
+    {
+      "id": "ShapeCoverage",
+      "file": "GraphChoices/ShapeCoverage.lean",
+      "imports": [
+        "PatternCoverage"
+      ],
+      "theorems": 1,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.UnlabelledShape",
+          "kind": "abbrev",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Patterns.skeletonPattern",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Patterns.mem_heavyShapeEvent_of_geometric_embedding",
+          "kind": "theorem",
+          "line": 22
+        }
+      ],
+      "summary": "A geometric embedding of an unlabelled canonical shape in the actual residual graph forces the class-labelled shape event. Edge classes and distinct occurrence witnesses are constructed from the actual execution.",
+      "sha256": "8cd6f4df8933876548d64c296143b3f3f5cda59699ecff20a061047ed09c9f1c"
+    },
+    {
+      "id": "ShapePatterns",
+      "file": "GraphChoices/ShapePatterns.lean",
+      "imports": [
+        "PatternDecay"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.forestParent",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.Patterns.forestSide",
+          "kind": "def",
+          "line": 30
+        },
+        {
+          "name": "GraphChoices.Patterns.ShapeCode",
+          "kind": "abbrev",
+          "line": 42
+        },
+        {
+          "name": "GraphChoices.Patterns.shapePattern",
+          "kind": "def",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.Patterns.shapes_card_le",
+          "kind": "theorem",
+          "line": 53
+        },
+        {
+          "name": "GraphChoices.Patterns.shapeCode_card_le",
+          "kind": "theorem",
+          "line": 60
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShapeEvent",
+          "kind": "def",
+          "line": 70
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShape_probability_le",
+          "kind": "theorem",
+          "line": 77
+        }
+      ],
+      "summary": "Canonical plane rooted patterns via first-child/next-sibling binary forests. A forest with m nodes encodes the m non-root vertices of a rooted tree. There are at most 4^m such shapes and |C|^m ways to label their edges.",
+      "sha256": "a18696ebdd1eb7f1c560ff294e3d6ce4f5d7df33e571d3992c95f3900c7a7ad6"
+    },
+    {
+      "id": "ShatteringBounds",
+      "file": "GraphChoices/ShatteringBounds.lean",
+      "imports": [
+        "ShapePatterns",
+        "ThresholdDecay"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Patterns.heavyShape_decay_of_thresholds",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShape_geometric_tail",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Patterns.heavyShape_polynomial_tail",
+          "kind": "theorem",
+          "line": 48
+        }
+      ],
+      "summary": "Probability tails for the canonical left-heavy tree family, derived from explicit local threshold conditions. The deterministic coverage of arbitrary large connected components by this family remains a separate graph theorem.",
+      "sha256": "f39c34e059a2929aeb6ee5222bd0a6261e21ffd4da9f6d0a6c855e6bddb13450"
+    },
+    {
+      "id": "ShortHorizonGreedy",
+      "file": "GraphChoices/ShortHorizonGreedy.lean",
+      "imports": [
+        "RateCompetitive"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.greedy_bound_by_arrivals",
+          "kind": "theorem",
+          "line": 6
+        },
+        {
+          "name": "GraphChoices.Peeling.simpleEncode",
+          "kind": "def",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.Peeling.simpleGreedyPolicy",
+          "kind": "def",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.Peeling.simpleGreedyPolicy_isGreedy",
+          "kind": "theorem",
+          "line": 46
+        },
+        {
+          "name": "GraphChoices.Peeling.short_horizon_policy",
+          "kind": "theorem",
+          "line": 72
+        }
+      ],
+      "summary": "",
+      "sha256": "76d1df45dbc272afcf6bd2e84c5423ef16292830311a32c8c7d44b7213fa29f9"
+    },
+    {
+      "id": "SkewBlockArithmetic",
+      "file": "GraphChoices/SkewBlockArithmetic.lean",
+      "imports": [
+        "SubgraphOccupancy"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.skew_denominator_ge_log",
+          "kind": "theorem",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.skew_threshold_le_log",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.skew_block_population",
+          "kind": "theorem",
+          "line": 32
+        },
+        {
+          "name": "GraphChoices.block_length_mean",
+          "kind": "theorem",
+          "line": 74
+        }
+      ],
+      "summary": "Explicit numerical thresholds for the block proof of log-skewness. The denominator's log-squared factor pays for the number of blocks.",
+      "sha256": "e08ac500f8771cca1cdb4dfc01f0c8769fddddb21f534d5f279fad76a2c3ccaf"
+    },
+    {
+      "id": "SkewDecomposition",
+      "file": "GraphChoices/SkewDecomposition.lean",
+      "imports": [
+        "GraphSkew",
+        "Decomposition"
+      ],
+      "theorems": 18,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.scaleNat",
+          "kind": "def",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.Peeling.roundBudget",
+          "kind": "def",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.Peeling.scaleNat_pos",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Peeling.scaleNat_succ",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.Peeling.roundBudget_zero",
+          "kind": "theorem",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.Peeling.active_cutoff_at_scale",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.Peeling.skewSchedule",
+          "kind": "def",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.Peeling.skewSchedule_length",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.Peeling.skewSchedule_expands",
+          "kind": "theorem",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.Peeling.finalBudget_append",
+          "kind": "theorem",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.Peeling.skewSchedule_finalBudget",
+          "kind": "theorem",
+          "line": 71
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_doubly_exponential_decomposition",
+          "kind": "theorem",
+          "line": 85
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceBudgets_append",
+          "kind": "theorem",
+          "line": 102
+        },
+        {
+          "name": "GraphChoices.Peeling.pieceBudgets_skewSchedule",
+          "kind": "theorem",
+          "line": 111
+        },
+        {
+          "name": "GraphChoices.Peeling.scaleNat_ge_two",
+          "kind": "theorem",
+          "line": 131
+        },
+        {
+          "name": "GraphChoices.Peeling.roundBudget_mul_scale",
+          "kind": "theorem",
+          "line": 135
+        },
+        {
+          "name": "GraphChoices.Peeling.roundBudget_real_le",
+          "kind": "theorem",
+          "line": 138
+        },
+        {
+          "name": "GraphChoices.Peeling.rounded_capacity_product",
+          "kind": "theorem",
+          "line": 146
+        },
+        {
+          "name": "GraphChoices.Peeling.numberRounds",
+          "kind": "def",
+          "line": 163
+        },
+        {
+          "name": "GraphChoices.Peeling.numberRounds_suffices",
+          "kind": "theorem",
+          "line": 165
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_loglog_skew_decomposition",
+          "kind": "theorem",
+          "line": 172
+        },
+        {
+          "name": "GraphChoices.Peeling.exists_skew_biregular_partition",
+          "kind": "theorem",
+          "line": 185
+        }
+      ],
+      "summary": "The graph decomposition at the paper's doubly exponential scales, with integer capacities and an explicit termination condition. Complexity estimates and the asymptotic simplification of the degree bounds are separate from this finite existence theorem.",
+      "sha256": "e1c7c7e1101f523ffd0862c21653ec574137f63c3fbcab71c637a4efff893ded"
+    },
+    {
+      "id": "SkewExpansion",
+      "file": "GraphChoices/SkewExpansion.lean",
+      "imports": [],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.localLogSkewness",
+          "kind": "def",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.log_ratio_bound_iff",
+          "kind": "theorem",
+          "line": 14
+        },
+        {
+          "name": "GraphChoices.expansion_of_log_skew",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.expansion_at_scale",
+          "kind": "theorem",
+          "line": 31
+        }
+      ],
+      "summary": "The logarithmic-to-multiplicative rearrangement in the proof of Lemma 3.7. All positivity hypotheses are explicit; logarithms with zero/negative arguments or nonpositive denominators cannot silently enter the argument.",
+      "sha256": "3b44b00118872e92a8361db7ac887174be7faf3a559d6a8ef85226616ff3071c"
+    },
+    {
+      "id": "SkewHorizonLower",
+      "file": "GraphChoices/SkewHorizonLower.lean",
+      "imports": [
+        "SkewLowerBound"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.skewValue_le_eight_expectedOpt_horizon",
+          "kind": "theorem",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Peeling.graphLogSkewness_le_eight_expectedOpt_horizon",
+          "kind": "theorem",
+          "line": 89
+        }
+      ],
+      "summary": "The skewness benchmark at an arbitrary sampling horizon T, provided log N \u2264 T and N bounds the base vertex count.",
+      "sha256": "d771228eb87d164c01f21678350cd46d7f5d686c600986248eff0085dd89fb27"
+    },
+    {
+      "id": "SkewLowerBound",
+      "file": "GraphChoices/SkewLowerBound.lean",
+      "imports": [
+        "SkewBlockArithmetic",
+        "ExpectedDensity"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.skewValue_le_eight_expectedOpt",
+          "kind": "theorem",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.Peeling.graphLogSkewness_le_eight_expectedOpt",
+          "kind": "theorem",
+          "line": 90
+        }
+      ],
+      "summary": "Lemma 3.3 in the large-size preprocessed regime. The lower bound is derived in the exact finite sampling space, using independent blocks and a pairwise second moment rather than an assumed negative-association result.",
+      "sha256": "2d1ba6ada37110809ae09df1ad5b58f3e8abf94278f632a7d51b062e6ece65d5"
+    },
+    {
+      "id": "SourceRelabel",
+      "file": "GraphChoices/SourceRelabel.lean",
+      "imports": [
+        "ShortHorizonGreedy"
+      ],
+      "theorems": 10,
+      "declarations": [
+        {
+          "name": "GraphChoices.relabel_sample",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.relabel_expectedOpt",
+          "kind": "theorem",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.pullbackPolicy",
+          "kind": "def",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.pullback_orientation",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.relabel_expectedCost",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.relabel_referenceCap",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.sourceInstance",
+          "kind": "def",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.sourceInstance_internalCount",
+          "kind": "theorem",
+          "line": 68
+        },
+        {
+          "name": "GraphChoices.sourceInstance_opt",
+          "kind": "theorem",
+          "line": 74
+        },
+        {
+          "name": "GraphChoices.sourceInstance_split",
+          "kind": "theorem",
+          "line": 84
+        },
+        {
+          "name": "GraphChoices.source_split_reference",
+          "kind": "theorem",
+          "line": 88
+        },
+        {
+          "name": "GraphChoices.exists_reference_source_orientation",
+          "kind": "theorem",
+          "line": 93
+        }
+      ],
+      "summary": "Changing edge-label names preserves both sampling and nonanticipating policies. A once-per-base-edge instance identifies the rounded density cap.",
+      "sha256": "c36f8d62d474a60cb95157367588af85628bc3a604e764d67d2709c85c3b3e2a"
+    },
+    {
+      "id": "SubgraphOccupancy",
+      "file": "GraphChoices/SubgraphOccupancy.lean",
+      "imports": [
+        "SampleRestriction"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.Peeling.subgraphBucket",
+          "kind": "def",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.Peeling.subgraphBucket_degree_lower",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.Peeling.subgraphBucket_source",
+          "kind": "theorem",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.Peeling.expectedOpt_subgraph_blocks",
+          "kind": "theorem",
+          "line": 36
+        }
+      ],
+      "summary": "A fully probabilistic lower bound for every concrete skewness witness. Its hypotheses concern only the base subgraph's degrees and cardinalities.",
+      "sha256": "c37616515f5cb90c61f684896e01ea1bc59a2b0e22043417ac347aeba9b34f80"
+    },
+    {
+      "id": "Targets",
+      "file": "GraphChoices/Targets.lean",
+      "imports": [
+        "Preprocessing"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.BaseGraph.IsSimple",
+          "kind": "def",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.OnlinePolicy",
+          "kind": "abbrev",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.onlineOrientation",
+          "kind": "def",
+          "line": 24
+        },
+        {
+          "name": "GraphChoices.collapsePolicy",
+          "kind": "def",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.collapsePolicy_orientation",
+          "kind": "theorem",
+          "line": 31
+        },
+        {
+          "name": "GraphChoices.online_expected_transfer",
+          "kind": "theorem",
+          "line": 36
+        },
+        {
+          "name": "GraphChoices.loglogFactor",
+          "kind": "def",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.MainTheorem",
+          "kind": "def",
+          "line": 52
+        }
+      ],
+      "summary": "# End-to-end specification This module defines the main theorem as a proposition, without assuming it. GraphChoices.MainProof proves this exact proposition as mainTheorem. The online policy receives only the preceding edge labels and current edge.",
+      "sha256": "e6fd64a47e6f61da5f363b9bcb51a7809277c957aa5f78dd115b7fbf5cd85212"
+    },
+    {
+      "id": "ThresholdBudget",
+      "file": "GraphChoices/ThresholdBudget.lean",
+      "imports": [
+        "ThresholdGreedy"
+      ],
+      "theorems": 3,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.finite_half_geometric",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.inverse_powers_sum_le_two",
+          "kind": "theorem",
+          "line": 18
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.roundedThreshold",
+          "kind": "def",
+          "line": 25
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.rounded_threshold_budget",
+          "kind": "theorem",
+          "line": 29
+        }
+      ],
+      "summary": "The threshold-load calculation in Section 4.2, with integer rounding. Starting the scale index at zero only increases the bound, giving a factor 2 in front of the logarithmic term.",
+      "sha256": "dec33d9f5d52eb1f6d2b65f61bd807e6405f35dced603f4aa81f3714e8da2a6b"
+    },
+    {
+      "id": "ThresholdDecay",
+      "file": "GraphChoices/ThresholdDecay.lean",
+      "imports": [
+        "PatternDecay"
+      ],
+      "theorems": 4,
+      "declarations": [
+        {
+          "name": "GraphChoices.inverse_power_le_target",
+          "kind": "theorem",
+          "line": 8
+        },
+        {
+          "name": "GraphChoices.power_le_target_of_threshold",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.Patterns.bucketDecay_small_of_threshold",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.Patterns.residualPattern_decay_of_thresholds",
+          "kind": "theorem",
+          "line": 60
+        }
+      ],
+      "summary": "Explicit logarithmic threshold conditions imply the local decay needed by the fixed-pattern probability theorem. No probability conclusion is assumed.",
+      "sha256": "c74e328b13371dd9fab20cfe5ceff8f05bdb89fb6b03960589f767edc1ac9ba7"
+    },
+    {
+      "id": "ThresholdGreedy",
+      "file": "GraphChoices/ThresholdGreedy.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 11,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.Arrival",
+          "kind": "structure",
+          "line": 11
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.State",
+          "kind": "structure",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.initial",
+          "kind": "def",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.isThreshold",
+          "kind": "def",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.step",
+          "kind": "def",
+          "line": 26
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.runFrom",
+          "kind": "def",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.run",
+          "kind": "def",
+          "line": 38
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.runFrom_append",
+          "kind": "theorem",
+          "line": 41
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.run_append_singleton",
+          "kind": "theorem",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.step_preserves_caps",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.runFrom_preserves_caps",
+          "kind": "theorem",
+          "line": 66
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.threshold_cap",
+          "kind": "theorem",
+          "line": 73
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.threshold_budget",
+          "kind": "theorem",
+          "line": 77
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_counter_saturated",
+          "kind": "theorem",
+          "line": 82
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.incidentCount",
+          "kind": "def",
+          "line": 90
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.step_counter_le",
+          "kind": "theorem",
+          "line": 93
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.counter_le_incident",
+          "kind": "theorem",
+          "line": 98
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_requires_previous_arrivals",
+          "kind": "theorem",
+          "line": 112
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_step",
+          "kind": "theorem",
+          "line": 120
+        }
+      ],
+      "summary": "Executable Threshold-Greedy, with class counters for threshold edges and separate loads for the single residual Greedy process (Algorithm 1). Counters start at zero. A counter that reaches its threshold never changes, so using threshold counters implements the threshold phase in the paper.",
+      "sha256": "4314a1bd251981ee4addd171fdee85bb12a603a3ca46877f402b1288ebe3c540"
+    },
+    {
+      "id": "ThresholdPolicy",
+      "file": "GraphChoices/ThresholdPolicy.lean",
+      "imports": [
+        "CanonicalCoverage",
+        "Targets"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.encodedBaseGraph",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.encoded_internalCount",
+          "kind": "theorem",
+          "line": 17
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.encoded_opt",
+          "kind": "theorem",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expectedReplayOpt_eq_expectedOpt",
+          "kind": "theorem",
+          "line": 37
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.stateLoad",
+          "kind": "def",
+          "line": 44
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.stepChoice",
+          "kind": "def",
+          "line": 47
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.step_stateLoad",
+          "kind": "theorem",
+          "line": 51
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdPolicy",
+          "kind": "def",
+          "line": 65
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.policyPrefixLoad",
+          "kind": "def",
+          "line": 68
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.policyPrefixLoad_zero",
+          "kind": "theorem",
+          "line": 72
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.policyPrefixLoad_step",
+          "kind": "theorem",
+          "line": 76
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.policy_final_load",
+          "kind": "theorem",
+          "line": 88
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.policy_maxLoad",
+          "kind": "theorem",
+          "line": 98
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.expectedTotalMaxLoad_eq_expectedCost",
+          "kind": "theorem",
+          "line": 106
+        }
+      ],
+      "summary": "The implemented full Threshold-Greedy state is an actual online policy. Its expected load and full-sample benchmark agree with the original indexed sample model, rather than a separate list-only performance notion.",
+      "sha256": "a8c3af060763291118fd8b8fdf06c96cc91d91b8d80edb432c0c4bfab82b6431"
+    },
+    {
+      "id": "ThresholdWitnesses",
+      "file": "GraphChoices/ThresholdWitnesses.lean",
+      "imports": [
+        "ResidualReplay"
+      ],
+      "theorems": 9,
+      "declarations": [
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdBucket",
+          "kind": "def",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes",
+          "kind": "def",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdBucket_length",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes_length",
+          "kind": "theorem",
+          "line": 19
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes_nodup",
+          "kind": "theorem",
+          "line": 23
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.trace_prefix_mem",
+          "kind": "theorem",
+          "line": 28
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes_spec",
+          "kind": "theorem",
+          "line": 34
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.traceFrom_time_lt",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes_earlier",
+          "kind": "theorem",
+          "line": 55
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.thresholdWitnessTimes_disjoint_residual",
+          "kind": "theorem",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.ThresholdGreedy.residual_distinct_threshold_witnesses",
+          "kind": "theorem",
+          "line": 76
+        }
+      ],
+      "summary": "Distinct, earlier threshold occurrences are necessary witnesses for every residual arrival. Their time labels are disjoint from the entire residual log, so they cannot be reused as selected residual-tree occurrences.",
+      "sha256": "24952a27bf8bf3b0c4599140aa28bfc766b03dab3ebbe15f01608e2563ff658a"
+    },
+    {
+      "id": "TreePruning",
+      "file": "GraphChoices/TreePruning.lean",
+      "imports": [
+        "ComponentTrees"
+      ],
+      "theorems": 12,
+      "declarations": [
+        {
+          "name": "GraphChoices.path_internal_degree",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.reachable_induce_of_walk",
+          "kind": "theorem",
+          "line": 43
+        },
+        {
+          "name": "GraphChoices.prunedVertices",
+          "kind": "def",
+          "line": 54
+        },
+        {
+          "name": "GraphChoices.pruned_induce_connected",
+          "kind": "theorem",
+          "line": 61
+        },
+        {
+          "name": "GraphChoices.pruned_induce_isTree",
+          "kind": "theorem",
+          "line": 76
+        },
+        {
+          "name": "GraphChoices.bool_bipartite",
+          "kind": "theorem",
+          "line": 83
+        },
+        {
+          "name": "GraphChoices.bool_partition_card",
+          "kind": "theorem",
+          "line": 93
+        },
+        {
+          "name": "GraphChoices.right_degree_preserved_by_pruning",
+          "kind": "theorem",
+          "line": 99
+        },
+        {
+          "name": "GraphChoices.tree_left_heavy_of_right_min_degree",
+          "kind": "theorem",
+          "line": 112
+        },
+        {
+          "name": "GraphChoices.pruned_tree_left_heavy",
+          "kind": "theorem",
+          "line": 134
+        },
+        {
+          "name": "GraphChoices.left_card_le_pruned_card",
+          "kind": "theorem",
+          "line": 151
+        },
+        {
+          "name": "GraphChoices.pruning_size_bound",
+          "kind": "theorem",
+          "line": 160
+        },
+        {
+          "name": "GraphChoices.exists_large_left_heavy_tree",
+          "kind": "theorem",
+          "line": 197
+        }
+      ],
+      "summary": "The deterministic right-leaf pruning reduction in Claim 4.3. Colors are Boolean, with true for left vertices. The retained graph contains all left vertices and all right vertices of degree at least two.",
+      "sha256": "5ab58bd222338ec2cd07eb50f4e49f15e3076eb9f2652c5dc010f2e4ea94d3a1"
+    },
+    {
+      "id": "Uniform",
+      "file": "GraphChoices/Uniform.lean",
+      "imports": [
+        "Model"
+      ],
+      "theorems": 10,
+      "declarations": [
+        {
+          "name": "GraphChoices.average",
+          "kind": "def",
+          "line": 13
+        },
+        {
+          "name": "GraphChoices.average_mono",
+          "kind": "theorem",
+          "line": 16
+        },
+        {
+          "name": "GraphChoices.average_sum",
+          "kind": "theorem",
+          "line": 21
+        },
+        {
+          "name": "GraphChoices.average_mul",
+          "kind": "theorem",
+          "line": 27
+        },
+        {
+          "name": "GraphChoices.average_const",
+          "kind": "theorem",
+          "line": 32
+        },
+        {
+          "name": "GraphChoices.sample_fiber_card",
+          "kind": "theorem",
+          "line": 39
+        },
+        {
+          "name": "GraphChoices.sum_coordinate",
+          "kind": "theorem",
+          "line": 45
+        },
+        {
+          "name": "GraphChoices.average_coordinate",
+          "kind": "theorem",
+          "line": 63
+        },
+        {
+          "name": "GraphChoices.BaseGraph",
+          "kind": "structure",
+          "line": 78
+        },
+        {
+          "name": "GraphChoices.BaseGraph.sample",
+          "kind": "def",
+          "line": 84
+        },
+        {
+          "name": "GraphChoices.BaseGraph.internalEdges",
+          "kind": "def",
+          "line": 88
+        },
+        {
+          "name": "GraphChoices.expectedOpt",
+          "kind": "def",
+          "line": 91
+        },
+        {
+          "name": "GraphChoices.average_internalCount",
+          "kind": "theorem",
+          "line": 95
+        },
+        {
+          "name": "GraphChoices.expected_density_lower_bound",
+          "kind": "theorem",
+          "line": 112
+        },
+        {
+          "name": "GraphChoices.expectedOpt_ge_one",
+          "kind": "theorem",
+          "line": 123
+        }
+      ],
+      "summary": "An exact finite probability space: every function Fin T \u2192 E is equally likely. Thus edge samples are independent and uniform, with replacement. Expectations are finite averages, so no measure-theoretic assumptions are hidden.",
+      "sha256": "cbceaf1181c1206d85274975d590c49f0818db37dc9cf7176d7dc0f26d8420a8"
+    },
+    {
+      "id": "WitnessEncoding",
+      "file": "GraphChoices/WitnessEncoding.lean",
+      "imports": [
+        "PatternWitnessBound"
+      ],
+      "theorems": 2,
+      "declarations": [
+        {
+          "name": "GraphChoices.witnessTime_injective",
+          "kind": "theorem",
+          "line": 10
+        },
+        {
+          "name": "GraphChoices.mem_patternWitnessEvent_of_times",
+          "kind": "theorem",
+          "line": 46
+        }
+      ],
+      "summary": "Deterministic encoding of disjoint tree and threshold occurrence times into the finite witness family used by the proved joint probability bound.",
+      "sha256": "ecb435f3146924656a1c443444d52892da665a51badee5bbc1bf686500664998"
+    },
+    {
+      "id": "WitnessProbability",
+      "file": "GraphChoices/WitnessProbability.lean",
+      "imports": [
+        "Uniform"
+      ],
+      "theorems": 5,
+      "declarations": [
+        {
+          "name": "GraphChoices.eventProbability",
+          "kind": "def",
+          "line": 9
+        },
+        {
+          "name": "GraphChoices.eventProbability_nonneg",
+          "kind": "theorem",
+          "line": 12
+        },
+        {
+          "name": "GraphChoices.eventProbability_mono",
+          "kind": "theorem",
+          "line": 15
+        },
+        {
+          "name": "GraphChoices.witness_union_bound",
+          "kind": "theorem",
+          "line": 22
+        },
+        {
+          "name": "GraphChoices.probability_coordinate_constraints",
+          "kind": "theorem",
+          "line": 35
+        },
+        {
+          "name": "GraphChoices.witness_coordinate_union_bound",
+          "kind": "theorem",
+          "line": 44
+        }
+      ],
+      "summary": "Exact coordinate independence and the finite witness union bound used in Section 4.2.2. These are probability primitives, not the paper's still-open pattern-counting theorem.",
+      "sha256": "469478fd4f1716c31b5f9a993c802ceb57e5872ff65a0969d238257d2e6a94c4"
+    }
+  ],
+  "verificationSha256": "fd6e329a8620a9bad16c05e33dced5ea6ecd33d80f470382a5adf28a3ceb53f1"
+}

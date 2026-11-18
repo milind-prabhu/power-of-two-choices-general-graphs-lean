@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ThresholdBudget.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ThresholdBudget.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Data.Real.Archimedean</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Tactic.Positivity</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> import Mathlib.Tactic.FieldSimp</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> /-! The threshold-load calculation in Section 4.2, with integer rounding.</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> Starting the scale index at zero only increases the bound, giving a factor 2</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> in front of the logarithmic term. -/</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> namespace GraphChoices.ThresholdGreedy</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> open Finset</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>  theorem finite_half_geometric (h : ℕ) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     ∑ i ∈ range h, ((1:ℝ)/2)^i = 2 * (1 - ((1:ℝ)/2)^h) := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   induction h with</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   | zero =&gt; simp</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   | succ h ih =&gt; rw [sum_range_succ, ih, pow_succ]; ring</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a> </span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>  theorem inverse_powers_sum_le_two (h : ℕ) :</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     ∑ i ∈ range h, (1:ℝ)/2^i ≤ 2 := by</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   simp_rw [← one_div_pow]</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   rw [finite_half_geometric]</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have : (0:ℝ) ≤ (1/2)^h := by positivity</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   linarith</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> noncomputable def roundedThreshold (K L : ℝ) (i : ℕ) : ℕ :=</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   ⌈K * (L / 2^i + 1)⌉₊</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> /-- An explicit version of sum alpha_i = O(K (L+h)), including ceil errors. -/</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>  theorem rounded_threshold_budget (K L : ℝ) (h : ℕ) (hK : 0 ≤ K) (hL : 0 ≤ L) :</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     (∑ i ∈ range h, (roundedThreshold K L i : ℝ)) ≤ K * (2*L+h) + h := by</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   have hround (i : ℕ) : (roundedThreshold K L i : ℝ) ≤ K * (L / 2^i + 1) + 1 := by</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     exact (Nat.ceil_lt_add_one (mul_nonneg hK (by positivity))).le</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   calc</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     _ ≤ ∑ i ∈ range h, (K * (L / 2^i + 1) + 1) := sum_le_sum fun i _ =&gt; hround i</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     _ = K * (L * (∑ i ∈ range h, (1:ℝ)/2^i) + h) + h := by</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>       have heq (i : ℕ) : K * (L / 2^i + 1) + 1 = K*L*((1:ℝ)/2^i) + (K+1) := by ring</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>       simp_rw [heq]</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>       rw [sum_add_distrib, ← mul_sum]</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>       simp only [sum_const, card_range, nsmul_eq_mul]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>       ring</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     _ ≤ K * (2*L+h) + h := by</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>       have hh := mul_le_mul_of_nonneg_left (inverse_powers_sum_le_two h) hL</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>       nlinarith</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a> </span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a> end GraphChoices.ThresholdGreedy</span></pre></html>

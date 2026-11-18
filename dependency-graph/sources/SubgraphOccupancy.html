@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SubgraphOccupancy.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · SubgraphOccupancy.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.SampleRestriction</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! A fully probabilistic lower bound for every concrete skewness witness.</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> Its hypotheses concern only the base subgraph&#x27;s degrees and cardinalities. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> open Finset</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> def subgraphBucket (G F : Graph L R) (u : L) : Finset G :=</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   univ.filter fun e =&gt; e.val ∈ F ∧ e.val.1 = u</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> theorem subgraphBucket_degree_lower {G F : Graph L R} (hF : F ⊆ G) (u : L) :</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>     leftDegree F u ≤ (subgraphBucket G F u).card := by</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   classical</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hedge (v : leftNeighbors F u) : (u,v.val) ∈ F := by</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>     simpa only [leftNeighbors, mem_filter, mem_univ, true_and] using v.property</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   let f : leftNeighbors F u → subgraphBucket G F u := fun v =&gt;</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     ⟨⟨(u,v.val), hF (hedge v)⟩, mem_filter.mpr ⟨mem_univ _, hedge v, rfl⟩⟩</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   have hf : Function.Injective f := by</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     intro v w h</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     exact Subtype.ext (congrArg (fun x =&gt; x.val.val.2) h)</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have hh := Fintype.card_le_of_injective f hf</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   simpa only [Fintype.card_coe, leftDegree] using hh</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> theorem subgraphBucket_source (G F : Graph L R) (A : Finset L) :</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     ∀ u ∈ A, ∀ e ∈ subgraphBucket G F u,</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       e.val.1 = u ∧ e.val.2 ∈ neighborSet F A := by</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   intro u hu e he</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   have hs := (mem_filter.mp he).2</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   refine ⟨hs.2, ?_⟩</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   simp only [neighborSet, GraphChoices.neighbors, mem_filter, mem_univ, true_and]</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   exact ⟨u, hu, by simpa only [← hs.2] using hs.1⟩</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> /-- If the block-hit lower bound predicts at least |B| successful left</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> vertices, the actual sampled optimum is at least k/3 in expectation. -/</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> theorem expectedOpt_subgraph_blocks (G F : Graph L R) [Nonempty G]</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hF : F ⊆ G) (A : Finset L) (hB : (neighborSet F A).Nonempty)</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>     (k s : ℕ) (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1)</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     (hmean : x ≤ (s:ℝ)*((minLeftDegree F A : ℝ)/G.card))</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     (hpop : ((neighborSet F A).card : ℝ) ≤ (A.card:ℝ)*(x/2)^k) :</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (k:ℝ)/3 ≤ expectedOpt (graphBase G) (k*s) := by</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   have hprob (u : A) : (x/2)^k ≤ eventProbability (allBlocksEvent (subgraphBucket G F u.val) k s) := by</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     rw [allBlocks_probability]</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     apply pow_le_pow_left₀ (by positivity)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     apply blockHit_probability_lower_of_mean _ _ x hx hx1</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>     apply hmean.trans</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg s)</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     rw [Fintype.card_coe]</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>     apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg G.card)</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>     exact_mod_cast (minLeftDegree_le F u.property).trans (subgraphBucket_degree_lower hF u.val)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   have hh := expectedOpt_block_lower (fun e : G =&gt; e.val.1) (fun e : G =&gt; e.val.2)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     A (neighborSet F A) (subgraphBucket G F) (subgraphBucket_source G F A) k s hB</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     (hpop.trans (by simpa only [sum_const, card_univ, Fintype.card_coe, nsmul_eq_mul] using</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>       (sum_le_sum fun u (_ : u ∈ (univ : Finset A)) =&gt; hprob u)))</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   exact hh</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a> </span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> end GraphChoices.Peeling</span></pre></html>

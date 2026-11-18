@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CapacityMatching.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · CapacityMatching.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Model</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Combinatorics.Hall.Finite</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> import Mathlib.Data.Fintype.Prod</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> </span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> /-! The capacitated Hall step in Lemma 3.7. The expansion premise is explicit;</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> it is not assumed to hold for every graph. The preceding analytic module</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> proves the numerical rearrangement that supplies this premise from skewness. -/</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> namespace GraphChoices</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> open Finset</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> </span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> def neighbors (r : L → R → Prop) [DecidableRel r] (A : Finset L) : Finset R :=</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   univ.filter fun v =&gt; ∃ u ∈ A, r u v</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> omit [DecidableEq L] in</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> /-- A capacity-b matching covering every left vertex. Capacities are integers. -/</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>  theorem exists_capacity_matching (r : L → R → Prop) [DecidableRel r] (b : ℕ)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     (hexpand : ∀ A : Finset L, A.card ≤ b * (neighbors r A).card) :</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     ∃ f : L → R, (∀ u, r u (f u)) ∧</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>       ∀ v, (univ.filter fun u =&gt; f u = v).card ≤ b := by</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   classical</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   have hhall : ∀ A : Finset L,</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>       A.card ≤ (univ.filter fun p : R × Fin b =&gt; ∃ u ∈ A, r u p.1).card := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     intro A</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     have heq : (univ.filter fun p : R × Fin b =&gt; ∃ u ∈ A, r u p.1) =</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>         (neighbors r A) ×ˢ (univ : Finset (Fin b)) := by</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       ext p</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>       simp [neighbors]</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     rw [heq, card_product]</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>     simpa [mul_comm] using hexpand A</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   let family (u : L) : Finset (R × Fin b) := univ.filter fun p =&gt; r u p.1</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   have hfamily (A : Finset L) : A.biUnion family =</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>       (univ.filter fun p : R × Fin b =&gt; ∃ u ∈ A, r u p.1) := by</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     ext p</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     simp [family]</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   obtain ⟨g, hginj, hg⟩ :=</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (Finset.all_card_le_biUnion_card_iff_existsInjective&#x27; family).mp</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>       (fun A =&gt; by rw [hfamily]; exact hhall A)</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   simp only [family, mem_filter, mem_univ, true_and] at hg</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   refine ⟨fun u =&gt; (g u).1, hg, ?_⟩</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   intro v</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   have hh := card_le_card_of_injOn (fun u : L =&gt; (g u).2)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     (s := univ.filter fun u =&gt; (g u).1 = v) (t := univ)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (fun _ _ =&gt; mem_univ _)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     (by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>       intro u hu w hw hslots</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>       apply hginj</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>       apply Prod.ext</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       · exact (mem_filter.mp hu).2.trans (mem_filter.mp hw).2.symm</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       · exact hslots)</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   simpa using hh</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a> </span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a> end GraphChoices</span></pre></html>

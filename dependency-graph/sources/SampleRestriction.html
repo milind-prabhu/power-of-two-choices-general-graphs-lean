@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SampleRestriction.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · SampleRestriction.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.BlockDensity</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> /-! Uniform sampling is preserved by a prefix restriction; the offline</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> optimum is monotone when arrivals are added. -/</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> namespace GraphChoices</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> open Finset</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> </span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> def Instance.restrict {V : Type*} {M N : ℕ} (I : Instance V N) (f : Fin M ↪ Fin N) :</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a>     Instance V M where</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>   left t := I.left (f t)</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   right t := I.right (f t)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> theorem opt_restrict_le {V : Type*} [Fintype V] [DecidableEq V] {M N : ℕ}</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>     (I : Instance V N) (f : Fin M ↪ Fin N) : opt (I.restrict f) ≤ opt I := by</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   obtain ⟨a,ha⟩ := exists_exact_opt I</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   apply (opt_le_maxLoad (I.restrict f) (fun t =&gt; a (f t))).trans</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   rw [← ha]</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>   apply (maxLoad_le_iff _ _ _).mpr</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   intro v</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   apply le_trans _ (load_le_maxLoad I a v)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   apply card_le_card_of_injOn f</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   · intro t ht</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     change t ∈ univ.filter (fun t =&gt; destination (I.restrict f) (fun t =&gt; a (f t)) t = v) at ht</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     change f t ∈ univ.filter (fun t =&gt; destination I a t = v)</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>     simpa only [mem_filter, mem_univ, true_and, destination, Instance.restrict] using ht</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   · exact fun _ _ _ _ h =&gt; f.injective h</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> theorem average_product_fst {Ω Ω&#x27; : Type*} [Fintype Ω] [Fintype Ω&#x27;] [Nonempty Ω&#x27;]</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>     (f : Ω → ℝ) : average (fun p : Ω × Ω&#x27; =&gt; f p.1) = average f := by</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   simp only [average, Fintype.sum_prod_type, sum_const, card_univ, nsmul_eq_mul,</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     ← mul_sum, Fintype.card_prod, Nat.cast_mul]</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   have h : (Fintype.card Ω&#x27; : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   by_cases hΩ : Fintype.card Ω = 0</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>   · simp [hΩ]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   · have hΩ&#x27; : (Fintype.card Ω : ℝ) ≠ 0 := by exact_mod_cast hΩ</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>     field_simp</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a> </span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a> def appendSamples {E : Type*} (M Q : ℕ) :</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     (Fin M → E) × (Fin Q → E) ≃ (Fin (M+Q) → E) :=</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   (Equiv.sumArrowEquivProdArrow (Fin M) (Fin Q) E).symm.trans</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (Equiv.arrowCongr finSumFinEquiv (Equiv.refl E))</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> theorem appendSamples_left {E : Type*} (M Q : ℕ)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (p : (Fin M → E) × (Fin Q → E)) (t : Fin M) :</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     appendSamples M Q p (Fin.castAdd Q t) = p.1 t := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   change appendSamples M Q p (finSumFinEquiv (Sum.inl t)) = p.1 t</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   simp only [appendSamples, Equiv.trans_apply, Equiv.arrowCongr_apply, Function.comp_apply, Equiv.refl_apply, Equiv.symm_apply_apply]</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>   rcases p with ⟨p,q⟩</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>   rfl</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a> </span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a> theorem average_prefix {E : Type*} [Fintype E] [Nonempty E] (M Q : ℕ)</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     (f : (Fin M → E) → ℝ) :</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     average (fun ω : Fin (M+Q) → E =&gt; f (fun t =&gt; ω (Fin.castAdd Q t))) = average f := by</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>   rw [← average_equiv (appendSamples M Q)]</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   simp_rw [appendSamples_left]</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   exact average_product_fst f</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a> </span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a> theorem expectedOpt_mono_horizon {V E : Type*} [Fintype V] [DecidableEq V]</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>     [Fintype E] [Nonempty E] (G : BaseGraph V E) {M N : ℕ} (hMN : M ≤ N) :</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>     expectedOpt G M ≤ expectedOpt G N := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>   obtain ⟨Q,rfl⟩ := Nat.exists_eq_add_of_le hMN</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>   unfold expectedOpt</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   rw [← average_prefix M Q (fun ω =&gt; (opt (G.sample ω):ℝ))]</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   apply average_mono</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   intro ω</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   have hh := opt_restrict_le (G.sample ω) ⟨Fin.castAdd Q, Fin.castAdd_injective M Q⟩</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   exact_mod_cast hh</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a> </span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a> end GraphChoices</span></pre></html>

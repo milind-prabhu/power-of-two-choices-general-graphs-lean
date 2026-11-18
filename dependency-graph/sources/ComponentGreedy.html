@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ComponentGreedy.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · ComponentGreedy.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.Greedy</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! Greedy restricted to an edge-closed set. The logarithm depends on the</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> number of vertices in that set; the benchmark remains the full optimum.</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> No arrival occurrence is discarded or identified in the counting argument. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {V : Type*} [Fintype V] [DecidableEq V] {T : ℕ}</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> /-- A union of components: no arrival crosses the boundary. -/</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> def EdgeClosed (I : Instance V T) (S : Finset V) : Prop :=</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   ∀ t, I.left t ∈ S ↔ I.right t ∈ S</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a> </span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> omit [Fintype V] [DecidableEq V] in</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> theorem endpoints_mem_of_destination_mem (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     (S : Finset V) (hS : EdgeClosed I S) (t : Fin T)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     (ht : destination I a t ∈ S) : I.left t ∈ S ∧ I.right t ∈ S := by</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>   rcases destination_endpoint I a t with h | h</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   · rw [h] at ht</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     exact ⟨ht, (hS t).mp ht⟩</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   · rw [h] at ht</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     exact ⟨(hS t).mpr ht, ht⟩</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a> </span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a> def localHighVertices (I : Instance V T) (a : Orientation T) (S : Finset V) (k : ℕ) :=</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   S.filter fun v =&gt; k ≤ load I a v</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a> </span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a> def localHighArrivals (I : Instance V T) (a : Orientation T) (S : Finset V) (k : ℕ) :=</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   (highArrivals I a k).filter fun t =&gt; destination I a t ∈ S</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> theorem localHighArrivals_internal (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     (hg : IsGreedy I a) (S : Finset V) (hS : EdgeClosed I S) (k : ℕ) :</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     localHighArrivals I a S k ⊆ univ.filter (fun t =&gt;</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>       I.left t ∈ localHighVertices I a S k ∧ I.right t ∈ localHighVertices I a S k) := by</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   intro t ht</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   obtain ⟨hhigh, hmem⟩ := mem_filter.mp ht</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   have he := endpoints_mem_of_destination_mem I a S hS t hmem</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   have hh := (mem_filter.mp (highArrivals_internal I a hg k hhigh)).2</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   simp only [mem_filter, mem_univ, true_and, localHighVertices, highVertices] at hh ⊢</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   exact ⟨⟨he.1, hh.1⟩, ⟨he.2, hh.2⟩⟩</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a> </span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> theorem greedy_local_layer_bound (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>     (hg : IsGreedy I a) (S : Finset V) (hS : EdgeClosed I S) (k d : ℕ) :</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     d * (localHighVertices I a S (k+d)).card ≤</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>       opt I * (localHighVertices I a S k).card := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   calc</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>     _ = ∑ v ∈ localHighVertices I a S (k+d), d := by simp [mul_comm]</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     _ ≤ ∑ v ∈ localHighVertices I a S (k+d),</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>         ((localHighArrivals I a S k).filter fun t =&gt; destination I a t = v).card := by</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       apply sum_le_sum</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>       intro v hv</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>       obtain ⟨hvS, hvload⟩ := mem_filter.mp hv</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>       have heq : ((localHighArrivals I a S k).filter fun t =&gt; destination I a t = v) =</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>           ((highArrivals I a k).filter fun t =&gt; destination I a t = v) := by</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>         ext t</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>         simp only [localHighArrivals, mem_filter]</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>         constructor</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>         · exact fun h =&gt; ⟨h.1.1, h.2⟩</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>         · exact fun h =&gt; ⟨⟨h.1, h.2 ▸ hvS⟩, h.2⟩</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>       rw [heq]</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>       have hb := load_le_low_add_high I a v k</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>       omega</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     _ ≤ ∑ v, ((localHighArrivals I a S k).filter fun t =&gt; destination I a t = v).card :=</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>       sum_le_sum_of_subset_of_nonneg (subset_univ _) (fun _ _ _ =&gt; Nat.zero_le _)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>     _ = (localHighArrivals I a S k).card := by</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>       symm</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>       exact card_eq_sum_card_fiberwise (fun _ _ =&gt; mem_univ _)</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     _ ≤ internalCount I (localHighVertices I a S k) :=</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>       card_le_card (localHighArrivals_internal I a hg S hS k)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     _ ≤ opt I * (localHighVertices I a S k).card := by</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>       simpa [mul_comm] using density_le_opt I (localHighVertices I a S k)</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a> </span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a> theorem greedy_local_layers_decay (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     (hg : IsGreedy I a) (S : Finset V) (hS : EdgeClosed I S)</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>     (hc : 0 &lt; opt I) (j : ℕ) :</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     2^j * (localHighVertices I a S (2*opt I*j)).card ≤ S.card := by</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   induction j with</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   | zero =&gt; simp [localHighVertices]</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   | succ j ih =&gt;</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     have h := greedy_local_layer_bound I a hg S hS (2*opt I*j) (2*opt I)</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     have hstep : 2 * (localHighVertices I a S (2*opt I*(j+1))).card ≤</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>         (localHighVertices I a S (2*opt I*j)).card := by</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>       have heq : 2*opt I*j + 2*opt I = 2*opt I*(j+1) := by ring</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>       rw [heq] at h</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>       nlinarith</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     calc</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>       _ = 2^j * (2 * (localHighVertices I a S (2*opt I*(j+1))).card) := by</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a>         rw [pow_succ]; ring</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a>       _ ≤ 2^j * (localHighVertices I a S (2*opt I*j)).card := Nat.mul_le_mul_left _ hstep</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>       _ ≤ _ := ih</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a> </span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a> theorem greedy_load_lt_of_closed (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>     (hg : IsGreedy I a) (S : Finset V) (hS : EdgeClosed I S)</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     (hT : 0 &lt; T) (j : ℕ) (hj : S.card &lt; 2^j) (v : V) (hv : v ∈ S) :</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>     load I a v &lt; 2*opt I*j := by</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   have hd := greedy_local_layers_decay I a hg S hS (opt_pos I hT) j</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   by_contra h</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>   have hm : v ∈ localHighVertices I a S (2*opt I*j) := mem_filter.mpr ⟨hv, by omega⟩</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>   have hp := card_pos.mpr ⟨v, hm⟩</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>   have hh := Nat.mul_le_mul_left (2^j) (show 1 ≤ (localHighVertices I a S (2*opt I*j)).card by omega)</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a>   omega</span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a> </span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a> /-- Forget multiplicities only for connectivity. Loads still count all times. -/</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a> def arrivalGraph (I : Instance V T) : SimpleGraph V where</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>   Adj u v := u ≠ v ∧ ∃ t, (I.left t = u ∧ I.right t = v) ∨</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     (I.left t = v ∧ I.right t = u)</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>   symm := by</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     intro u v h</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>     obtain ⟨hne, t, ht⟩ := h</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>     exact ⟨hne.symm, t, ht.symm⟩</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>   loopless := by intro u h; exact h.1 rfl</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a> </span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a> noncomputable def componentVertices (I : Instance V T) (v : V) : Finset V := by</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   classical</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   exact univ.filter fun w =&gt; (arrivalGraph I).Reachable v w</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a> </span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a> omit [DecidableEq V] in</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a> theorem mem_componentVertices (I : Instance V T) (v w : V) :</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>     w ∈ componentVertices I v ↔ (arrivalGraph I).Reachable v w := by</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a>   classical</span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a>   simp [componentVertices]</span>
+<span class="line" id="L122"><a class="num" href="#L122"> 122</a> </span>
+<span class="line" id="L123"><a class="num" href="#L123"> 123</a> omit [DecidableEq V] in</span>
+<span class="line" id="L124"><a class="num" href="#L124"> 124</a> theorem self_mem_componentVertices (I : Instance V T) (v : V) :</span>
+<span class="line" id="L125"><a class="num" href="#L125"> 125</a>     v ∈ componentVertices I v :=</span>
+<span class="line" id="L126"><a class="num" href="#L126"> 126</a>   (mem_componentVertices I v v).mpr (SimpleGraph.Reachable.refl v)</span>
+<span class="line" id="L127"><a class="num" href="#L127"> 127</a> </span>
+<span class="line" id="L128"><a class="num" href="#L128"> 128</a> omit [Fintype V] in</span>
+<span class="line" id="L129"><a class="num" href="#L129"> 129</a> theorem arrival_endpoints_reachable (I : Instance V T) (t : Fin T) :</span>
+<span class="line" id="L130"><a class="num" href="#L130"> 130</a>     (arrivalGraph I).Reachable (I.left t) (I.right t) := by</span>
+<span class="line" id="L131"><a class="num" href="#L131"> 131</a>   by_cases h : I.left t = I.right t</span>
+<span class="line" id="L132"><a class="num" href="#L132"> 132</a>   · rw [h]</span>
+<span class="line" id="L133"><a class="num" href="#L133"> 133</a>   · exact SimpleGraph.Adj.reachable ⟨h, t, Or.inl ⟨rfl, rfl⟩⟩</span>
+<span class="line" id="L134"><a class="num" href="#L134"> 134</a> </span>
+<span class="line" id="L135"><a class="num" href="#L135"> 135</a> theorem componentVertices_closed (I : Instance V T) (v : V) :</span>
+<span class="line" id="L136"><a class="num" href="#L136"> 136</a>     EdgeClosed I (componentVertices I v) := by</span>
+<span class="line" id="L137"><a class="num" href="#L137"> 137</a>   intro t</span>
+<span class="line" id="L138"><a class="num" href="#L138"> 138</a>   rw [mem_componentVertices, mem_componentVertices]</span>
+<span class="line" id="L139"><a class="num" href="#L139"> 139</a>   have h := arrival_endpoints_reachable I t</span>
+<span class="line" id="L140"><a class="num" href="#L140"> 140</a>   exact ⟨fun hv =&gt; hv.trans h, fun hv =&gt; hv.trans h.symm⟩</span>
+<span class="line" id="L141"><a class="num" href="#L141"> 141</a> </span>
+<span class="line" id="L142"><a class="num" href="#L142"> 142</a> /-- Component-local Fact 3.6, benchmarked against the full arrival instance. -/</span>
+<span class="line" id="L143"><a class="num" href="#L143"> 143</a> theorem greedy_component_competitive (I : Instance V T) (a : Orientation T)</span>
+<span class="line" id="L144"><a class="num" href="#L144"> 144</a>     (hg : IsGreedy I a) (hT : 0 &lt; T) (v : V) :</span>
+<span class="line" id="L145"><a class="num" href="#L145"> 145</a>     load I a v &lt; 2*opt I*(Nat.log 2 (componentVertices I v).card + 1) :=</span>
+<span class="line" id="L146"><a class="num" href="#L146"> 146</a>   greedy_load_lt_of_closed I a hg _ (componentVertices_closed I v) hT _</span>
+<span class="line" id="L147"><a class="num" href="#L147"> 147</a>     (Nat.lt_pow_succ_log_self (by decide) _) v (self_mem_componentVertices I v)</span>
+<span class="line" id="L148"><a class="num" href="#L148"> 148</a> </span>
+<span class="line" id="L149"><a class="num" href="#L149"> 149</a> end GraphChoices</span></pre></html>

@@ -1,0 +1,14 @@
+# Lean dependencies and build products
+/.lake/
+/.elan/
+*.olean
+*.ilean
+*.trace
+
+# Local editor and operating-system files
+.DS_Store
+.idea/
+*.swp
+*~
+__pycache__/
+*.py[cod]

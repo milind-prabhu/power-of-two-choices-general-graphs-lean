@@ -1,0 +1,89 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BudgetSimplification.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · BudgetSimplification.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.DecomposedAlgorithm</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import Mathlib.Analysis.Complex.ExponentialBounds</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! The exact automatic threshold budget has the expected bilinear growth in</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> reference density, log-skewness and the log-log scale. Explicit constants are</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> kept throughout; no asymptotic or benchmark comparison is assumed. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Patterns</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> </span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> theorem log_reference_branch_bound (B h : ℕ) (z : ℝ)</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a>     (hB : 0 &lt; B) (hh : 0 &lt; h) (hz : 0 &lt; z) :</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>     Real.log (16*(B:ℝ)*z/branchTarget (4*B) h z) ≤ 10+5*((B:ℝ)*z)+2*h := by</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>   have hBr : (0:ℝ) &lt; B := by exact_mod_cast hB</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   have hhr : (0:ℝ) &lt; h := by exact_mod_cast hh</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hne : (h:ℝ) ≠ 0 := hhr.ne&#x27;</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hden : (4*(B:ℝ)*z+1) ≠ 0 := ne_of_gt (by positivity)</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   have heq : 16*(B:ℝ)*z/branchTarget (4*B) h z =</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>       1024*((B:ℝ)*z)*(4*((B:ℝ)*z)+1)*(h:ℝ)^2 := by</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     unfold branchTarget shapeRate</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     push_cast</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     field_simp</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>     ring</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a>   rw [heq]</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>   have hM : 0 &lt; (B:ℝ)*z := mul_pos hBr hz</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   have hlog : Real.log (1024*((B:ℝ)*z)*(4*((B:ℝ)*z)+1)*(h:ℝ)^2) =</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>       Real.log 1024 + Real.log ((B:ℝ)*z) + Real.log (4*((B:ℝ)*z)+1) + 2*Real.log h := by</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>     rw [Real.log_mul (by positivity) (by positivity), Real.log_pow,</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>       Real.log_mul (by positivity) (by positivity), Real.log_mul (by norm_num) hM.ne&#x27;]</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>     norm_num</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   rw [hlog]</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   have hconst : Real.log 1024 ≤ 10 := by</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>     have he : (1024:ℝ) = 2^10 := by norm_num</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>     rw [he, Real.log_pow]</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>     norm_num only [Nat.cast_ofNat]</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     linarith [Real.log_two_lt_d9]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>   have hm := Real.log_le_sub_one_of_pos hM</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   have hm&#x27; := Real.log_le_sub_one_of_pos (by positivity : (0:ℝ) &lt; 4*((B:ℝ)*z)+1)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   have hhh := Real.log_le_sub_one_of_pos hhr</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   linarith</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a> </span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a> theorem scalar_budget_le (h M σ l K : ℝ) (hh : 1 ≤ h) (hM : 0 ≤ M) (hσ : 0 ≤ σ)</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>     (hl : 0 ≤ l) (hK : 0 ≤ K) (hKbound : K ≤ 10+5*M+2*h) :</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>     h*(16*Real.exp 1*M+2*σ+2)+(K+2*σ*l)/Real.log 2 ≤</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>       64*(M+σ+1)*(h+l+1) := by</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   have he : Real.exp 1 ≤ 3 := by linarith [Real.exp_one_lt_d9]</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   have hlog : (1:ℝ)/2 ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   have hnum : 0 ≤ K+2*σ*l := by positivity</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   have hdiv : (K+2*σ*l)/Real.log 2 ≤ 2*(K+2*σ*l) := by</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a>     calc</span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a>       _ ≤ (K+2*σ*l)/((1:ℝ)/2) := div_le_div_of_nonneg_left hnum (by norm_num) hlog</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>       _ = _ := by ring</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   have heM := mul_le_mul_of_nonneg_right he hM</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>   have hhead : h*(16*Real.exp 1*M+2*σ+2) ≤ h*(48*M+2*σ+2) := by</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     apply mul_le_mul_of_nonneg_left _ (by linarith)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     nlinarith</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   have hMh := mul_nonneg hM (show 0 ≤ h by linarith)</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>   have hσh := mul_nonneg hσ (show 0 ≤ h by linarith)</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   have hMl := mul_nonneg hM hl</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   have hσl := mul_nonneg hσ hl</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   nlinarith</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a> </span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a> end GraphChoices.Patterns</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a> </span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a> open Patterns</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   {G : Graph L R} {B N : ℕ} {d : ℝ} [Nonempty G]</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a> </span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a> theorem PreparedDecomposition.budget_simplified (P : PreparedDecomposition G B N d)</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     (haverage : 2*(G.card : ℝ) = (N:ℝ)*d) :</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     P.budget N ≤ 64*((B:ℝ)*((N:ℝ)/Fintype.card G)+graphLogSkewness G d (N:ℝ)+1)*</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>       (P.pieces.length+Real.log (Real.log (N:ℝ))+1) := by</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hz : 0 &lt; (N:ℝ)/Fintype.card G := div_pos</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     (by exact_mod_cast P.vertex_count_pos) (by exact_mod_cast Fintype.card_pos)</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>   have hh := P.class_count_pos</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   have hhr : (1:ℝ) ≤ P.pieces.length := by exact_mod_cast hh</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   have hb := branchTarget_pos (4*B) P.pieces.length _ hh hz.le</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   have hb1 := (branchTarget_le_rate (4*B) P.pieces.length _ hh hz.le).trans (shapeRate_le_one _ hh)</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>   have hmass := P.mass_at_vertex_horizon haverage</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>   have hK : 1 ≤ 16*(B:ℝ)*((N:ℝ)/Fintype.card G)/branchTarget (4*B) P.pieces.length ((N:ℝ)/Fintype.card G) := by</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>     apply (le_div_iff₀ hb).mpr</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>     simpa only [one_mul] using hb1.trans hmass</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>   have hl : 0 ≤ Real.log (Real.log (N:ℝ)) := Real.log_nonneg P.large_log.le</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>   have hbound := log_reference_branch_bound B P.pieces.length ((N:ℝ)/Fintype.card G) P.reference_cap_pos hh hz</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>   have hs := scalar_budget_le (P.pieces.length : ℝ) ((B:ℝ)*((N:ℝ)/Fintype.card G))</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>     (graphLogSkewness G d (N:ℝ)) (Real.log (Real.log (N:ℝ))) _ hhr (by positivity)</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>     (graphLogSkewness_nonneg G d (N:ℝ)) hl (Real.log_nonneg hK) hbound</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   convert hs using 1 &lt;;&gt; unfold PreparedDecomposition.budget &lt;;&gt; ring</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> </span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a> end GraphChoices.Peeling</span></pre></html>

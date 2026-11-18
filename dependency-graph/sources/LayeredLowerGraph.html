@@ -1,0 +1,99 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LayeredLowerGraph.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · LayeredLowerGraph.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.BinomialLowerTail</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> </span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> namespace GraphChoices.LowerBound</span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> open Finset</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> </span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> abbrev Vertices (b t m : ℕ) := (i : Fin (b+1)) × (Fin (t^i.val) × Fin m)</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> abbrev Blocks (b t : ℕ) := (i : Fin b) × Fin (t^i.val)</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> abbrev Edges (b t m : ℕ) := Blocks b t × (Fin m × Fin (t*m))</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> </span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> def leftVertex {b t m : ℕ} (p : Blocks b t × Fin m) : Vertices b t m :=</span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a>   ⟨p.1.1.castSucc,(p.1.2,p.2)⟩</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a> </span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a> def childGroup {t m i : ℕ} (g : Fin (t^i)) (r : Fin (t*m)) : Fin (t^(i+1)) :=</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   Fin.cast (pow_succ t i).symm (finProdFinEquiv (g,(finProdFinEquiv.symm r).1))</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a> </span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a> def rightVertex {b t m : ℕ} (p : Blocks b t × Fin (t*m)) : Vertices b t m :=</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>   ⟨p.1.1.succ,(childGroup p.1.2 p.2,(finProdFinEquiv.symm p.2).2)⟩</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a> </span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a> def graph (b t m : ℕ) : BaseGraph (Vertices b t m) (Edges b t m) where</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>   left e := leftVertex (e.1,e.2.1)</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a>   right e := rightVertex (e.1,e.2.2)</span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> </span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a> theorem leftVertex_injective (b t m : ℕ) : Function.Injective (@leftVertex b t m) := by</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>   rintro ⟨⟨i,g⟩,a⟩ ⟨⟨j,h⟩,a&#x27;⟩ he</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   have hij : i = j := Fin.ext (congrArg (fun v =&gt; v.1.val) he)</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   subst j</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   have hp : (g,a) = (h,a&#x27;) := eq_of_heq (Sigma.mk.inj_iff.mp he).2</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   obtain ⟨rfl,rfl⟩ := Prod.mk.inj hp</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   rfl</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a> </span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a> theorem rightVertex_injective (b t m : ℕ) : Function.Injective (@rightVertex b t m) := by</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   rintro ⟨⟨i,g⟩,r⟩ ⟨⟨j,h⟩,s⟩ he</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a>   have hij : i = j := by</span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a>     have hh := congrArg (fun v =&gt; v.1.val) he</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a>     exact Fin.ext (by simpa only [rightVertex, Fin.val_succ] using Nat.succ.inj hh)</span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a>   subst j</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>   have hp : (childGroup g r,(finProdFinEquiv.symm r).2) =</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>       (childGroup h s,(finProdFinEquiv.symm s).2) := eq_of_heq (Sigma.mk.inj_iff.mp he).2</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>   have hc := Fin.cast_injective (pow_succ t i.val).symm (congrArg Prod.fst hp)</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>   have hpair := finProdFinEquiv.injective hc</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   have hg : g = h := congrArg Prod.fst hpair</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a>   have hr1 : (finProdFinEquiv.symm r).1 = (finProdFinEquiv.symm s).1 := congrArg (fun p : Fin (t^i.val) × Fin t =&gt; p.2) hpair</span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a>   have hr2 : (finProdFinEquiv.symm r).2 = (finProdFinEquiv.symm s).2 := congrArg (fun p : Fin (t^(i.val+1)) × Fin m =&gt; p.2) hp</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>   have hr : r = s := finProdFinEquiv.symm.injective (Prod.ext hr1 hr2)</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>   subst h</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   subst s</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   rfl</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> theorem graph_isSimple (b t m : ℕ) : (graph b t m).IsSimple := by</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a>   constructor</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a>   · intro e he</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a>     have hh := congrArg (fun v =&gt; v.1.val) he</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     change e.1.1.val = e.1.1.val+1 at hh</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     omega</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>   · intro e f hef</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>     rcases hef with ⟨hl,hr⟩ | ⟨hl,hr⟩</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>     · have hleft := leftVertex_injective b t m hl</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>       have hright := rightVertex_injective b t m hr</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>       have hc : e.1 = f.1 := congrArg (fun p : Blocks b t × Fin m =&gt; p.1) hleft</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>       have ha : e.2.1 = f.2.1 := congrArg (fun p : Blocks b t × Fin m =&gt; p.2) hleft</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>       have hr : e.2.2 = f.2.2 := congrArg (fun p : Blocks b t × Fin (t*m) =&gt; p.2) hright</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>       exact Prod.ext hc (Prod.ext ha hr)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>     · have h1 := congrArg (fun v =&gt; v.1.val) hl</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>       have h2 := congrArg (fun v =&gt; v.1.val) hr</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>       change e.1.1.val = f.1.1.val+1 at h1</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>       change e.1.1.val+1 = f.1.1.val at h2</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>       omega</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a> </span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a> def layerSum (t b : ℕ) : ℕ := ∑ i ∈ range b, t^i</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a> </span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a> theorem card_blocks (b t : ℕ) : Fintype.card (Blocks b t) = layerSum t b := by</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   simp only [Blocks, Fintype.card_sigma, Fintype.card_fin, layerSum, Fin.sum_univ_eq_sum_range]</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a> </span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a> theorem card_vertices (b t m : ℕ) : Fintype.card (Vertices b t m) = m*layerSum t (b+1) := by</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   simp only [Vertices, Fintype.card_sigma, Fintype.card_prod, Fintype.card_fin,</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>     ← sum_mul, Fin.sum_univ_eq_sum_range, layerSum]</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   ring</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a> </span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a> theorem card_edges (b t m : ℕ) : Fintype.card (Edges b t m) = m^2*t*layerSum t b := by</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   simp only [Edges, Fintype.card_prod, Fintype.card_fin, card_blocks]</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   ring</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a> </span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a> theorem layerSum_succ (t b : ℕ) : layerSum t (b+1) = layerSum t b+t^b := sum_range_succ _ _</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a> </span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a> theorem layerSum_shift (t b : ℕ) : layerSum t (b+1) = 1+t*layerSum t b := by</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>   simp only [layerSum, sum_range_succ&#x27;, pow_succ, ← sum_mul, pow_zero]</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a>   ring</span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> </span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a> theorem layerSum_pos (t b : ℕ) (hb : 0 &lt; b) : 0 &lt; layerSum t b := by</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a>   have hh : (1:ℕ) ≤ layerSum t b := by</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     simpa only [pow_zero] using (single_le_sum (f := fun i =&gt; t^i) (fun _ _ =&gt; Nat.zero_le _) (mem_range.mpr hb))</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>   omega</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a> </span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a> theorem layerSum_upper (t b : ℕ) (ht : 1 ≤ t) : layerSum t (b+1) ≤ (b+1)*t^b := by</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>   apply le_trans (sum_le_card_nsmul _ _ (t^b) ?_) (by simp)</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   intro i hi</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   exact Nat.pow_le_pow_right (by omega) (by have := mem_range.mp hi; omega)</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a> </span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a> end GraphChoices.LowerBound</span></pre></html>

@@ -1,0 +1,121 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PreprocessedComparison.lean</title><style>body{margin:30px;background:#fafcfb;color:#142b22;font:14px/1.65 monospace}a{color:#176941}pre{white-space:pre;overflow:auto}.line{display:block}.line:target{background:#fff2b0}.num{color:#81968b;text-decoration:none}header{font:16px system-ui;position:sticky;top:0;background:#fafcfb;padding:12px 0}</style><header><a href="../index.html">← Dependency graph</a> · PreprocessedComparison.lean</header><pre><span class="line" id="L1"><a class="num" href="#L1">   1</a> import GraphChoices.IteratedLogBounds</span>
+<span class="line" id="L2"><a class="num" href="#L2">   2</a> import GraphChoices.ExpectedDensity</span>
+<span class="line" id="L3"><a class="num" href="#L3">   3</a> </span>
+<span class="line" id="L4"><a class="num" href="#L4">   4</a> /-! The finite preprocessed online policy has log-log expected cost times</span>
+<span class="line" id="L5"><a class="num" href="#L5">   5</a> E[OPT] plus the actual graph log-skewness. The subsequent SkewLowerBound module proves the benchmark comparison needed</span>
+<span class="line" id="L6"><a class="num" href="#L6">   6</a> to absorb that last graph parameter into E[OPT] in the preprocessed regime. -/</span>
+<span class="line" id="L7"><a class="num" href="#L7">   7</a> namespace GraphChoices.Peeling</span>
+<span class="line" id="L8"><a class="num" href="#L8">   8</a> open Finset</span>
+<span class="line" id="L9"><a class="num" href="#L9">   9</a> variable {L R : Type*} [Fintype L] [Fintype R] [DecidableEq L] [DecidableEq R]</span>
+<span class="line" id="L10"><a class="num" href="#L10">  10</a> </span>
+<span class="line" id="L11"><a class="num" href="#L11">  11</a> theorem graph_card_le_square (G : Graph L R) (N : ℕ)</span>
+<span class="line" id="L12"><a class="num" href="#L12">  12</a>     (hvertices : Fintype.card (L ⊕ R) ≤ N) : G.card ≤ N^2 := by</span>
+<span class="line" id="L13"><a class="num" href="#L13">  13</a>   have hsum : Fintype.card L + Fintype.card R ≤ N := by simpa only [Fintype.card_sum] using hvertices</span>
+<span class="line" id="L14"><a class="num" href="#L14">  14</a>   have hL : Fintype.card L ≤ N := by omega</span>
+<span class="line" id="L15"><a class="num" href="#L15">  15</a>   have hR : Fintype.card R ≤ N := by omega</span>
+<span class="line" id="L16"><a class="num" href="#L16">  16</a>   calc</span>
+<span class="line" id="L17"><a class="num" href="#L17">  17</a>     _ ≤ Fintype.card (L × R) := card_le_card (subset_univ _)</span>
+<span class="line" id="L18"><a class="num" href="#L18">  18</a>     _ = Fintype.card L*Fintype.card R := Fintype.card_prod _ _</span>
+<span class="line" id="L19"><a class="num" href="#L19">  19</a>     _ ≤ N*N := Nat.mul_le_mul hL hR</span>
+<span class="line" id="L20"><a class="num" href="#L20">  20</a>     _ = _ := by ring</span>
+<span class="line" id="L21"><a class="num" href="#L21">  21</a> </span>
+<span class="line" id="L22"><a class="num" href="#L22">  22</a> theorem average_le_two_referenceCap (G : Graph L R) [Nonempty G] (N : ℕ) (d : ℝ)</span>
+<span class="line" id="L23"><a class="num" href="#L23">  23</a>     (hN : 0 &lt; N) (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L24"><a class="num" href="#L24">  24</a>     (haverage : 2*(G.card : ℝ) = (N:ℝ)*d) : d ≤ 2*(graphBase G).referenceCap := by</span>
+<span class="line" id="L25"><a class="num" href="#L25">  25</a>   have hNr : (0:ℝ) &lt; N := by exact_mod_cast hN</span>
+<span class="line" id="L26"><a class="num" href="#L26">  26</a>   have hcard : (Fintype.card (L ⊕ R) : ℝ) ≤ N := by exact_mod_cast hvertices</span>
+<span class="line" id="L27"><a class="num" href="#L27">  27</a>   have he := (graphBase G).total_edges_le_card_mul_referenceCap</span>
+<span class="line" id="L28"><a class="num" href="#L28">  28</a>   rw [Fintype.card_coe] at he</span>
+<span class="line" id="L29"><a class="num" href="#L29">  29</a>   have hcap : (0:ℝ) ≤ (graphBase G).referenceCap := Nat.cast_nonneg _</span>
+<span class="line" id="L30"><a class="num" href="#L30">  30</a>   have hbound := mul_le_mul_of_nonneg_right hcard hcap</span>
+<span class="line" id="L31"><a class="num" href="#L31">  31</a>   apply (mul_le_mul_left hNr).mp</span>
+<span class="line" id="L32"><a class="num" href="#L32">  32</a>   nlinarith</span>
+<span class="line" id="L33"><a class="num" href="#L33">  33</a> </span>
+<span class="line" id="L34"><a class="num" href="#L34">  34</a> variable {G : Graph L R} {B N : ℕ} {d : ℝ} [Nonempty G]</span>
+<span class="line" id="L35"><a class="num" href="#L35">  35</a> </span>
+<span class="line" id="L36"><a class="num" href="#L36">  36</a> theorem PreparedDecomposition.reference_cap_le_square (P : PreparedDecomposition G B N d)</span>
+<span class="line" id="L37"><a class="num" href="#L37">  37</a>     (hB : B = (graphBase G).referenceCap) (hvertices : Fintype.card (L ⊕ R) ≤ N) : B ≤ N^2 := by</span>
+<span class="line" id="L38"><a class="num" href="#L38">  38</a>   have he : B ≤ G.card := by</span>
+<span class="line" id="L39"><a class="num" href="#L39">  39</a>     rw [hB]</span>
+<span class="line" id="L40"><a class="num" href="#L40">  40</a>     simpa only [Fintype.card_coe] using (graphBase G).referenceCap_le_edges</span>
+<span class="line" id="L41"><a class="num" href="#L41">  41</a>   exact he.trans (graph_card_le_square G N hvertices)</span>
+<span class="line" id="L42"><a class="num" href="#L42">  42</a> </span>
+<span class="line" id="L43"><a class="num" href="#L43">  43</a> theorem PreparedDecomposition.reference_density_bound (P : PreparedDecomposition G B N d)</span>
+<span class="line" id="L44"><a class="num" href="#L44">  44</a>     (hB : B = (graphBase G).referenceCap) :</span>
+<span class="line" id="L45"><a class="num" href="#L45">  45</a>     (B:ℝ)*((N:ℝ)/Fintype.card G) ≤ 3*expectedOpt (graphBase G) N := by</span>
+<span class="line" id="L46"><a class="num" href="#L46">  46</a>   rw [hB]</span>
+<span class="line" id="L47"><a class="num" href="#L47">  47</a>   exact expected_reference_cap_bound (graphBase G) N</span>
+<span class="line" id="L48"><a class="num" href="#L48">  48</a> </span>
+<span class="line" id="L49"><a class="num" href="#L49">  49</a> /-- A fully quantified preprocessed guarantee with explicit universal constant.</span>
+<span class="line" id="L50"><a class="num" href="#L50">  50</a> No lower bound on log-skewness is assumed: it remains visibly additive to</span>
+<span class="line" id="L51"><a class="num" href="#L51">  51</a> the expected optimum on the right-hand side. -/</span>
+<span class="line" id="L52"><a class="num" href="#L52">  52</a> theorem PreparedDecomposition.expected_cost_density_skew (P : PreparedDecomposition G B N d)</span>
+<span class="line" id="L53"><a class="num" href="#L53">  53</a>     (hB : B = (graphBase G).referenceCap) (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L54"><a class="num" href="#L54">  54</a>     (haverage : 2*(G.card : ℝ) = (N:ℝ)*d) :</span>
+<span class="line" id="L55"><a class="num" href="#L55">  55</a>     expectedCost (graphBase G) (onlineOrientation (T := N) (P.policy N)) ≤</span>
+<span class="line" id="L56"><a class="num" href="#L56">  56</a>       1400*(iteratedLog N : ℝ)*(expectedOpt (graphBase G) N+graphLogSkewness G d (N:ℝ)) := by</span>
+<span class="line" id="L57"><a class="num" href="#L57">  57</a>   let q : ℝ := iteratedLog N</span>
+<span class="line" id="L58"><a class="num" href="#L58">  58</a>   let optE : ℝ := expectedOpt (graphBase G) N</span>
+<span class="line" id="L59"><a class="num" href="#L59">  59</a>   let σ : ℝ := graphLogSkewness G d (N:ℝ)</span>
+<span class="line" id="L60"><a class="num" href="#L60">  60</a>   have hq : 1 ≤ q := by</span>
+<span class="line" id="L61"><a class="num" href="#L61">  61</a>     change (1:ℝ) ≤ (iteratedLog N : ℝ)</span>
+<span class="line" id="L62"><a class="num" href="#L62">  62</a>     exact_mod_cast (show 1 ≤ iteratedLog N by have := iteratedLog_pos N; omega)</span>
+<span class="line" id="L63"><a class="num" href="#L63">  63</a>   have hopt : 1 ≤ optE := expectedOpt_ge_one _ _ P.vertex_count_pos</span>
+<span class="line" id="L64"><a class="num" href="#L64">  64</a>   have hs : 0 ≤ σ := graphLogSkewness_nonneg G d (N:ℝ)</span>
+<span class="line" id="L65"><a class="num" href="#L65">  65</a>   have hM := P.reference_density_bound hB</span>
+<span class="line" id="L66"><a class="num" href="#L66">  66</a>   have hbudget := P.budget_loglog (P.reference_cap_le_square hB hvertices) haverage</span>
+<span class="line" id="L67"><a class="num" href="#L67">  67</a>   have hbudget&#x27; : P.budget N ≤ 320*(4*optE+σ)*q := by</span>
+<span class="line" id="L68"><a class="num" href="#L68">  68</a>     apply hbudget.trans</span>
+<span class="line" id="L69"><a class="num" href="#L69">  69</a>     apply mul_le_mul_of_nonneg_right _ (by linarith)</span>
+<span class="line" id="L70"><a class="num" href="#L70">  70</a>     dsimp only [optE, σ]</span>
+<span class="line" id="L71"><a class="num" href="#L71">  71</a>     nlinarith</span>
+<span class="line" id="L72"><a class="num" href="#L72">  72</a>   have hcoeff : ((2*(Nat.log 2 (3*(polynomialCutoff N 5+1)^2)+1) : ℕ) : ℝ) ≤ 20*q := by</span>
+<span class="line" id="L73"><a class="num" href="#L73">  73</a>     change ((2*(Nat.log 2 (3*(polynomialCutoff N 5+1)^2)+1) : ℕ) : ℝ) ≤ 20*(iteratedLog N : ℝ)</span>
+<span class="line" id="L74"><a class="num" href="#L74">  74</a>     exact_mod_cast greedy_multiplier_le_iteratedLog N</span>
+<span class="line" id="L75"><a class="num" href="#L75">  75</a>   have hgreedy := mul_le_mul_of_nonneg_right hcoeff (show 0 ≤ optE by linarith)</span>
+<span class="line" id="L76"><a class="num" href="#L76">  76</a>   have hprod : 1 ≤ q*optE := by nlinarith</span>
+<span class="line" id="L77"><a class="num" href="#L77">  77</a>   have herror : 3*(N:ℝ)/(N:ℝ)^5 ≤ 3*q*optE := by</span>
+<span class="line" id="L78"><a class="num" href="#L78">  78</a>     apply (exceptional_error_le_three N P.vertex_count_pos).trans</span>
+<span class="line" id="L79"><a class="num" href="#L79">  79</a>     nlinarith</span>
+<span class="line" id="L80"><a class="num" href="#L80">  80</a>   have hcost := P.expected_cost_at_vertex_horizon 5 (by decide) hvertices haverage</span>
+<span class="line" id="L81"><a class="num" href="#L81">  81</a>   calc</span>
+<span class="line" id="L82"><a class="num" href="#L82">  82</a>     _ ≤ _ := hcost</span>
+<span class="line" id="L83"><a class="num" href="#L83">  83</a>     _ ≤ 320*(4*optE+σ)*q + (20*q)*optE + 3*q*optE :=</span>
+<span class="line" id="L84"><a class="num" href="#L84">  84</a>       add_le_add (add_le_add hbudget&#x27; hgreedy) herror</span>
+<span class="line" id="L85"><a class="num" href="#L85">  85</a>     _ ≤ _ := by nlinarith [mul_nonneg (show 0 ≤ q by linarith) hs,</span>
+<span class="line" id="L86"><a class="num" href="#L86">  86</a>       mul_nonneg (show 0 ≤ q by linarith) (show 0 ≤ optE by linarith)]</span>
+<span class="line" id="L87"><a class="num" href="#L87">  87</a> </span>
+<span class="line" id="L88"><a class="num" href="#L88">  88</a> /-- Explicitly conditional corollary: the log-skewness benchmark comparison</span>
+<span class="line" id="L89"><a class="num" href="#L89">  89</a> is still an input here, rather than a postulated or claimed proved lemma. -/</span>
+<span class="line" id="L90"><a class="num" href="#L90">  90</a> theorem PreparedDecomposition.competitive_of_skew_lower_bound (P : PreparedDecomposition G B N d)</span>
+<span class="line" id="L91"><a class="num" href="#L91">  91</a>     (hB : B = (graphBase G).referenceCap) (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L92"><a class="num" href="#L92">  92</a>     (haverage : 2*(G.card : ℝ) = (N:ℝ)*d) (K : ℝ)</span>
+<span class="line" id="L93"><a class="num" href="#L93">  93</a>     (hskew : graphLogSkewness G d (N:ℝ) ≤ K*expectedOpt (graphBase G) N) :</span>
+<span class="line" id="L94"><a class="num" href="#L94">  94</a>     expectedCost (graphBase G) (onlineOrientation (T := N) (P.policy N)) ≤</span>
+<span class="line" id="L95"><a class="num" href="#L95">  95</a>       1400*(1+K)*(iteratedLog N : ℝ)*expectedOpt (graphBase G) N := by</span>
+<span class="line" id="L96"><a class="num" href="#L96">  96</a>   apply (P.expected_cost_density_skew hB hvertices haverage).trans</span>
+<span class="line" id="L97"><a class="num" href="#L97">  97</a>   calc</span>
+<span class="line" id="L98"><a class="num" href="#L98">  98</a>     _ ≤ 1400*(iteratedLog N : ℝ)*(expectedOpt (graphBase G) N+K*expectedOpt (graphBase G) N) :=</span>
+<span class="line" id="L99"><a class="num" href="#L99">  99</a>       mul_le_mul_of_nonneg_left (add_le_add_left hskew _) (by positivity)</span>
+<span class="line" id="L100"><a class="num" href="#L100"> 100</a>     _ = _ := by ring</span>
+<span class="line" id="L101"><a class="num" href="#L101"> 101</a> </span>
+<span class="line" id="L102"><a class="num" href="#L102"> 102</a> theorem exists_preprocessed_density_skew_policy (G : Graph L R) [Nonempty G] (N : ℕ) (d : ℝ)</span>
+<span class="line" id="L103"><a class="num" href="#L103"> 103</a>     (hd : 0 &lt; d) (hlog : 1 &lt; Real.log (N:ℝ))</span>
+<span class="line" id="L104"><a class="num" href="#L104"> 104</a>     (hleft : ∀ u, (leftDegree G u : ℝ) ≤ d*Real.log (N:ℝ))</span>
+<span class="line" id="L105"><a class="num" href="#L105"> 105</a>     (hD : ∀ u, leftDegree G u ≤ 4*(graphBase G).referenceCap)</span>
+<span class="line" id="L106"><a class="num" href="#L106"> 106</a>     (hvertices : Fintype.card (L ⊕ R) ≤ N)</span>
+<span class="line" id="L107"><a class="num" href="#L107"> 107</a>     (haverage : 2*(G.card : ℝ) = (N:ℝ)*d) :</span>
+<span class="line" id="L108"><a class="num" href="#L108"> 108</a>     ∃ p : OnlinePolicy G, expectedCost (graphBase G) (onlineOrientation (T := N) p) ≤</span>
+<span class="line" id="L109"><a class="num" href="#L109"> 109</a>       1400*(iteratedLog N : ℝ)*(expectedOpt (graphBase G) N+graphLogSkewness G d (N:ℝ)) := by</span>
+<span class="line" id="L110"><a class="num" href="#L110"> 110</a>   have hN : 0 &lt; N := by</span>
+<span class="line" id="L111"><a class="num" href="#L111"> 111</a>     by_contra hn</span>
+<span class="line" id="L112"><a class="num" href="#L112"> 112</a>     have hz : N = 0 := by omega</span>
+<span class="line" id="L113"><a class="num" href="#L113"> 113</a>     norm_num [hz] at hlog</span>
+<span class="line" id="L114"><a class="num" href="#L114"> 114</a>   have hcap := average_le_two_referenceCap G N d hN hvertices haverage</span>
+<span class="line" id="L115"><a class="num" href="#L115"> 115</a>   have hB : d ≤ 16*(graphBase G).referenceCap := by</span>
+<span class="line" id="L116"><a class="num" href="#L116"> 116</a>     have hp : (0:ℝ) ≤ (graphBase G).referenceCap := Nat.cast_nonneg _</span>
+<span class="line" id="L117"><a class="num" href="#L117"> 117</a>     linarith</span>
+<span class="line" id="L118"><a class="num" href="#L118"> 118</a>   obtain ⟨P⟩ := exists_preparedDecomposition G (graphBase G).referenceCap N d hd hlog hleft hB hD</span>
+<span class="line" id="L119"><a class="num" href="#L119"> 119</a>   exact ⟨P.policy N, P.expected_cost_density_skew rfl hvertices haverage⟩</span>
+<span class="line" id="L120"><a class="num" href="#L120"> 120</a> </span>
+<span class="line" id="L121"><a class="num" href="#L121"> 121</a> end GraphChoices.Peeling</span></pre></html>
